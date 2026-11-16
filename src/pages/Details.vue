@@ -576,10 +576,14 @@ export default {
             const labels = {
                 up: "Currently up for",
                 down: "Currently down for",
-                pending: "Currently pending for",
+                pending: "Pending for",
                 maintenance: "In maintenance for",
             };
-            const tone = this.state.key === "up" ? "" : `s-${this.state.key}`;
+            // Only the value carries the status colour; paused reads as amber like pending
+            const tone =
+                { up: "s-up", down: "s-down", pending: "s-pending", maintenance: "s-maintenance", paused: "s-pending" }[
+                    this.state.key
+                ] ?? "";
             if (since && labels[this.state.key]) {
                 return {
                     label: this.$t(labels[this.state.key]),
