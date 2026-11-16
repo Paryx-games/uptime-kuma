@@ -1,6 +1,7 @@
 // Carbon sign-in: one centred column, a quiet engraving beside it on wide screens
 
-.carbon-main:has(> .carbon-login) {
+// Beats the phone padding on .carbon.mobile .carbon-main
+.carbon .carbon-main:has(> .carbon-login) {
     max-width: none;
     padding: 0;
 }

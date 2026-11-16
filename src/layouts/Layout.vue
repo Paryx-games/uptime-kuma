@@ -119,7 +119,7 @@
         </main>
 
         <!-- Mobile Only -->
-        <div v-if="$root.isMobile" style="width: 100%; height: calc(60px + env(safe-area-inset-bottom))" />
+        <div v-if="$root.isMobile && $root.loggedIn" style="width: 100%; height: calc(60px + env(safe-area-inset-bottom))" />
         <nav v-if="$root.isMobile && $root.loggedIn" class="bottom-nav">
             <router-link to="/dashboard" class="nav-link" :class="{ 'is-on': section === 'overview' }">
                 <div><font-awesome-icon icon="tachometer-alt" /></div>
