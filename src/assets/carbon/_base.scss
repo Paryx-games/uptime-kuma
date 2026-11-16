@@ -80,6 +80,11 @@ body.dark:has(.carbon) {
         border-radius: 12px;
     }
 
+    // Links are ink or grey; no underlines
+    a:not(.btn) {
+        text-decoration: none;
+    }
+
     .form-check-input:checked {
         background-color: var(--c-up);
         border-color: var(--c-up);

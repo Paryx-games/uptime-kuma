@@ -33,18 +33,18 @@
                         <h2>{{ $t("Needs attention") }}</h2>
                     </div>
 
-                    <div v-if="summary.downList.length === 0" class="carbon-calm">
-                        <img :src="lighthouse" alt="" width="380" height="295" />
-                        <div class="title">{{ $t("Nothing needs you right now") }}</div>
-                        <div class="desc">
-                            {{
-                                notifierNames
-                                    ? $t("nothingDownNotified", [notifierNames])
-                                    : $t("No monitor is down right now.")
-                            }}
-                        </div>
-                        <div class="credit">{{ $t("lighthouseCredit") }}</div>
-                    </div>
+                    <EmptyState
+                        v-if="summary.downList.length === 0"
+                        illustration="lighthouse"
+                        large
+                        :title="$t('Nothing needs you right now')"
+                    >
+                        {{
+                            notifierNames
+                                ? $t("nothingDownNotified", [notifierNames])
+                                : $t("No monitor is down right now.")
+                        }}
+                    </EmptyState>
 
                     <div v-for="monitor in summary.downList" :key="monitor.id" class="carbon-event">
                         <span class="carbon-dot down" aria-hidden="true"><i /></span>
@@ -114,7 +114,7 @@ import dayjs from "dayjs";
 import Pagination from "v-pagination-3";
 import Confirm from "../components/Confirm.vue";
 import StatusFinding from "../components/StatusFinding.vue";
-import lighthouse from "../assets/carbon/lighthouse.webp";
+import EmptyState from "../components/EmptyState.vue";
 import { shortDuration } from "../util-frontend";
 import { UP, DOWN, PENDING, MAINTENANCE } from "../util.ts";
 
@@ -123,6 +123,7 @@ export default {
         Pagination,
         Confirm,
         StatusFinding,
+        EmptyState,
     },
     props: {
         calculatedHeight: {
@@ -132,7 +133,6 @@ export default {
     },
     data() {
         return {
-            lighthouse,
             page: 1,
             perPage: 8,
             paginationConfig: {

@@ -2,6 +2,7 @@ import dayjs from "dayjs";
 import { getTimeZones } from "@vvo/tzdb";
 import { localeDirection, currentLocale } from "./i18n";
 import { POSITION } from "vue-toastification";
+import { DOWN, UP, PENDING, MAINTENANCE } from "./util.ts";
 
 /**
  * Returns the offset from UTC in hours for the current locale.
@@ -323,4 +324,81 @@ export function shortInterval(seconds) {
     }
     const days = Math.round(seconds / DAY);
     return days === 1 ? "1 day" : `${days} days`;
+}
+
+// Monitor types named for people; anything else shows its type id
+const MONITOR_TYPE_LABELS = {
+    http: "HTTP",
+    keyword: "Keyword",
+    "json-query": "JSON query",
+    ping: "Ping",
+    push: "Heartbeat",
+    dns: "DNS",
+    docker: "Docker",
+    group: "Group",
+    "real-browser": "Browser",
+};
+
+/**
+ * Short name of a monitor's check, e.g. "Keyword" or "TCP 443"
+ * @param {object} monitor Monitor
+ * @returns {string} Type label
+ */
+export function monitorTypeLabel(monitor) {
+    if (monitor.type === "port") {
+        return `TCP ${monitor.port}`;
+    }
+    return MONITOR_TYPE_LABELS[monitor.type] ?? monitor.type;
+}
+
+/**
+ * Uptime ratio as a percentage, "100%" or "99.98%"
+ * @param {number|null|undefined} value Ratio from 0 to 1
+ * @returns {string} Percentage, or a dash without data
+ */
+export function formatUptime(value) {
+    if (value == null) {
+        return "—";
+    }
+    return value >= 1 ? "100%" : `${(value * 100).toFixed(2)}%`;
+}
+
+/**
+ * A server time as clock time when it is today, day and month before that
+ * @param {string} time UTC time from the server
+ * @param {boolean} withClock Add the clock time to older dates too
+ * @returns {string} Short time
+ */
+export function shortTime(time, withClock = false) {
+    if (!time) {
+        return "";
+    }
+    const local = dayjs.utc(time).local();
+    if (local.isSame(dayjs(), "day")) {
+        return local.format("HH:mm");
+    }
+    return local.format(withClock ? "D.M. HH:mm" : "D.M.");
+}
+
+/**
+ * State of a monitor: a key for its colour and a label for people
+ * @param {object} monitor Monitor
+ * @param {object|undefined} beat Its latest heartbeat
+ * @param {Function} t Translate function
+ * @returns {{key: string, label: string}} State
+ */
+export function monitorState(monitor, beat, t) {
+    if (!monitor.active) {
+        return { key: "paused", label: t("filterActivePaused") };
+    }
+    if (!beat) {
+        return { key: "wait", label: t(monitor.type === "push" ? "statusWaitingPing" : "statusWaitingCheck") };
+    }
+    const states = {
+        [DOWN]: { key: "down", label: t("Down") },
+        [UP]: { key: "up", label: t("Up") },
+        [PENDING]: { key: "pending", label: t("Pending") },
+        [MAINTENANCE]: { key: "maintenance", label: t("statusMaintenance") },
+    };
+    return states[beat.status] ?? { key: "wait", label: t("Unknown") };
 }

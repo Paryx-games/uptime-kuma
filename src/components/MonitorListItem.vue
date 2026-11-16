@@ -125,20 +125,8 @@
 import dayjs from "dayjs";
 import HeartbeatBar from "../components/HeartbeatBar.vue";
 import Tag from "../components/Tag.vue";
-import { getMonitorRelativeURL, UP, DOWN, PENDING, MAINTENANCE } from "../util.ts";
-import { shortDuration, shortInterval } from "../util-frontend";
-
-// Monitor types named for people; anything else shows its type id
-const TYPE_LABELS = {
-    http: "HTTP",
-    keyword: "Keyword",
-    "json-query": "JSON query",
-    ping: "Ping",
-    push: "Heartbeat",
-    dns: "DNS",
-    docker: "Docker",
-    "real-browser": "Browser",
-};
+import { getMonitorRelativeURL } from "../util.ts";
+import { formatUptime, monitorState, monitorTypeLabel, shortDuration, shortInterval } from "../util-frontend";
 
 export default {
     name: "MonitorListItem",
@@ -226,21 +214,7 @@ export default {
          * @returns {object} Key and label
          */
         state() {
-            const beat = this.$root.lastHeartbeatList[this.monitor.id];
-            if (!this.monitor.active) {
-                return { key: "paused", label: this.$t("filterActivePaused") };
-            }
-            if (!beat) {
-                const label = this.monitor.type === "push" ? "statusWaitingPing" : "statusWaitingCheck";
-                return { key: "wait", label: this.$t(label) };
-            }
-            const states = {
-                [UP]: { key: "up", label: this.$t("Up") },
-                [DOWN]: { key: "down", label: this.$t("Down") },
-                [PENDING]: { key: "pending", label: this.$t("Pending") },
-                [MAINTENANCE]: { key: "maintenance", label: this.$t("statusMaintenance") },
-            };
-            return states[beat.status] ?? { key: "wait", label: this.$t("Unknown") };
+            return monitorState(this.monitor, this.$root.lastHeartbeatList[this.monitor.id], this.$t);
         },
 
         /**
@@ -253,21 +227,16 @@ export default {
             if (since && this.state.key !== "wait") {
                 parts.push(shortDuration(dayjs().diff(dayjs.utc(since), "second")));
             }
-            let type = TYPE_LABELS[this.monitor.type] ?? this.monitor.type;
-            if (this.monitor.type === "port") {
-                type = `TCP ${this.monitor.port}`;
-            }
-            parts.push(type);
+            parts.push(monitorTypeLabel(this.monitor));
             parts.push(this.$t("everyInterval", [this.every]));
             return parts.map((part) => ` · ${part}`).join("");
         },
 
         uptime() {
-            const value = this.$root.uptimeList[`${this.monitor.id}_24`];
-            if (value == null || this.state.key === "wait") {
+            if (this.state.key === "wait") {
                 return "—";
             }
-            return value === 1 ? "100%" : `${(value * 100).toFixed(2)}%`;
+            return formatUptime(this.$root.uptimeList[`${this.monitor.id}_24`]);
         },
 
         ping() {
