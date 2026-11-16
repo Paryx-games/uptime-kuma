@@ -242,7 +242,7 @@ export default {
         },
 
         /**
-         * What happened, in words: "seerr is down"
+         * What happened, in words: "Shop is down"
          * @param {object} beat Important heartbeat
          * @returns {string} Event title
          */
