@@ -47,6 +47,7 @@ export default {
             maintenanceList: {},
             apiKeyList: {},
             heartbeatList: {},
+            statusSince: {},
             avgPingList: {},
             uptimeList: {},
             tlsInfoList: {},
@@ -234,6 +235,7 @@ export default {
                         }
                     }
 
+                    this.statusSince[data.monitorID] = data.time;
                     this.emitter.emit("newImportantHeartbeat", data);
                 }
             });
@@ -727,6 +729,24 @@ export default {
         },
 
         /**
+         * Load when each monitor last changed status, from the latest important heartbeats.
+         * Monitors whose last change is older than these stay unknown.
+         * @returns {void}
+         */
+        loadStatusSince() {
+            socket.emit("monitorImportantHeartbeatListPaged", null, 0, 500, (res) => {
+                if (!res.ok) {
+                    return;
+                }
+                const since = {};
+                for (const beat of res.data) {
+                    since[beat.monitorID] ??= beat.time;
+                }
+                this.statusSince = since;
+            });
+        },
+
+        /**
          * Retrieves monitor chart data.
          * @param {string} monitorID - The ID of the monitor.
          * @param {number} period - The time period for the chart data, in hours.
@@ -829,6 +849,50 @@ export default {
                     } else {
                         result.unknown++;
                     }
+                } else {
+                    result.unknown++;
+                }
+            }
+
+            return result;
+        },
+
+        /**
+         * Status counts of the monitors that run checks (groups left out)
+         * @returns {object} Counts, plus the monitors that are down
+         */
+        checkSummary() {
+            const result = {
+                total: 0,
+                up: 0,
+                down: 0,
+                pending: 0,
+                maintenance: 0,
+                paused: 0,
+                unknown: 0,
+                downList: [],
+            };
+
+            for (const monitor of Object.values(this.monitorList)) {
+                if (monitor.type === "group") {
+                    continue;
+                }
+                result.total++;
+
+                const beat = this.lastHeartbeatList[monitor.id];
+                if (!monitor.active) {
+                    result.paused++;
+                } else if (!beat) {
+                    result.unknown++;
+                } else if (beat.status === UP) {
+                    result.up++;
+                } else if (beat.status === DOWN) {
+                    result.down++;
+                    result.downList.push(monitor);
+                } else if (beat.status === PENDING) {
+                    result.pending++;
+                } else if (beat.status === MAINTENANCE) {
+                    result.maintenance++;
                 } else {
                     result.unknown++;
                 }

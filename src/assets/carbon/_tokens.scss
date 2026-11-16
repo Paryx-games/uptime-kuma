@@ -9,6 +9,7 @@
     --c-hover: #fafafa;
     --c-line: #ededef;
     --c-line-strong: #e3e3e6;
+    --c-rule: #e8e8ea;
     --c-fg: #111113;
     --c-fg-2: #4f4f55;
     --c-muted: #6e6e74;
@@ -22,6 +23,13 @@
     --c-button: #111113;
     --c-button-fg: #fff;
     --c-radius: 999px;
+
+    // Read by HeartbeatBar
+    --beat-up: var(--c-bar-up);
+    --beat-down: var(--c-down);
+    --beat-pending: var(--c-pending);
+    --beat-maintenance: var(--c-maintenance);
+    --beat-empty: var(--c-bar-empty);
 }
 
 .carbon.dark {
@@ -32,6 +40,7 @@
     --c-hover: #0a0a0b;
     --c-line: #121214;
     --c-line-strong: #1f1f23;
+    --c-rule: #161618;
     --c-fg: #ededed;
     --c-fg-2: #a1a1a6;
     --c-muted: #8f8f95;
