@@ -40,7 +40,7 @@
             </div>
         </div>
 
-        <div class="carbon-tabs">
+        <div v-if="!selectMode" class="carbon-tabs">
             <button
                 v-for="t in tabs"
                 :key="t.key"
@@ -54,23 +54,13 @@
                 <span>{{ t.count }}</span>
             </button>
 
-            <div class="filters-group">
-                <input
-                    v-if="!selectMode"
-                    v-model="selectMode"
-                    class="form-check-input"
-                    type="checkbox"
-                    :aria-label="$t('selectAllMonitorsAria')"
-                    @change="selectAll = selectMode"
-                />
-                <input
-                    v-else
-                    v-model="selectAll"
-                    class="form-check-input"
-                    type="checkbox"
-                    :aria-label="selectAll ? $t('deselectAllMonitorsAria') : $t('selectAllMonitorsAria')"
-                />
+            <span v-for="chip in filterChips" :key="chip.key" class="carbon-chip carbon-filter-chip">
+                {{ chip.label }}
+                <button type="button" :aria-label="$t('Remove filter')" @click="clearFilter(chip.key)">×</button>
+            </span>
 
+            <div class="filters-group">
+                <button type="button" class="carbon-tool" @click="selectMode = true">{{ $t("Select") }}</button>
                 <MonitorListFilter
                     :filterState="filterState"
                     :allCollapsed="allGroupsCollapsed"
@@ -81,55 +71,59 @@
             </div>
         </div>
 
-        <!-- Cancel + Actions (shown when selection mode is active) -->
-        <div v-if="selectMode && selectedMonitorCount > 0" class="selection-row">
-            <button class="btn btn-outline-normal" @click="cancelSelectMode">
-                {{ $t("Cancel") }}
+        <!-- Select mode replaces the toolbar -->
+        <div v-else class="carbon-tabs carbon-selectbar">
+            <span class="count">{{ $t("selectedCount", [selectedMonitorCount]) }}</span>
+            <button type="button" class="carbon-tool" @click="toggleSelectAll">
+                {{ selectAll ? $t("Deselect All") : $t("selectAllCount", [selectableMonitors.length]) }}
             </button>
-            <div class="actions-wrapper">
-                <div class="dropdown">
-                    <button
-                        class="btn btn-outline-normal dropdown-toggle"
-                        type="button"
-                        data-bs-toggle="dropdown"
-                        :aria-label="$t('Actions')"
-                        :disabled="bulkActionInProgress"
-                        aria-expanded="false"
-                    >
-                        {{ $t("Actions") }}
-                    </button>
-                    <ul class="dropdown-menu">
-                        <li>
-                            <a class="dropdown-item" href="#" @click.prevent="pauseDialog">
-                                <font-awesome-icon icon="pause" class="me-2" />
-                                {{ $t("Pause") }}
-                            </a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item" href="#" @click.prevent="resumeSelected">
-                                <font-awesome-icon icon="play" class="me-2" />
-                                {{ $t("Resume") }}
-                            </a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item text-danger" href="#" @click.prevent="$refs.confirmDelete.show()">
-                                <font-awesome-icon icon="trash" class="me-2" />
-                                {{ $t("Delete") }}
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-            <span class="selected-count">
-                {{ $t("selectedMonitorCountMsg", selectedMonitorCount) }}
-            </span>
+            <template v-if="selectedMonitorCount > 0">
+                <button type="button" class="carbon-tool" :disabled="bulkActionInProgress" @click="pauseDialog">
+                    {{ $t("Pause") }}
+                </button>
+                <button type="button" class="carbon-tool" :disabled="bulkActionInProgress" @click="resumeSelected">
+                    {{ $t("Resume") }}
+                </button>
+                <button
+                    type="button"
+                    class="carbon-tool carbon-tool-danger"
+                    :disabled="bulkActionInProgress"
+                    @click="$refs.confirmDelete.show()"
+                >
+                    {{ $t("Delete") }}
+                </button>
+            </template>
+            <button type="button" class="carbon-quiet ms-auto" @click="cancelSelectMode">{{ $t("Cancel") }}</button>
         </div>
 
         <div ref="monitorList" class="monitor-list" data-testid="monitor-list">
-            <div v-if="Object.keys($root.monitorList).length === 0" class="carbon-empty-line">
-                {{ $t("No Monitors, please") }}
-                <router-link to="/add">{{ $t("add one") }}</router-link>
-            </div>
+            <EmptyState
+                v-if="Object.keys($root.monitorList).length === 0"
+                illustration="clockwork"
+                :title="$t('No monitors yet')"
+                class="mt-4"
+            >
+                {{ $t("noMonitorsHelp") }}
+                <template #action>
+                    <router-link to="/add" class="btn btn-normal">{{ $t("newMonitor") }}</router-link>
+                </template>
+            </EmptyState>
+            <EmptyState
+                v-else-if="sortedMonitorList.length === 0 && searchText !== ''"
+                illustration="telescope"
+                :title="$t('noSearchResults', [searchText])"
+                class="mt-4"
+            >
+                {{ $t("noSearchResultsHelp") }}
+            </EmptyState>
+            <EmptyState
+                v-else-if="sortedMonitorList.length === 0"
+                illustration="anchor"
+                :title="$t('Nothing here')"
+                class="mt-4"
+            >
+                {{ $t("emptyTabHelp") }}
+            </EmptyState>
 
             <MonitorListItem
                 v-for="item in sortedMonitorList"
@@ -160,6 +154,7 @@ import Confirm from "../components/Confirm.vue";
 import MonitorListItem from "../components/MonitorListItem.vue";
 import MonitorListFilter from "./MonitorListFilter.vue";
 import StatusFinding from "./StatusFinding.vue";
+import EmptyState from "./EmptyState.vue";
 import { getMonitorRelativeURL, DOWN } from "../util.ts";
 
 export default {
@@ -168,6 +163,7 @@ export default {
         MonitorListItem,
         MonitorListFilter,
         StatusFinding,
+        EmptyState,
     },
     data() {
         return {
@@ -224,6 +220,39 @@ export default {
                 { key: "push", label: this.$t("Heartbeats"), count: monitors.filter((m) => m.type === "push").length },
                 { key: "paused", label: this.$t("filterActivePaused"), count: summary.paused },
             ];
+        },
+
+        /**
+         * Monitors that "Select all" picks: every check shown, groups left out
+         * @returns {Array} Monitors
+         */
+        selectableMonitors() {
+            return Object.values(this.$root.monitorList).filter((m) => m.type !== "group" && this.filterFunc(m));
+        },
+
+        /**
+         * Active filters as removable chips, e.g. "Status: Down"
+         * @returns {Array<{key: string, label: string}>} Chips
+         */
+        filterChips() {
+            const chips = [];
+            const words = { 0: "Down", 1: "Up", 2: "Pending", 3: "statusMaintenance" };
+            const status = this.filterState.status ?? [];
+            if (status.length > 0) {
+                const value = status.length === 1 ? this.$t(words[status[0]]) : status.length;
+                chips.push({ key: "status", label: `${this.$t("Status")}: ${value}` });
+            }
+            const active = this.filterState.active ?? [];
+            if (active.length > 0) {
+                const value =
+                    active.length === 1 ? this.$t(active[0] ? "Active" : "filterActivePaused") : active.length;
+                chips.push({ key: "active", label: `${this.$t("State")}: ${value}` });
+            }
+            const tags = this.filterState.tags ?? [];
+            if (tags.length > 0) {
+                chips.push({ key: "tags", label: `${this.$t("Tags")}: ${tags.length}` });
+            }
+            return chips;
         },
 
         isDarkTheme() {
@@ -295,12 +324,9 @@ export default {
                 this.selectedMonitors = {};
 
                 if (this.selectAll) {
-                    this.sortedMonitorList.forEach((item) => {
+                    this.selectableMonitors.forEach((item) => {
                         this.selectedMonitors[item.id] = true;
                     });
-                } else {
-                    // Exit select mode when unchecking "select all"
-                    this.selectMode = false;
                 }
             } else {
                 this.disableSelectAllWatcher = false;
@@ -315,8 +341,36 @@ export default {
     },
     mounted() {
         this.$root.loadStatusSince();
+        window.addEventListener("keydown", this.onKeydown);
+    },
+    beforeUnmount() {
+        window.removeEventListener("keydown", this.onKeydown);
     },
     methods: {
+        /**
+         * Esc leaves select mode
+         * @param {KeyboardEvent} event Key event
+         * @returns {void}
+         */
+        onKeydown(event) {
+            if (event.key === "Escape" && this.selectMode) {
+                this.cancelSelectMode();
+            }
+        },
+        toggleSelectAll() {
+            this.selectAll = !this.selectAll;
+            if (!this.selectAll) {
+                this.selectedMonitors = {};
+            }
+        },
+        /**
+         * Remove one kind of filter
+         * @param {string} key status, active or tags
+         * @returns {void}
+         */
+        clearFilter(key) {
+            this.filterState = { ...this.filterState, [key]: null };
+        },
         /**
          * Get URL of monitor
          * @param {number} id ID of monitor
@@ -399,6 +453,7 @@ export default {
          * @returns {void}
          */
         select(id) {
+            this.selectMode = true;
             this.selectedMonitors[id] = true;
         },
         /**

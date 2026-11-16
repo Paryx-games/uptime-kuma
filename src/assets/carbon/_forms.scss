@@ -3,7 +3,39 @@
 .carbon {
     --c-chevron: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%236e6e74' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m4 6 4 4 4-4'/%3e%3c/svg%3e");
 
-    accent-color: var(--c-up);
+    accent-color: var(--c-accent);
+
+    // Checkboxes, radios and switches: violet when on (green means up)
+    .form-check-input {
+        width: 16px;
+        height: 16px;
+        border: 1px solid #3a3a40;
+        background-color: transparent;
+        box-shadow: none;
+
+        &[type="checkbox"]:not([role="switch"]) {
+            border-radius: 4px;
+        }
+
+        &:checked {
+            border-color: var(--c-accent);
+            background-color: var(--c-accent);
+        }
+
+        &:focus {
+            box-shadow: none;
+        }
+
+        &:focus-visible {
+            outline: 2px solid color-mix(in srgb, var(--c-fg) 30%, transparent);
+            outline-offset: 2px;
+        }
+    }
+
+    .form-switch .form-check-input {
+        width: 28px;
+        border-radius: var(--c-radius);
+    }
 
     h2,
     h3,
