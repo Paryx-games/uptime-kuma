@@ -22,50 +22,85 @@
                 />
             </div>
 
-            <router-link :to="monitorURL(monitor.id)" class="item" :class="{ disabled: !monitor.active }">
-                <div class="row">
-                    <div class="small-padding d-flex gap-2 align-items-center" :class="monitorStyle">
-                        <div class="me-1">
-                            <Uptime :monitor="monitor" type="24" :pill="true" />
-                        </div>
-                        <div class="d-flex align-items-center gap-2 flex-fill" style="min-width: 0">
-                            <span
-                                v-if="hasChildren"
-                                class="collapse-padding"
-                                data-testid="monitor-collapse"
-                                @click.prevent="changeCollapsed"
-                            >
-                                <font-awesome-icon
-                                    icon="chevron-down"
-                                    class="animated"
-                                    :class="{ collapsed: isCollapsed }"
-                                />
-                            </span>
-                            <div class="flex-fill text-truncate" style="min-width: 0">
-                                <div class="text-truncate">{{ monitor.name }}</div>
-                                <div v-if="monitor.tags.length > 0" class="tags gap-1">
-                                    <Tag
-                                        v-for="tag in monitor.tags"
-                                        :key="tag"
-                                        :item="tag"
-                                        :size="'sm'"
-                                        :title="tag.name"
-                                    />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div v-if="$root.userHeartbeatBar == 'normal'" :key="$root.userHeartbeatBar" class="col-3 col-xl-6">
-                        <HeartbeatBar ref="heartbeatBar" size="small" :monitor-id="monitor.id" />
-                    </div>
-                </div>
+            <!-- Group header -->
+            <div v-if="monitor.type === 'group'" class="carbon-group">
+                <button
+                    type="button"
+                    class="carbon-group-toggle"
+                    data-testid="monitor-collapse"
+                    :aria-expanded="!isCollapsed"
+                    :aria-label="monitor.name"
+                    @click="changeCollapsed"
+                >
+                    <svg
+                        aria-hidden="true"
+                        width="12"
+                        height="12"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        class="animated"
+                        :class="{ collapsed: isCollapsed }"
+                    >
+                        <path d="m6 9 6 6 6-6" />
+                    </svg>
+                </button>
+                <router-link :to="monitorURL(monitor.id)" class="carbon-group-name">{{ monitor.name }}</router-link>
+                <span class="count">{{ sortedChildMonitorList.length }}</span>
+            </div>
 
-                <div v-if="$root.userHeartbeatBar == 'bottom'" class="row">
-                    <div class="col-12 bottom-style">
-                        <HeartbeatBar ref="heartbeatBar" size="small" :monitor-id="monitor.id" />
+            <!-- Monitor row -->
+            <div v-else class="carbon-row" :class="{ disabled: !monitor.active }">
+                <span class="carbon-dot" :class="state.key" aria-hidden="true"><i /></span>
+                <div class="carbon-name">
+                    <router-link :to="monitorURL(monitor.id)" class="nm stretched-link">{{ monitor.name }}</router-link>
+                    <div class="sub">
+                        <span :class="`s-${state.key}`">{{ state.label }}</span>
+                        {{ details }}
+                    </div>
+                    <div v-if="monitor.tags.length > 0" class="tags">
+                        <Tag v-for="tag in monitor.tags" :key="tag" :item="tag" :size="'sm'" :title="tag.name" />
                     </div>
                 </div>
-            </router-link>
+                <div v-if="$root.userHeartbeatBar !== 'none'" class="carbon-bars">
+                    <HeartbeatBar ref="heartbeatBar" size="small" :monitor-id="monitor.id" />
+                </div>
+                <span class="num" :title="$t('uptime24h')">{{ uptime }}</span>
+                <span class="mut" :title="$t('Avg. Response')">{{ ping }}</span>
+                <span class="mut every">{{ every }}</span>
+                <div class="dropdown carbon-kebab">
+                    <button
+                        type="button"
+                        class="carbon-kebab-btn"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false"
+                        :aria-label="$t('Actions')"
+                    >
+                        ···
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li>
+                            <router-link :to="`/edit/${monitor.id}`" class="dropdown-item">
+                                {{ $t("Edit") }}
+                            </router-link>
+                        </li>
+                        <li>
+                            <router-link :to="`/clone/${monitor.id}`" class="dropdown-item">
+                                {{ $t("Clone") }}
+                            </router-link>
+                        </li>
+                        <li v-if="monitor.active">
+                            <button type="button" class="dropdown-item" @click="pause(monitor.id)">
+                                {{ $t("Pause") }}
+                            </button>
+                        </li>
+                        <li v-else>
+                            <button type="button" class="dropdown-item" @click="resume">{{ $t("Resume") }}</button>
+                        </li>
+                    </ul>
+                </div>
+            </div>
         </div>
 
         <transition name="slide-fade-up">
@@ -79,6 +114,7 @@
                     :isSelected="isSelected"
                     :select="select"
                     :deselect="deselect"
+                    :pause="pause"
                     :depth="depth + 1"
                     :filter-func="filterFunc"
                     :sort-func="sortFunc"
@@ -89,15 +125,27 @@
 </template>
 
 <script>
+import dayjs from "dayjs";
 import HeartbeatBar from "../components/HeartbeatBar.vue";
 import Tag from "../components/Tag.vue";
-import Uptime from "../components/Uptime.vue";
-import { getMonitorRelativeURL } from "../util.ts";
+import { getMonitorRelativeURL, UP, DOWN, PENDING, MAINTENANCE } from "../util.ts";
+import { shortDuration, shortInterval } from "../util-frontend";
+
+// Monitor types named for people; anything else shows its type id
+const TYPE_LABELS = {
+    http: "HTTP",
+    keyword: "Keyword",
+    "json-query": "JSON query",
+    ping: "Ping",
+    push: "Heartbeat",
+    dns: "DNS",
+    docker: "Docker",
+    "real-browser": "Browser",
+};
 
 export default {
     name: "MonitorListItem",
     components: {
-        Uptime,
         HeartbeatBar,
         Tag,
     },
@@ -137,6 +185,11 @@ export default {
             type: Function,
             default: () => {},
         },
+        /** Callback fired when the monitor should be paused */
+        pause: {
+            type: Function,
+            default: () => {},
+        },
         /** Function to filter child monitors */
         filterFunc: {
             type: Function,
@@ -150,7 +203,7 @@ export default {
     },
     data() {
         return {
-            isCollapsed: true,
+            isCollapsed: false,
             dragOverCount: 0,
         };
     },
@@ -170,17 +223,65 @@ export default {
         },
         depthMargin() {
             return {
-                marginLeft: `${20 * this.depth}px`,
+                marginLeft: `${20 * Math.max(0, this.depth - 1)}px`,
             };
         },
-        monitorStyle() {
-            const isFullWidth = this.$root.userHeartbeatBar === "bottom" || this.$root.userHeartbeatBar === "none";
-            const c = {};
-            if (!isFullWidth) {
-                c["col-9"] = true;
-                c["col-xl-6"] = true;
+        /**
+         * Current state: a key for the colour and a label for people
+         * @returns {object} Key and label
+         */
+        state() {
+            const beat = this.$root.lastHeartbeatList[this.monitor.id];
+            if (!this.monitor.active) {
+                return { key: "paused", label: this.$t("filterActivePaused") };
             }
-            return c;
+            if (!beat) {
+                const label = this.monitor.type === "push" ? "statusWaitingPing" : "statusWaitingCheck";
+                return { key: "wait", label: this.$t(label) };
+            }
+            const states = {
+                [UP]: { key: "up", label: this.$t("Up") },
+                [DOWN]: { key: "down", label: this.$t("Down") },
+                [PENDING]: { key: "pending", label: this.$t("Pending") },
+                [MAINTENANCE]: { key: "maintenance", label: this.$t("statusMaintenance") },
+            };
+            return states[beat.status] ?? { key: "wait", label: this.$t("Unknown") };
+        },
+
+        /**
+         * Grey details after the state: how long, what kind of check, how often
+         * @returns {string} Details, each after a middle dot
+         */
+        details() {
+            const parts = [];
+            const since = this.$root.statusSince[this.monitor.id];
+            if (since && this.state.key !== "wait") {
+                parts.push(shortDuration(dayjs().diff(dayjs.utc(since), "second")));
+            }
+            let type = TYPE_LABELS[this.monitor.type] ?? this.monitor.type;
+            if (this.monitor.type === "port") {
+                type = `TCP ${this.monitor.port}`;
+            }
+            parts.push(type);
+            parts.push(this.$t("everyInterval", [this.every]));
+            return parts.map((part) => ` · ${part}`).join("");
+        },
+
+        uptime() {
+            const value = this.$root.uptimeList[`${this.monitor.id}_24`];
+            if (value == null || this.state.key === "wait") {
+                return "—";
+            }
+            return value === 1 ? "100%" : `${(value * 100).toFixed(2)}%`;
+        },
+
+        ping() {
+            const value = this.$root.avgPingList[this.monitor.id];
+            return value == null ? "—" : `${Math.round(value)} ms`;
+        },
+
+        every() {
+            return shortInterval(this.monitor.interval);
         },
     },
     watch: {
@@ -343,6 +444,13 @@ export default {
             return getMonitorRelativeURL(id);
         },
         /**
+         * Resume checking this monitor
+         * @returns {void}
+         */
+        resume() {
+            this.$root.getSocket().emit("resumeMonitor", this.monitor.id, (res) => this.$root.toastRes(res));
+        },
+        /**
          * Toggle selection of monitor
          * @returns {void}
          */
@@ -360,19 +468,6 @@ export default {
 <style lang="scss" scoped>
 @import "../assets/vars.scss";
 
-.small-padding {
-    padding-left: 5px !important;
-    padding-right: 5px !important;
-}
-
-.tags {
-    margin-top: 4px;
-    padding-left: 4px;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0;
-}
-
 .collapsed {
     transform: rotate(-90deg);
 }
@@ -381,50 +476,8 @@ export default {
     transition: all 0.2s $easing-in;
 }
 
-.select-input-wrapper {
-    float: left;
-    margin-top: 15px;
-    margin-left: 3px;
-    margin-right: 10px;
-    padding-left: 4px;
-    position: relative;
-    z-index: 15;
-}
-
-.drag-over {
-    border: 4px dashed $primary;
-    border-radius: 0.5rem;
-    background-color: $highlight-white;
-}
-
-.dark {
-    .drag-over {
-        background-color: $dark-bg2;
-    }
-}
-
-/* -4px on all due to border-width */
-.monitor-list .drag-over .item {
-    padding: 9px 11px 6px 11px;
-}
-
 .draggable-item {
     cursor: grab;
     position: relative;
-
-    /* We don't want the padding change due to the border animated */
-    .item {
-        padding: 12px 15px;
-        transition: none !important;
-    }
-
-    &.dragging {
-        cursor: grabbing;
-    }
-}
-
-.bottom-style {
-    margin-left: -10px;
-    margin-top: 5px;
 }
 </style>

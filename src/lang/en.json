@@ -1657,5 +1657,16 @@
     "Main": "Main",
     "Overview": "Overview",
     "navMonitors": "Monitors",
-    "navStatusPages": "Status pages"
+    "navStatusPages": "Status pages",
+    "newMonitor": "New monitor",
+    "tabAll": "All",
+    "statusWaitingPing": "Waiting for first ping",
+    "statusWaitingCheck": "Waiting for first check",
+    "everyInterval": "every {0}",
+    "uptime24h": "Uptime, last 24 hours",
+    "monitorIsDown": "{0} is down",
+    "downForDuration": "for {0}",
+    "monitorsAreDown": "{0} monitors are down",
+    "allMonitorsUp": "All {0} monitors are up.",
+    "someMonitorsUp": "{0} of {1} monitors are up, none are down."
 }

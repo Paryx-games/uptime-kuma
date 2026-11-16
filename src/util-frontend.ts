@@ -289,3 +289,46 @@ class TimeDurationFormatter {
 }
 
 export const timeDurationFormatter = new TimeDurationFormatter();
+
+const MINUTE = 60;
+const HOUR = 60 * MINUTE;
+const DAY = 24 * HOUR;
+const MONTH = 30 * DAY;
+
+/**
+ * Compact duration with the two largest units, e.g. "4 min", "5h 12m", "7d 2h", "2mo 1d"
+ * @param {number} seconds Duration in seconds
+ * @returns {string} Short duration
+ */
+export function shortDuration(seconds: number): string {
+    const s = Math.max(0, Math.floor(seconds));
+    if (s < HOUR) {
+        return `${Math.max(1, Math.floor(s / MINUTE))} min`;
+    }
+    if (s < DAY) {
+        return `${Math.floor(s / HOUR)}h ${Math.floor((s % HOUR) / MINUTE)}m`;
+    }
+    if (s < MONTH) {
+        return `${Math.floor(s / DAY)}d ${Math.floor((s % DAY) / HOUR)}h`;
+    }
+    return `${Math.floor(s / MONTH)}mo ${Math.floor((s % MONTH) / DAY)}d`;
+}
+
+/**
+ * Check interval in its natural unit, e.g. "30 s", "3 min", "1 h", "2 days"
+ * @param {number} seconds Interval in seconds
+ * @returns {string} Short interval
+ */
+export function shortInterval(seconds: number): string {
+    if (seconds < MINUTE) {
+        return `${seconds} s`;
+    }
+    if (seconds < HOUR) {
+        return `${Math.round(seconds / MINUTE)} min`;
+    }
+    if (seconds < DAY) {
+        return `${Math.round(seconds / HOUR)} h`;
+    }
+    const days = Math.round(seconds / DAY);
+    return days === 1 ? "1 day" : `${days} days`;
+}

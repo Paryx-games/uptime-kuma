@@ -37,7 +37,7 @@
             </router-link>
             <router-link to="/list" class="carbon-nav" :class="{ 'is-on': section === 'monitors' }">
                 {{ $t("navMonitors") }}
-                <span class="count">{{ monitorCount }}</span>
+                <span class="count">{{ $root.checkSummary.total }}</span>
             </router-link>
             <router-link to="/maintenance" class="carbon-nav" :class="{ 'is-on': section === 'maintenance' }">
                 {{ $t("Maintenance") }}
@@ -184,10 +184,6 @@ export default {
 
         host() {
             return location.host;
-        },
-
-        monitorCount() {
-            return Object.values(this.$root.monitorList).filter((m) => m.type !== "group").length;
         },
 
         /**
