@@ -1,7 +1,7 @@
 <template>
     <p class="carbon-finding">
-        <b v-if="finding.strong">{{ finding.strong }}</b>
-        {{ finding.rest }}
+        <!-- Kept on one line so no space lands before the colon -->
+        <b v-if="finding.strong">{{ finding.strong }}</b>{{ finding.rest }}
         <slot />
     </p>
 </template>
