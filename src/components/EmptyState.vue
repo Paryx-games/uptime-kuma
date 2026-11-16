@@ -21,6 +21,7 @@ import semaphore from "../assets/carbon/art/semaphore.webp";
 import anchor from "../assets/carbon/art/anchor.webp";
 import pigeons from "../assets/carbon/art/pigeons.webp";
 import telescope from "../assets/carbon/art/telescope.webp";
+import clockwork from "../assets/carbon/art/clockwork.webp";
 
 // Each empty place has its own engraving; see assets/carbon/art/CREDITS.md
 const ART = {
@@ -36,6 +37,7 @@ const ART = {
     anchor: { src: anchor, credit: "Anchor, British Library, CC0" },
     pigeons: { src: pigeons, credit: "Pigeon messengers, Harper's, public domain" },
     telescope: { src: telescope, credit: "Early telescope, engraving, CC0" },
+    clockwork: { src: clockwork, credit: "Clock mechanism, engraving, CC0" },
 };
 
 /**

@@ -17,9 +17,14 @@
                         {{ $t("Edit") }}
                     </button>
                 </div>
-                <p v-if="$root.notificationList.length === 0" class="carbon-muted">
-                    {{ $t("Not available, please setup.") }}
-                </p>
+                <EmptyState
+                    v-if="$root.notificationList.length === 0"
+                    illustration="pigeons"
+                    :title="$t('No notification channels yet')"
+                    class="mb-3"
+                >
+                    {{ $t("notificationsEmptyHelp") }}
+                </EmptyState>
                 <button class="btn btn-normal" type="button" @click="$refs.notificationDialog.show()">
                     {{ $t("Setup Notification") }}
                 </button>
@@ -126,10 +131,12 @@
 
 <script>
 import NotificationDialog from "../../components/NotificationDialog.vue";
+import EmptyState from "../EmptyState.vue";
 
 export default {
     components: {
         NotificationDialog,
+        EmptyState,
     },
 
     data() {

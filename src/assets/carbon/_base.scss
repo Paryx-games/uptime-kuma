@@ -103,11 +103,6 @@ body.dark:has(.carbon) {
         text-decoration: none;
     }
 
-    .form-check-input:checked {
-        background-color: var(--c-up);
-        border-color: var(--c-up);
-    }
-
     .nav-pills .nav-link.active,
     .nav-pills .show > .nav-link,
     .page-item.active .page-link {

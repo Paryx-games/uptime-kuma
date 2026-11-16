@@ -128,7 +128,6 @@ test.describe("Monitor list", () => {
         await page.getByTestId("select-mode-toggle").click();
         await expect(page.getByTestId("select-all-toggle")).toBeVisible();
         await page.locator('[data-testid^="monitor-select-"]').nth(1).uncheck();
-        await page.getByTestId("bulk-actions").click();
         await page.getByTestId("bulk-pause").click();
         await page.locator(".modal.show").waitFor();
         await confirmDialog(page);
@@ -146,7 +145,6 @@ test.describe("Monitor list", () => {
             await expect(page.getByTestId("select-all-toggle")).toBeVisible();
         }
         await page.locator('[data-testid^="monitor-select-"]').first().check();
-        await page.getByTestId("bulk-actions").click();
         await page.getByTestId("bulk-resume").click();
 
         // Clearing the filter shows both again
@@ -163,8 +161,7 @@ test.describe("Monitor list", () => {
 
         await page.getByTestId("select-mode-toggle").click();
         await expect(page.getByTestId("select-all-toggle")).toBeVisible();
-        await page.getByTestId("select-all-toggle").check();
-        await page.getByTestId("bulk-actions").click();
+        await page.getByTestId("select-all-toggle").click();
         await page.getByTestId("bulk-delete").click();
         await confirmDialog(page);
 

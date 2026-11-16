@@ -93,7 +93,9 @@
 }
 
 .carbon-tab {
+    flex: 0 0 auto;
     margin-bottom: -1px;
+    white-space: nowrap;
     padding: 0 0 10px;
     border: 0;
     border-bottom: 2px solid transparent;
@@ -116,29 +118,89 @@
     }
 }
 
-.carbon .filter-dropdown-status,
-.carbon .btn-outline-normal {
+// Toolbar controls: one 28px quiet shape
+.carbon-tool {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
     height: 28px;
     padding: 0 10px;
-    border: 1px solid var(--c-line-strong);
-    background-color: transparent;
+    border: 0;
+    border-radius: var(--c-radius);
+    background: none;
     color: var(--c-fg-2);
+    font: inherit;
+    font-size: 12px;
+    white-space: nowrap;
+
+    &:hover,
+    &.is-on,
+    &[aria-expanded="true"] {
+        color: var(--c-fg);
+        background-color: var(--c-fill);
+    }
+
+    &:disabled {
+        opacity: 0.5;
+    }
+}
+
+.carbon-tool-icon {
+    justify-content: center;
+    width: 28px;
+    padding: 0;
+}
+
+.carbon-tool-danger:hover {
+    color: var(--c-down);
+}
+
+.carbon-filter-chip {
+    align-self: center;
+    margin-bottom: 8px;
     font-size: 12px;
 }
 
-.selection-row {
-    display: flex;
+.carbon-selectbar {
     align-items: center;
     gap: 8px;
-    margin: 8px 0;
+    padding-bottom: 6px;
 
-    .selected-count {
-        white-space: nowrap;
+    .count {
+        margin-right: 8px;
+        font-weight: 500;
+    }
+}
+
+// Menu rows: tick, dot, label, count
+.carbon-menu {
+    width: 240px;
+
+    .carbon-menu-heading {
+        padding: 6px 10px 2px;
+        font-size: 12px;
         color: var(--c-muted);
     }
 
-    .dropdown-item.text-danger {
-        color: var(--c-down);
+    .dropdown-item {
+        min-height: 32px;
+    }
+
+    .tick {
+        width: 12px;
+        color: var(--c-accent);
+        font-size: 12px;
+    }
+
+    .carbon-dot {
+        width: 12px;
+    }
+
+    .count {
+        margin-left: auto;
+        padding-left: 12px;
+        color: var(--c-muted);
+        font-size: 12px;
     }
 }
 
@@ -151,14 +213,6 @@
     .draggable-item {
         display: flex;
         align-items: flex-start;
-    }
-
-    .select-input-wrapper {
-        padding: 14px 10px 0 4px;
-    }
-
-    .draggable-item:has(.carbon-group) .select-input-wrapper {
-        padding-top: 24px;
     }
 
     .drag-over {
@@ -278,6 +332,46 @@
     }
 }
 
+// The status dot gives way to a checkbox on hover and in select mode
+.carbon-dot-cell {
+    position: relative;
+    z-index: 2;
+    display: grid;
+    place-items: center;
+    width: 20px;
+    height: 20px;
+
+    > * {
+        grid-area: 1 / 1;
+    }
+
+    .carbon-dot {
+        pointer-events: none;
+    }
+
+    .carbon-row-check {
+        margin: 0;
+        opacity: 0;
+        cursor: pointer;
+    }
+}
+
+.carbon-row:hover,
+.carbon-row.is-selecting,
+.carbon-row.is-selected {
+    .carbon-row-check {
+        opacity: 1;
+    }
+
+    .carbon-dot {
+        opacity: 0;
+    }
+}
+
+.carbon-row.is-selected {
+    background-color: var(--c-hover);
+}
+
 // Status dot, its halo and the matching word, used across Carbon pages
 .carbon-dot {
     display: flex;
@@ -362,8 +456,15 @@
     }
 
     .carbon-tabs {
-        gap: 16px;
+        flex-wrap: nowrap;
+        gap: 14px;
         margin-top: 16px;
+        overflow-x: auto;
+        scrollbar-width: none;
+
+        .filters-group {
+            gap: 2px;
+        }
     }
 
     .carbon-row {

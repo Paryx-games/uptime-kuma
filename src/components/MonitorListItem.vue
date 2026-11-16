@@ -10,20 +10,17 @@
             @dragover.prevent
             @drop.prevent="onDrop"
         >
-            <!-- Checkbox -->
-            <div v-if="isSelectMode" class="select-input-wrapper">
+            <!-- Group header -->
+            <div v-if="monitor.type === 'group'" class="carbon-group">
                 <input
-                    class="form-check-input select-input"
+                    v-if="isSelectMode"
+                    class="form-check-input"
                     type="checkbox"
                     :data-testid="'monitor-select-' + monitor.id"
                     :aria-label="$t('Check/Uncheck')"
                     :checked="isSelected(monitor.id)"
                     @click.stop="toggleSelection"
                 />
-            </div>
-
-            <!-- Group header -->
-            <div v-if="monitor.type === 'group'" class="carbon-group">
                 <button
                     type="button"
                     class="carbon-group-toggle"
@@ -51,8 +48,26 @@
             </div>
 
             <!-- Monitor row -->
-            <div v-else class="carbon-row" :class="{ disabled: !monitor.active }">
-                <span class="carbon-dot" :class="state.key" aria-hidden="true"><i /></span>
+            <div
+                v-else
+                class="carbon-row"
+                :class="{
+                    disabled: !monitor.active,
+                    'is-selecting': isSelectMode,
+                    'is-selected': isSelected(monitor.id),
+                }"
+            >
+                <span class="carbon-dot-cell">
+                    <span class="carbon-dot" :class="state.key" aria-hidden="true"><i /></span>
+                    <input
+                        class="form-check-input carbon-row-check"
+                        type="checkbox"
+                        :data-testid="'monitor-select-' + monitor.id"
+                        :aria-label="$t('Check/Uncheck')"
+                        :checked="isSelected(monitor.id)"
+                        @click.stop="toggleSelection"
+                    />
+                </span>
                 <div class="carbon-name">
                     <router-link :to="monitorURL(monitor.id)" class="nm stretched-link">{{ monitor.name }}</router-link>
                     <div class="sub">
