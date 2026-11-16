@@ -1,19 +1,10 @@
-<center align="center" style="text-align: center;justify-content:center;">
-<div align="center" style="text-align: center;justify-content:center;">
-<h1 align="center" style="text-align: center;justify-content:center;">
+<h1 align="left" style="text-align: left;justify-content:left;">
 
 Uptime Kuma, redesigned
-
-<img style="justify-content:center;text-align: center;width: 64px; height: auto;" width="64" height="64" alt="Uptime Kuma" src="public/icon.svg" />
 
 </h1>
 
 ![Based on](https://img.shields.io/badge/based_on-Uptime_Kuma_2.5.11-5CDD8B.svg?style=for-the-badge) ![Vue](https://img.shields.io/badge/Vue_3-4FC08D?style=for-the-badge&logo=vue.js&logoColor=white) ![Node](https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=node.js&logoColor=white) ![SQLite](https://img.shields.io/badge/SQLite-003B57?style=for-the-badge&logo=sqlite&logoColor=white) ![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white) ![License](https://img.shields.io/badge/license-MIT-blue.svg?style=for-the-badge)
-
-</div>
-</center>
-
-<hr>
 
 A fork of [Uptime Kuma](https://github.com/louislam/uptime-kuma) with a redesigned interface and profile pictures. Monitoring, notifications and status pages work exactly like upstream. What changes is how it looks and reads: a sidebar instead of a top bar, monitors as grouped rows, a detail page with a response time chart and an availability table, and the same dark theme on every screen.
 
