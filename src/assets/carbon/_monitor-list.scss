@@ -483,15 +483,17 @@
         }
     }
 
+    // Tools get their own line above the tabs, so long counts never push them off screen
     .carbon-tabs {
-        flex-wrap: nowrap;
-        gap: 14px;
+        gap: 8px 14px;
         margin-top: 16px;
-        overflow-x: auto;
-        scrollbar-width: none;
 
         .filters-group {
+            order: -1;
+            flex: 1 0 100%;
+            justify-content: flex-end;
             gap: 2px;
+            padding-bottom: 0;
         }
     }
 
