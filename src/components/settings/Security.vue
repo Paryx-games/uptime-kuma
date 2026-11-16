@@ -14,6 +14,18 @@
                     </button>
                 </p>
 
+                <h5 class="my-4 settings-subheading">{{ $t("Profile Picture") }}</h5>
+                <div class="mb-4 d-flex align-items-center gap-3">
+                    <img v-if="$root.userImage" :src="$root.userImage" class="avatar-preview" alt="" />
+                    <input ref="avatarInput" type="file" accept="image/*" class="d-none" @change="uploadAvatar" />
+                    <button type="button" class="btn btn-primary" @click="$refs.avatarInput.click()">
+                        {{ $t("Upload Picture") }}
+                    </button>
+                    <button v-if="$root.userImage" type="button" class="btn btn-danger" @click="saveAvatar(null)">
+                        {{ $t("Remove Picture") }}
+                    </button>
+                </div>
+
                 <h5 class="my-4 settings-subheading">{{ $t("Change Password") }}</h5>
                 <form class="mb-3" @submit.prevent="savePassword">
                     <div class="mb-3">
@@ -148,6 +160,9 @@ import Confirm from "../../components/Confirm.vue";
 import TwoFADialog from "../../components/TwoFADialog.vue";
 import { authClient } from "../../auth-client";
 
+// Twice the largest size the picture is shown at, for sharp high-DPI screens
+const AVATAR_SIZE = 256;
+
 export default {
     components: {
         Confirm,
@@ -184,6 +199,48 @@ export default {
     },
 
     methods: {
+        /**
+         * Crop the chosen image to a square, shrink it and save it as the profile picture
+         * @param {Event} event Change event of the file input
+         * @returns {void}
+         */
+        uploadAvatar(event) {
+            const file = event.target.files[0];
+            event.target.value = "";
+            if (!file) {
+                return;
+            }
+
+            const image = new Image();
+            image.onload = () => {
+                const canvas = document.createElement("canvas");
+                canvas.width = AVATAR_SIZE;
+                canvas.height = AVATAR_SIZE;
+                const side = Math.min(image.width, image.height);
+                const left = (image.width - side) / 2;
+                const top = (image.height - side) / 2;
+                canvas.getContext("2d").drawImage(image, left, top, side, side, 0, 0, AVATAR_SIZE, AVATAR_SIZE);
+                URL.revokeObjectURL(image.src);
+                this.saveAvatar(canvas.toDataURL("image/png"));
+            };
+            image.onerror = () => {
+                URL.revokeObjectURL(image.src);
+                this.$root.toastError(this.$t("Only PNG, JPEG, GIF or WebP images can be used"));
+            };
+            image.src = URL.createObjectURL(file);
+        },
+
+        /**
+         * Save or remove the profile picture
+         * @param {?string} dataUrl PNG data URL, or null to remove the picture
+         * @returns {void}
+         */
+        saveAvatar(dataUrl) {
+            this.$root.getSocket().emit("setAvatar", dataUrl, (res) => {
+                this.$root.toastRes(res);
+            });
+        },
+
         /**
          * Check new passwords match before saving them
          * @returns {Promise<void>}
@@ -243,3 +300,12 @@ export default {
     },
 };
 </script>
+
+<style lang="scss" scoped>
+.avatar-preview {
+    width: 48px;
+    height: 48px;
+    border-radius: 50rem;
+    object-fit: cover;
+}
+</style>

@@ -48,7 +48,8 @@
                 <li v-if="$root.loggedIn" class="nav-item">
                     <div class="dropdown dropdown-profile-pic">
                         <div class="nav-link" data-bs-toggle="dropdown">
-                            <div class="profile-pic">{{ $root.usernameFirstChar }}</div>
+                            <img v-if="$root.userImage" :src="$root.userImage" class="profile-pic" alt="" />
+                            <div v-else class="profile-pic">{{ $root.usernameFirstChar }}</div>
                             <font-awesome-icon icon="angle-down" />
                         </div>
 
@@ -391,6 +392,7 @@ main {
         border-radius: 50rem;
         font-weight: bold;
         font-size: 10px;
+        object-fit: cover;
     }
 }
 

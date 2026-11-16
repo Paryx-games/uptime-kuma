@@ -193,6 +193,7 @@ const { dockerSocketHandler } = require("./socket-handlers/docker-socket-handler
 const { maintenanceSocketHandler } = require("./socket-handlers/maintenance-socket-handler");
 const { apiKeySocketHandler } = require("./socket-handlers/api-key-socket-handler");
 const { generalSocketHandler } = require("./socket-handlers/general-socket-handler");
+const { avatarSocketHandler } = require("./socket-handlers/avatar-socket-handler");
 const { Settings } = require("./settings");
 const apicache = require("./utils/response-cache");
 const { resetChrome } = require("./monitor-types/real-browser-monitor-type");
@@ -411,6 +412,7 @@ app.use(function (req, res, next) {
             socket.session = session;
             socket.headers = createHeaders(socket.request.headers.cookie);
             socket.emit("session", session.user.username);
+            socket.emit("avatar", session.user.image ?? null);
             log.debug("auth", `Session active:`, session.session.ipAddress, session.user.username);
         }
 
@@ -1425,6 +1427,7 @@ app.use(function (req, res, next) {
         apiKeySocketHandler(socket);
         remoteBrowserSocketHandler(socket);
         generalSocketHandler(socket, server);
+        avatarSocketHandler(socket);
         chartSocketHandler(socket);
 
         log.debug("server", "added all socket handlers");
