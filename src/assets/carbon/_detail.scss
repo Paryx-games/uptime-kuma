@@ -140,6 +140,22 @@
         font-weight: 500;
         color: var(--c-fg);
     }
+
+    .v.s-up {
+        color: var(--c-up);
+    }
+
+    .v.s-down {
+        color: var(--c-down);
+    }
+
+    .v.s-pending {
+        color: var(--c-pending);
+    }
+
+    .v.s-maintenance {
+        color: var(--c-maintenance);
+    }
 }
 
 .carbon-link {
