@@ -1,19 +1,6 @@
 <template>
     <div class="carbon-about">
-        <svg
-            class="logo"
-            aria-hidden="true"
-            width="28"
-            height="28"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="1.8"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-        >
-            <path d="M3 12h4l3-7 4 14 3-7h4" />
-        </svg>
+        <img src="/icon.svg" width="28" height="28" alt="" />
         <div class="name">Uptime Kuma</div>
         <div class="carbon-muted">{{ $t("versionIs", { version: $root.info.version }) }}</div>
         <div class="carbon-muted">{{ $t("frontendVersionIs", { version: $root.frontendVersion }) }}</div>
@@ -83,10 +70,6 @@ export default {
 <style lang="scss" scoped>
 .carbon-about {
     padding: 20px 0;
-
-    .logo {
-        color: var(--c-muted);
-    }
 
     .name {
         margin-top: 12px;

@@ -15,20 +15,8 @@
         <!-- Desktop sidebar -->
         <aside v-if="!$root.isMobile && $root.loggedIn" class="carbon-sidebar" :aria-label="$t('Main')">
             <router-link to="/dashboard" class="carbon-brand">
-                <svg
-                    aria-hidden="true"
-                    width="22"
-                    height="22"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="1.8"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                >
-                    <path d="M3 12h4l3-7 4 14 3-7h4" />
-                </svg>
-                Uptime
+                <img src="/icon.svg" width="22" height="22" alt="" />
+                Uptime Kuma
             </router-link>
             <div class="carbon-scope">{{ host }}</div>
 
@@ -95,20 +83,8 @@
         <!-- Mobile header -->
         <header v-if="$root.isMobile && $root.loggedIn" class="carbon-mobile-header">
             <router-link to="/dashboard" class="carbon-brand">
-                <svg
-                    aria-hidden="true"
-                    width="22"
-                    height="22"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="1.8"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                >
-                    <path d="M3 12h4l3-7 4 14 3-7h4" />
-                </svg>
-                Uptime
+                <img src="/icon.svg" width="22" height="22" alt="" />
+                Uptime Kuma
             </router-link>
         </header>
 

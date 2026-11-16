@@ -2,20 +2,8 @@
     <div class="carbon-login">
         <div class="carbon-login-form">
             <div class="carbon-login-brand">
-                <svg
-                    aria-hidden="true"
-                    width="28"
-                    height="28"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="1.8"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                >
-                    <path d="M3 12h4l3-7 4 14 3-7h4" />
-                </svg>
-                Uptime
+                <img src="/icon.svg" width="22" height="22" alt="" />
+                Uptime Kuma
             </div>
             <h1>{{ tokenRequired ? $t("Two-factor code") : $t("Sign in") }}</h1>
             <p class="carbon-muted">{{ host }}</p>
