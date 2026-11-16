@@ -68,10 +68,15 @@
     text-align: center;
 
     img {
-        width: 380px;
+        width: auto;
         max-width: 100%;
         height: auto;
+        max-height: 200px;
         opacity: 0.55;
+    }
+
+    &.is-large img {
+        max-height: 300px;
     }
 
     .title {
@@ -85,6 +90,10 @@
         max-width: 420px;
         margin-top: 4px;
         color: var(--c-fg-2);
+    }
+
+    .action {
+        margin-top: 16px;
     }
 
     .credit {
@@ -107,7 +116,8 @@
     padding: 10px 0;
     border-top: 1px solid var(--c-line);
 
-    .carbon-section-head + & {
+    .carbon-section-head + &,
+    h2 + & {
         border-top: 0;
     }
 
