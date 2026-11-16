@@ -186,21 +186,36 @@
         min-height: 32px;
     }
 
-    .tick {
-        width: 12px;
-        color: var(--c-accent);
-        font-size: 12px;
-    }
-
     .carbon-dot {
         width: 12px;
     }
 
-    .count {
+    // The count gives way to a checkbox on hover, focus and when the row is chosen
+    .count,
+    .menu-check {
         margin-left: auto;
+    }
+
+    .count {
         padding-left: 12px;
         color: var(--c-muted);
         font-size: 12px;
+    }
+
+    .menu-check {
+        display: none;
+        margin-top: 0;
+        pointer-events: none;
+    }
+
+    .dropdown-item:is(:hover, :focus-visible, [aria-pressed="true"]) {
+        .count {
+            display: none;
+        }
+
+        .menu-check {
+            display: block;
+        }
     }
 }
 

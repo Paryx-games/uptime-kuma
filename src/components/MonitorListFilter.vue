@@ -33,10 +33,16 @@
                     :aria-pressed="!!filterState.status?.includes(row.status)"
                     @click="toggleStatusFilter(row.status)"
                 >
-                    <span class="tick">{{ filterState.status?.includes(row.status) ? "✓" : "" }}</span>
                     <span class="carbon-dot" :class="row.key" aria-hidden="true"><i /></span>
                     {{ row.label }}
                     <span class="count">{{ row.count }}</span>
+                    <input
+                        class="form-check-input menu-check"
+                        type="checkbox"
+                        tabindex="-1"
+                        aria-hidden="true"
+                        :checked="!!filterState.status?.includes(row.status)"
+                    />
                 </button>
             </li>
             <li><hr class="dropdown-divider" /></li>
@@ -48,10 +54,23 @@
                     :aria-pressed="!!filterState.active?.includes(row.active)"
                     @click="toggleActiveFilter(row.active)"
                 >
-                    <span class="tick">{{ filterState.active?.includes(row.active) ? "✓" : "" }}</span>
                     <span class="carbon-dot" :class="row.key" aria-hidden="true"><i /></span>
                     {{ row.label }}
                     <span class="count">{{ row.count }}</span>
+                    <input
+                        class="form-check-input menu-check"
+                        type="checkbox"
+                        tabindex="-1"
+                        aria-hidden="true"
+                        :checked="!!filterState.active?.includes(row.active)"
+                    />
+                    <input
+                        class="form-check-input menu-check"
+                        type="checkbox"
+                        tabindex="-1"
+                        aria-hidden="true"
+                        :checked="!!filterState.status?.includes(row.status)"
+                    />
                 </button>
             </li>
             <template v-if="tagsList.length > 0">
@@ -64,10 +83,16 @@
                         :aria-pressed="!!filterState.tags?.includes(tag.id)"
                         @click="toggleTagFilter(tag)"
                     >
-                        <span class="tick">{{ filterState.tags?.includes(tag.id) ? "✓" : "" }}</span>
                         <span class="carbon-dot" :style="{ '--dot': tag.color }" aria-hidden="true"><i /></span>
                         <span class="text-truncate">{{ tag.name }}</span>
                         <span class="count">{{ getTaggedMonitorCount(tag) }}</span>
+                        <input
+                            class="form-check-input menu-check"
+                            type="checkbox"
+                            tabindex="-1"
+                            aria-hidden="true"
+                            :checked="!!filterState.tags?.includes(tag.id)"
+                        />
                     </button>
                 </li>
             </template>
