@@ -20,7 +20,8 @@
                     <span class="text">
                         {{ item.name }}
                         <span class="sub">
-                            {{ $t("apiKey-" + item.status) }} · {{ $t("createdAt", { date: item.createdDate }) }} ·
+                            {{ $t("apiKey-" + item.status) }} ·
+                            {{ $t("createdAt", { date: item.createdDate }) }} ·
                             {{ $t("Expires") }}: {{ item.expires || $t("Never") }}
                         </span>
                     </span>
