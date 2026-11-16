@@ -356,7 +356,8 @@ const MONITOR_TYPE_LABELS: Record<string, string> = {
  */
 export function monitorTypeLabel(monitor: { type: string; port?: number }): string {
     if (monitor.type === "port") {
-        return `TCP ${monitor.port}`;
+        // The compact monitor list leaves the port out
+        return monitor.port ? `TCP ${monitor.port}` : "TCP";
     }
     return MONITOR_TYPE_LABELS[monitor.type] ?? monitor.type;
 }
