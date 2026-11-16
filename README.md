@@ -1,14 +1,10 @@
-<h1 align="left" style="text-align: left;justify-content:left;">
-
-Uptime Kuma, redesigned
-
-</h1>
+# Uptime Kuma, redesigned
 
 ![Based on](https://img.shields.io/badge/based_on-Uptime_Kuma_2.5.11-5CDD8B.svg?style=for-the-badge) ![Vue](https://img.shields.io/badge/Vue_3-4FC08D?style=for-the-badge&logo=vue.js&logoColor=white) ![Node](https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=node.js&logoColor=white) ![SQLite](https://img.shields.io/badge/SQLite-003B57?style=for-the-badge&logo=sqlite&logoColor=white) ![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white) ![License](https://img.shields.io/badge/license-MIT-blue.svg?style=for-the-badge)
 
 A fork of [Uptime Kuma](https://github.com/louislam/uptime-kuma) with a redesigned interface and profile pictures. Monitoring, notifications and status pages work exactly like upstream. What changes is how it looks and reads: a sidebar instead of a top bar, monitors as grouped rows, a detail page with a response time chart and an availability table, and the same dark theme on every screen.
 
-<img width="1440" height="900" alt="Overview page with one monitor down, one in maintenance and the recent events list" src=".github/screenshots/overview.webp" />
+<img width="1600" height="900" alt="Desktop and phone screenshots of the redesigned Uptime Kuma: the monitor list with 307 monitors, 10 of them down, and the overview on a phone" src=".github/screenshots/hero.webp" />
 
 ## Why this fork
 
@@ -23,27 +19,27 @@ This fork leaves the monitoring alone and redraws the interface around one quest
 * Empty pages show a public domain engraving and one line on what to do next, instead of "Not available, please set up"
 * No slide or fade animations, text contrast of at least 4.5:1, and a visible focus ring for keyboard use
 
-<img width="1440" height="900" alt="Monitors list grouped by APIs and Heartbeats, with one monitor down and one paused" src=".github/screenshots/monitors.webp" />
+<img width="1440" height="2700" alt="Monitor list with 307 monitors in groups, the Databases group showing one down, three in maintenance and one pending" src=".github/screenshots/monitors.webp" />
 
 ### Monitor detail
 
-<img width="1440" height="900" alt="Monitor detail page with a violet response time chart and the availability table" src=".github/screenshots/detail-http.webp" />
+<img width="1440" height="1300" alt="Monitor detail page with a violet response time chart, the availability table and recent events" src=".github/screenshots/detail-http.webp" />
 
-<img width="1440" height="900" alt="Push monitor detail page with the push URL and its availability table" src=".github/screenshots/detail-push.webp" />
+<img width="1440" height="1100" alt="Push monitor detail page with the push URL and its availability table" src=".github/screenshots/detail-push.webp" />
 
 ### Filtering and editing
 
-<img width="1440" height="900" alt="Monitors list with the filter menu open, showing status, state and tag filters with counts" src=".github/screenshots/filter-menu.webp" />
+<img width="1440" height="1200" alt="Monitors list with the filter menu open, showing status, state and tag filters with counts" src=".github/screenshots/filter-menu.webp" />
 
 <img width="1440" height="900" alt="Monitor edit form in two columns" src=".github/screenshots/edit-monitor.webp" />
 
 ### Settings, maintenance and sign-in
 
-<img width="1440" height="900" alt="Notification settings" src=".github/screenshots/settings-notifications.webp" />
+<img width="1440" height="900" alt="Notification settings with seven channels" src=".github/screenshots/settings-notifications.webp" />
 
-<img width="1440" height="900" alt="Maintenance list with one window running and one scheduled" src=".github/screenshots/maintenance.webp" />
+<img width="1440" height="900" alt="Maintenance list with windows that are running, scheduled, recurring, ended and paused" src=".github/screenshots/maintenance.webp" />
 
-<img width="1440" height="900" alt="Docker hosts page with an engraving of a crane and a button to add a host" src=".github/screenshots/empty-state.webp" />
+<img width="1440" height="900" alt="Remote browsers page with an engraving of a magnifying glass and a button to add one" src=".github/screenshots/empty-state.webp" />
 
 <img width="1440" height="900" alt="Sign-in page with an engraving of a ship under sail" src=".github/screenshots/login.webp" />
 
@@ -55,7 +51,7 @@ This fork leaves the monitoring alone and redraws the interface around one quest
 <img width="260" alt="Monitor detail on a phone" src=".github/screenshots/phone-detail-http.webp" />
 </p>
 
-All screenshots come from a local instance filled with made-up monitors.
+All screenshots come from a local instance filled with made-up data: 320 monitors in 13 groups with 30 days of history.
 
 ## What differs from upstream
 
