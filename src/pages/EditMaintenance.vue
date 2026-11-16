@@ -291,22 +291,28 @@
                                 <div class="row">
                                     <div class="col">
                                         <div class="mb-2">{{ $t("startDateTime") }}</div>
-                                        <input
+                                        <!-- 24-hour, d.M.yyyy, whatever the browser locale; model stays yyyy-MM-ddTHH:mm -->
+                                        <Datepicker
                                             v-model="maintenance.dateRange[0]"
-                                            type="datetime-local"
-                                            max="9999-12-31T23:59"
-                                            class="form-control"
+                                            :dark="$root.isDark"
+                                            format="d.M.yyyy HH:mm"
+                                            model-type="yyyy-MM-dd'T'HH:mm"
+                                            :is-24="true"
+                                            text-input
                                             :required="maintenance.strategy === 'single'"
                                         />
                                     </div>
 
                                     <div class="col">
                                         <div class="mb-2">{{ $t("endDateTime") }}</div>
-                                        <input
+                                        <!-- 24-hour, d.M.yyyy, whatever the browser locale; model stays yyyy-MM-ddTHH:mm -->
+                                        <Datepicker
                                             v-model="maintenance.dateRange[1]"
-                                            type="datetime-local"
-                                            max="9999-12-31T23:59"
-                                            class="form-control"
+                                            :dark="$root.isDark"
+                                            format="d.M.yyyy HH:mm"
+                                            model-type="yyyy-MM-dd'T'HH:mm"
+                                            :is-24="true"
+                                            text-input
                                             :required="maintenance.strategy === 'single'"
                                         />
                                     </div>
