@@ -37,6 +37,25 @@
         border-radius: var(--c-radius);
     }
 
+    // Box and label on one line: 16px box centred on the first 20px text line, 8px gap
+    .form-check {
+        display: flex;
+        align-items: flex-start;
+        gap: 8px;
+        min-height: 20px;
+        padding-left: 0;
+
+        .form-check-input {
+            float: none;
+            flex: none;
+            margin: 2px 0 0;
+        }
+
+        .form-check-label {
+            line-height: 20px;
+        }
+    }
+
     h2,
     h3,
     h4,
