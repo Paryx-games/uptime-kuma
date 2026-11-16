@@ -98,6 +98,24 @@ body.dark:has(.carbon) {
         text-wrap: pretty;
     }
 
+    // A quiet ring for keyboard focus only, instead of the browser and Bootstrap blue
+    :focus {
+        outline: none;
+    }
+
+    :focus-visible {
+        outline: 2px solid color-mix(in srgb, var(--c-fg) 35%, transparent);
+        outline-offset: 2px;
+    }
+
+    .btn:focus,
+    .btn-check:focus + .btn,
+    .form-control:focus,
+    .form-select:focus,
+    .page-link:focus {
+        box-shadow: none;
+    }
+
     // Links are ink or grey; no underlines
     a:not(.btn) {
         text-decoration: none;
@@ -149,7 +167,7 @@ body.dark:has(.carbon) {
 
         &:focus {
             border-color: #3a3a40;
-            box-shadow: 0 0 0 3px rgba(237, 237, 237, 0.08);
+            box-shadow: none;
         }
 
         &::placeholder {
