@@ -1749,5 +1749,14 @@
     "twoFactorCodeHelp": "Code from your authenticator app",
     "Show password": "Show password",
     "Hide password": "Hide password",
-    "loginArtCredit": "Ship under sail, British Library, CC0"
+    "loginArtCredit": "Ship under sail, British Library, CC0",
+    "No maintenance scheduled": "No maintenance scheduled",
+    "maintenanceEmptyHelp": "Plan a maintenance window and its monitors pause their alerts while it runs.",
+    "No status pages yet": "No status pages yet",
+    "statusPagesEmptyHelp": "A status page shows people outside this dashboard how your services are doing.",
+    "Loading…": "Loading…",
+    "Page not found": "Page not found",
+    "notFoundHelp": "The address may be mistyped, or the page no longer exists.",
+    "Go to the dashboard": "Go to the dashboard",
+    "Go back": "Go back"
 }

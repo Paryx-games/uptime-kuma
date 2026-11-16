@@ -16,6 +16,11 @@ import magnifier from "../assets/carbon/art/magnifier.webp";
 import fern from "../assets/carbon/art/fern.webp";
 import padlock from "../assets/carbon/art/padlock.webp";
 import bridge from "../assets/carbon/art/bridge.webp";
+import watch from "../assets/carbon/art/watch.webp";
+import semaphore from "../assets/carbon/art/semaphore.webp";
+import anchor from "../assets/carbon/art/anchor.webp";
+import pigeons from "../assets/carbon/art/pigeons.webp";
+import telescope from "../assets/carbon/art/telescope.webp";
 
 // Each empty place has its own engraving; see assets/carbon/art/CREDITS.md
 const ART = {
@@ -26,6 +31,11 @@ const ART = {
     fern: { src: fern, credit: "Fern specimens, CC0" },
     padlock: { src: padlock, credit: "Russian padlock and key, wood engraving, CC0" },
     bridge: { src: bridge, credit: "Suspension bridge, engraving c. 1861, CC0" },
+    watch: { src: watch, credit: "Antique time piece, British Library, CC0" },
+    semaphore: { src: semaphore, credit: "Coast telegraph at Scheveningen, 1799, CC0" },
+    anchor: { src: anchor, credit: "Anchor, British Library, CC0" },
+    pigeons: { src: pigeons, credit: "Pigeon messengers, Harper's, public domain" },
+    telescope: { src: telescope, credit: "Early telescope, engraving, CC0" },
 };
 
 /**
