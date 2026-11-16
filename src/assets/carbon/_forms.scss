@@ -84,6 +84,11 @@
         color: var(--c-muted);
     }
 
+    // Nothing reserves space for text that is not there
+    .form-text:empty {
+        display: none;
+    }
+
     .form-control:not(textarea),
     .form-select,
     select {
