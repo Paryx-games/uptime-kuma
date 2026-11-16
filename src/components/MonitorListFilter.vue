@@ -67,13 +67,6 @@
                         aria-hidden="true"
                         :checked="!!filterState.active?.includes(row.active)"
                     />
-                    <input
-                        class="form-check-input menu-check"
-                        type="checkbox"
-                        tabindex="-1"
-                        aria-hidden="true"
-                        :checked="!!filterState.status?.includes(row.status)"
-                    />
                 </button>
             </li>
             <template v-if="tagsList.length > 0">
