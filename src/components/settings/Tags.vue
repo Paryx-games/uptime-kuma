@@ -1,6 +1,6 @@
 <template>
     <div class="my-4">
-        <EmptyState v-if="tagsList.length === 0" illustration="fern" :title="$t('No tags yet')">
+        <EmptyState v-if="tagsList && tagsList.length === 0" illustration="fern" :title="$t('No tags yet')">
             {{ $t("tagsEmptyHelp") }}
             <template #action>
                 <button class="btn btn-normal" @click.stop="addTag">
@@ -9,7 +9,7 @@
                 </button>
             </template>
         </EmptyState>
-        <div v-else class="mb-3">
+        <div v-else-if="tagsList" class="mb-3">
             <button class="btn btn-normal" @click.stop="addTag">
                 <font-awesome-icon icon="plus" />
                 {{ $t("New tag") }}
