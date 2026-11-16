@@ -1,9 +1,10 @@
 <template>
     <div class="dropdown">
+        <!-- No :class here: Bootstrap keeps the open state in the class attribute -->
         <button
             type="button"
             class="carbon-tool"
-            :class="{ 'is-on': numFiltersActive > 0 }"
+            :data-filtered="numFiltersActive > 0"
             data-bs-toggle="dropdown"
             data-bs-auto-close="outside"
             aria-expanded="false"
