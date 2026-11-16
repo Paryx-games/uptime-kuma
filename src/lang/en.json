@@ -1745,5 +1745,6 @@
     "Nothing here": "Nothing here",
     "emptyTabHelp": "No monitor fits this view right now.",
     "No notification channels yet": "No notification channels yet",
-    "notificationsEmptyHelp": "Add a channel, such as email or a chat app, to hear when a monitor goes down."
+    "notificationsEmptyHelp": "Add a channel, such as email or a chat app, to hear when a monitor goes down.",
+    "Open": "Open"
 }

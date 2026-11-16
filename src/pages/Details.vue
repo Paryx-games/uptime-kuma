@@ -10,7 +10,7 @@
                     {{ monitor.name }}
                     <span class="monitor-id">#{{ monitor.id }}</span>
                 </h1>
-                <div class="carbon-detail-sub">
+                <div class="carbon-detail-sub url">
                     <template v-if="isUrlType">
                         <a :href="monitor.url" target="_blank" rel="noopener noreferrer">
                             {{ filterPassword(monitor.url) }}
@@ -146,6 +146,7 @@
                 <button type="button" class="btn btn-normal" @click="copy(pushURL, 'url')">
                     {{ copied === "url" ? $t("Copied") : $t("Copy") }}
                 </button>
+                <a :href="pushURL" target="_blank" rel="noopener noreferrer" class="btn btn-normal">{{ $t("Open") }}</a>
             </div>
 
             <details class="carbon-disclosure" :open="pushMonitor.showPushExamples">
