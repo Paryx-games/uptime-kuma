@@ -8,8 +8,6 @@ Uptime Kuma, redesigned
 
 A fork of [Uptime Kuma](https://github.com/louislam/uptime-kuma) with a redesigned interface and profile pictures. Monitoring, notifications and status pages work exactly like upstream. What changes is how it looks and reads: a sidebar instead of a top bar, monitors as grouped rows, a detail page with a response time chart and an availability table, and the same dark theme on every screen.
 
-<hr>
-
 <img width="1440" height="900" alt="Overview page with one monitor down, one in maintenance and the recent events list" src=".github/screenshots/overview.webp" />
 
 ## Why this fork
