@@ -76,7 +76,7 @@ export default {
             return result;
         },
         settings() {
-            return this.$parent.$parent.$parent.settings;
+            return this.$parent.$parent.settings;
         },
     },
 

@@ -74,13 +74,13 @@ export default {
 
     computed: {
         settings() {
-            return this.$parent.$parent.$parent.settings;
+            return this.$parent.$parent.settings;
         },
         saveSettings() {
-            return this.$parent.$parent.$parent.saveSettings;
+            return this.$parent.$parent.saveSettings;
         },
         settingsLoaded() {
-            return this.$parent.$parent.$parent.settingsLoaded;
+            return this.$parent.$parent.settingsLoaded;
         },
         databaseSizeDisplay() {
             return Math.round((this.databaseSize / 1024 / 1024) * 10) / 10 + " MB";
