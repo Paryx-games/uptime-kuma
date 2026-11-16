@@ -21,6 +21,9 @@
                     {{ checkLine }}
                 </div>
                 <div v-if="targetDetail" class="carbon-detail-sub">{{ targetDetail }}</div>
+                <div v-if="state.key === 'down' && lastHeartBeat.msg" class="carbon-detail-sub">
+                    {{ lastHeartBeat.msg }}
+                </div>
                 <!-- eslint-disable-next-line vue/no-v-html-->
                 <div v-if="monitor.description" class="carbon-detail-desc" v-html="descriptionHTML"></div>
                 <div v-if="monitor.tags.length > 0" class="tags">
@@ -81,12 +84,11 @@
             </div>
         </div>
 
-        <div class="carbon-state" :class="`s-${state.key}`" data-testid="monitor-status">
-            {{ stateLine.strong }}
-            <span v-if="stateLine.rest">{{ stateLine.rest }}</span>
-        </div>
-
         <div class="carbon-facts">
+            <div class="fact">
+                <div class="k">{{ stateFact.label }}</div>
+                <div class="v" :class="stateFact.tone" data-testid="monitor-status">{{ stateFact.value }}</div>
+            </div>
             <div class="fact">
                 <div class="k">{{ monitor.type === "push" ? $t("Last ping") : $t("Last check") }}</div>
                 <div class="v">{{ lastCheck }}</div>
@@ -568,17 +570,26 @@ export default {
         },
 
         /**
-         * The state in words: "Down for 4 min" and, in grey, why
-         * @returns {{strong: string, rest: string}} State line
+         * First fact: how long the monitor has been in its state, or the state itself
+         * @returns {{label: string, value: string, tone: string}} Fact
          */
-        stateLine() {
+        stateFact() {
             const since = this.$root.statusSince[this.monitor.id];
-            const msg = this.lastHeartBeat.msg;
-            let strong = this.state.label;
-            if (since && ["up", "down", "pending", "maintenance"].includes(this.state.key)) {
-                strong += " " + this.$t("downForDuration", [shortDuration((this.now - dayjs.utc(since)) / 1000)]);
+            const labels = {
+                up: "Currently up for",
+                down: "Currently down for",
+                pending: "Currently pending for",
+                maintenance: "In maintenance for",
+            };
+            const tone = this.state.key === "up" ? "" : `s-${this.state.key}`;
+            if (since && labels[this.state.key]) {
+                return {
+                    label: this.$t(labels[this.state.key]),
+                    value: shortDuration((this.now - dayjs.utc(since)) / 1000),
+                    tone,
+                };
             }
-            return { strong, rest: msg && this.state.key !== "up" ? ` · ${msg}` : "" };
+            return { label: this.$t("Status"), value: this.state.label, tone };
         },
 
         lastCheck() {

@@ -79,6 +79,11 @@
         max-height: 300px;
     }
 
+    .title,
+    .desc {
+        text-wrap: balance;
+    }
+
     .title {
         margin-top: 18px;
         font-size: 16px;
@@ -87,7 +92,7 @@
     }
 
     .desc {
-        max-width: 420px;
+        max-width: 36ch;
         margin-top: 4px;
         color: var(--c-fg-2);
     }

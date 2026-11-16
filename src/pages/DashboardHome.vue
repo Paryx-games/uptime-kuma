@@ -39,11 +39,7 @@
                         large
                         :title="$t('Nothing needs you right now')"
                     >
-                        {{
-                            notifierNames
-                                ? $t("nothingDownNotified", [notifierNames])
-                                : $t("No monitor is down right now.")
-                        }}
+                        {{ calmText }}
                     </EmptyState>
 
                     <div v-for="monitor in summary.downList" :key="monitor.id" class="carbon-event">
@@ -118,6 +114,9 @@ import EmptyState from "../components/EmptyState.vue";
 import { shortDuration } from "../util-frontend";
 import { UP, DOWN, PENDING, MAINTENANCE } from "../util.ts";
 
+// Channel names that are plain words read lowercase inside a sentence
+const GENERIC_NAMES = /^(email|e-mail|webhook|sms)$/i;
+
 export default {
     components: {
         Pagination,
@@ -181,8 +180,19 @@ export default {
             return monitor ? { name: monitor.name, time: beat.time } : null;
         },
 
-        notifierNames() {
-            return this.$root.notificationList.map((n) => n.name).join(", ");
+        /**
+         * "Bark and email tell you the moment one goes down."
+         * @returns {string} Sentence for the calm state
+         */
+        calmText() {
+            const names = this.$root.notificationList.map((n) =>
+                GENERIC_NAMES.test(n.name) ? n.name.toLowerCase() : n.name
+            );
+            if (names.length === 0) {
+                return this.$t("No monitor is down right now.");
+            }
+            const list = new Intl.ListFormat(this.$i18n.locale, { type: "conjunction" }).format(names);
+            return this.$t(names.length === 1 ? "nothingDownNotified" : "nothingDownNotifiedMany", [list]);
         },
     },
     watch: {
