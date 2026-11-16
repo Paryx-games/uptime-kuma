@@ -41,10 +41,12 @@
                     {{ calmText }}
                 </EmptyState>
 
-                <div v-for="monitor in summary.downList" :key="monitor.id" class="carbon-event">
+                <div v-for="monitor in summary.downList" :key="monitor.id" class="carbon-event carbon-linkrow">
                     <span class="carbon-dot down" aria-hidden="true"><i /></span>
                     <span class="text">
-                        <router-link :to="`/dashboard/${monitor.id}`">{{ monitor.name }}</router-link>
+                        <router-link :to="`/dashboard/${monitor.id}`" class="carbon-linkrow-target">
+                            {{ monitor.name }}
+                        </router-link>
                         <span class="sub">{{ downDetail(monitor) }}</span>
                     </span>
                     <span class="when">{{ shortDate($root.statusSince[monitor.id]) }}</span>
@@ -65,10 +67,10 @@
                     </button>
                 </div>
 
-                <div v-for="(beat, index) in displayedRecords" :key="index" class="carbon-event">
+                <div v-for="(beat, index) in displayedRecords" :key="index" class="carbon-event carbon-linkrow">
                     <span class="carbon-dot" :class="statusKey(beat.status)" aria-hidden="true"><i /></span>
                     <span class="text">
-                        <router-link :to="`/dashboard/${beat.monitorID}`">
+                        <router-link :to="`/dashboard/${beat.monitorID}`" class="carbon-linkrow-target">
                             {{ eventTitle(beat) }}
                         </router-link>
                         <span v-if="beat.msg" class="sub">{{ beat.msg }}</span>

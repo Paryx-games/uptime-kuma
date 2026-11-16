@@ -14,11 +14,15 @@
                 </template>
             </EmptyState>
             <template v-else>
-                <div v-for="remoteBrowser in $root.remoteBrowserList" :key="remoteBrowser.id" class="carbon-channel">
+                <div
+                    v-for="remoteBrowser in $root.remoteBrowserList"
+                    :key="remoteBrowser.id"
+                    class="carbon-channel carbon-linkrow"
+                >
                     <span class="name">{{ remoteBrowser.name }}</span>
                     <button
                         type="button"
-                        class="carbon-quiet"
+                        class="carbon-quiet carbon-linkrow-target"
                         @click="$refs.remoteBrowserDialog.show(remoteBrowser.id)"
                     >
                         {{ $t("Edit") }}

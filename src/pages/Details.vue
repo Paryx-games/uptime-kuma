@@ -178,10 +178,10 @@
         <!-- Group: its members -->
         <div v-if="monitor.type === 'group'" class="carbon-section">
             <h2>{{ $t("In this group") }}</h2>
-            <div v-for="child in children" :key="child.id" class="carbon-event">
+            <div v-for="child in children" :key="child.id" class="carbon-event carbon-linkrow">
                 <span class="carbon-dot" :class="childState(child).key" aria-hidden="true"><i /></span>
                 <span class="text">
-                    <router-link :to="monitorURL(child.id)">{{ child.name }}</router-link>
+                    <router-link :to="monitorURL(child.id)" class="carbon-linkrow-target">{{ child.name }}</router-link>
                     <span class="sub">
                         <span :class="`s-${childState(child).key}`">{{ childState(child).label }}</span>
                         · {{ monitorTypeLabel(child) }}

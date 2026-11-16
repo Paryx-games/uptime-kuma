@@ -23,7 +23,7 @@
                     v-for="statusPage in $root.statusPageList"
                     :key="statusPage.slug"
                     :href="'/status/' + statusPage.slug"
-                    class="carbon-event carbon-row-link"
+                    class="carbon-event carbon-row-link carbon-linkrow"
                 >
                     <img :src="icon(statusPage.icon)" alt="" class="carbon-status-icon" />
                     <span class="text">

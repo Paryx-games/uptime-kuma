@@ -6,14 +6,22 @@
                 <p>{{ $t("notificationDescription") }}</p>
             </div>
             <div class="carbon-setting-control">
-                <div v-for="notification in $root.notificationList" :key="notification.id" class="carbon-channel">
+                <div
+                    v-for="notification in $root.notificationList"
+                    :key="notification.id"
+                    class="carbon-channel carbon-linkrow"
+                >
                     <span class="name">{{ notification.name }}</span>
                     <span class="type">{{ channelType(notification) }}</span>
                     <span v-if="notification.isDefault" class="carbon-tag">{{ $t("Default") }}</span>
                     <button type="button" class="carbon-quiet" @click="testChannel(notification)">
                         {{ $t("Test") }}
                     </button>
-                    <button type="button" class="carbon-quiet" @click="$refs.notificationDialog.show(notification.id)">
+                    <button
+                        type="button"
+                        class="carbon-quiet carbon-linkrow-target"
+                        @click="$refs.notificationDialog.show(notification.id)"
+                    >
                         {{ $t("Edit") }}
                     </button>
                 </div>

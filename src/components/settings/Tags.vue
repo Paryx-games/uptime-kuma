@@ -20,7 +20,7 @@
             <div
                 v-for="(tag, index) in tagsList"
                 :key="tag.id"
-                class="d-flex align-items-center py-1 tags-list-row"
+                class="d-flex align-items-center py-1 tags-list-row carbon-linkrow"
                 :disabled="processing"
                 @click="editTag(index)"
             >
@@ -193,11 +193,11 @@ export default {
     }
 
     &:hover {
-        background-color: $highlight-white;
+        background-color: var(--c-row-hover, $highlight-white);
     }
 
     .dark &:hover {
-        background-color: $dark-bg2;
+        background-color: var(--c-row-hover, $dark-bg2);
     }
 }
 </style>

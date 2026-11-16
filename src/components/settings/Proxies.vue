@@ -11,14 +11,18 @@
             </EmptyState>
             <template v-else>
                 <p class="carbon-muted">{{ $t("proxyDescription") }}</p>
-                <div v-for="proxy in $root.proxyList" :key="proxy.id" class="carbon-channel">
+                <div v-for="proxy in $root.proxyList" :key="proxy.id" class="carbon-channel carbon-linkrow">
                     <span class="name carbon-mono">{{ proxy.host }}:{{ proxy.port }}</span>
                     <span class="type">{{ proxy.protocol }}</span>
                     <span v-if="proxy.default === true" class="carbon-tag">{{ $t("Default") }}</span>
                     <button type="button" class="carbon-quiet" @click="$refs.proxyDialog.showClone(proxy.id)">
                         {{ $t("Clone") }}
                     </button>
-                    <button type="button" class="carbon-quiet" @click="$refs.proxyDialog.show(proxy.id)">
+                    <button
+                        type="button"
+                        class="carbon-quiet carbon-linkrow-target"
+                        @click="$refs.proxyDialog.show(proxy.id)"
+                    >
                         {{ $t("Edit") }}
                     </button>
                 </div>
