@@ -350,6 +350,8 @@ const MONITOR_TYPE_LABELS: Record<string, string> = {
 /**
  * Short name of a monitor's check, e.g. "Keyword" or "TCP 443"
  * @param {object} monitor Monitor
+ * @param {string} monitor.type Monitor type
+ * @param {number} monitor.port Port, for port monitors
  * @returns {string} Type label
  */
 export function monitorTypeLabel(monitor: { type: string; port?: number }): string {
@@ -391,6 +393,8 @@ export function shortTime(time: string | null | undefined, withClock = false): s
 /**
  * State of a monitor: a key for its colour and a label for people
  * @param {object} monitor Monitor
+ * @param {boolean} monitor.active Whether it runs
+ * @param {string} monitor.type Monitor type
  * @param {object|undefined} beat Its latest heartbeat
  * @param {Function} t Translate function
  * @returns {{key: string, label: string}} State
