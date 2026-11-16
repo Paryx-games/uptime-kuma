@@ -112,16 +112,6 @@
     }
 }
 
-.carbon-state {
-    margin-top: 12px;
-    font-weight: 500;
-
-    span {
-        font-weight: 400;
-        color: var(--c-fg-2);
-    }
-}
-
 .carbon-facts {
     display: flex;
     flex-wrap: wrap;
@@ -160,7 +150,7 @@
 }
 
 .carbon-strip-bars {
-    max-width: 640px;
+    width: 100%;
 }
 
 .carbon-seg {
@@ -242,8 +232,9 @@
     max-width: 720px;
 
     .form-control {
-        font-family: ui-monospace, "SFMono-Regular", Menlo, monospace;
+        font-family: var(--c-mono);
         font-size: 12px;
+        font-variant-ligatures: contextual common-ligatures;
     }
 
     .btn {

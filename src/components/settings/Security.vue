@@ -7,7 +7,7 @@
                     <button
                         v-if="!settings.disableAuth"
                         id="logout-btn"
-                        class="btn btn-danger ms-4 me-2 mb-2"
+                        class="btn btn-normal me-2 mb-2"
                         @click="$root.logout"
                     >
                         {{ $t("logoutCurrentUser", { username: $root.username }) }}
@@ -18,10 +18,10 @@
                 <div class="mb-4 d-flex align-items-center gap-3">
                     <img v-if="$root.userImage" :src="$root.userImage" class="avatar-preview" alt="" />
                     <input ref="avatarInput" type="file" accept="image/*" class="d-none" @change="uploadAvatar" />
-                    <button type="button" class="btn btn-primary" @click="$refs.avatarInput.click()">
+                    <button type="button" class="btn btn-normal" @click="$refs.avatarInput.click()">
                         {{ $t("Upload Picture") }}
                     </button>
-                    <button v-if="$root.userImage" type="button" class="btn btn-danger" @click="saveAvatar(null)">
+                    <button v-if="$root.userImage" type="button" class="btn btn-normal" @click="saveAvatar(null)">
                         {{ $t("Remove Picture") }}
                     </button>
                 </div>
@@ -87,7 +87,7 @@
                     {{ $t("Two Factor Authentication") }}
                 </h5>
                 <div class="mb-4">
-                    <button class="btn btn-primary me-2" type="button" @click="$refs.TwoFADialog.show()">
+                    <button class="btn btn-normal me-2" type="button" @click="$refs.TwoFADialog.show()">
                         {{ $t("2FA Settings") }}
                     </button>
                 </div>
@@ -109,7 +109,7 @@
                     <button
                         v-if="!settings.disableAuth"
                         id="disableAuth-btn"
-                        class="btn btn-primary me-2 mb-2"
+                        class="btn btn-normal me-2 mb-2"
                         @click="confirmDisableAuth"
                     >
                         {{ $t("Disable Auth") }}

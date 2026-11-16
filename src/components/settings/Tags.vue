@@ -1,9 +1,18 @@
 <template>
     <div class="my-4">
-        <div class="mx-0 mx-lg-4 pt-1 mb-4">
-            <button class="btn btn-primary" @click.stop="addTag">
+        <EmptyState v-if="tagsList.length === 0" illustration="fern" :title="$t('No tags yet')">
+            {{ $t("tagsEmptyHelp") }}
+            <template #action>
+                <button class="btn btn-normal" @click.stop="addTag">
+                    <font-awesome-icon icon="plus" />
+                    {{ $t("New tag") }}
+                </button>
+            </template>
+        </EmptyState>
+        <div v-else class="mb-3">
+            <button class="btn btn-normal" @click.stop="addTag">
                 <font-awesome-icon icon="plus" />
-                {{ $t("Add New Tag") }}
+                {{ $t("New tag") }}
             </button>
         </div>
 
@@ -11,7 +20,7 @@
             <div
                 v-for="(tag, index) in tagsList"
                 :key="tag.id"
-                class="d-flex align-items-center mx-0 mx-lg-4 py-1 tags-list-row"
+                class="d-flex align-items-center py-1 tags-list-row"
                 :disabled="processing"
                 @click="editTag(index)"
             >
@@ -27,7 +36,8 @@
                 <div class="flex-shrink-0 pe-2 pe-lg-3">
                     <button
                         type="button"
-                        class="btn-rm-tag btn btn-outline-danger ms-2 py-1"
+                        class="btn-rm-tag carbon-icon-btn"
+                        :aria-label="$t('Delete')"
                         :disabled="processing"
                         @click.stop="deleteConfirm(index)"
                     >
@@ -48,12 +58,14 @@
 import TagEditDialog from "../../components/TagEditDialog.vue";
 import Tag from "../Tag.vue";
 import Confirm from "../Confirm.vue";
+import EmptyState from "../EmptyState.vue";
 
 export default {
     components: {
         Confirm,
         TagEditDialog,
         Tag,
+        EmptyState,
     },
 
     data() {

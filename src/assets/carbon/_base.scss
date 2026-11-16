@@ -23,7 +23,6 @@ body.dark:has(.carbon) {
     h2 {
         font-size: 16px;
         line-height: 24px;
-        font-weight: 600;
     }
 
     h3,
@@ -32,7 +31,6 @@ body.dark:has(.carbon) {
     h6 {
         font-size: 14px;
         line-height: 20px;
-        font-weight: 600;
     }
 
     .form-control,
@@ -46,7 +44,6 @@ body.dark:has(.carbon) {
 
     .btn {
         border-radius: var(--c-radius);
-        font-weight: 500;
     }
 
     .btn-primary,
@@ -78,6 +75,27 @@ body.dark:has(.carbon) {
 
     .shadow-box {
         border-radius: 12px;
+    }
+
+    // One monospace for code, URLs, tokens and IDs, from the viewer's machine
+    code,
+    pre,
+    kbd,
+    samp,
+    .carbon-mono,
+    .prism-editor__textarea,
+    .prism-editor__container pre {
+        font-family: var(--c-mono);
+        font-size: 12px;
+        font-variant-ligatures: contextual common-ligatures;
+        font-feature-settings:
+            "calt" 1,
+            "liga" 1;
+    }
+
+    p,
+    .form-text {
+        text-wrap: pretty;
     }
 
     // Links are ink or grey; no underlines
@@ -177,21 +195,5 @@ body.dark:has(.carbon) {
 
         color: var(--c-fg);
         border-color: var(--c-line);
-    }
-
-    .btn-danger {
-        color: #000;
-        background-color: var(--c-down);
-        border-color: var(--c-down);
-    }
-
-    .btn-outline-danger {
-        color: var(--c-down);
-        border-color: var(--c-down);
-
-        &:hover {
-            color: #000;
-            background-color: var(--c-down);
-        }
     }
 }

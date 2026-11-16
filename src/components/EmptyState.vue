@@ -11,11 +11,21 @@
 <script>
 import lighthouse from "../assets/carbon/art/lighthouse.webp";
 import hourglass from "../assets/carbon/art/hourglass.webp";
+import crane from "../assets/carbon/art/crane.webp";
+import magnifier from "../assets/carbon/art/magnifier.webp";
+import fern from "../assets/carbon/art/fern.webp";
+import padlock from "../assets/carbon/art/padlock.webp";
+import bridge from "../assets/carbon/art/bridge.webp";
 
 // Each empty place has its own engraving; see assets/carbon/art/CREDITS.md
 const ART = {
     lighthouse: { src: lighthouse, credit: "Farne Islands lighthouse, British Library, CC0" },
     hourglass: { src: hourglass, credit: "Egg timer, British Library, CC0" },
+    crane: { src: crane, credit: "Moveable crane at Ramsgate, wood engraving, CC0" },
+    magnifier: { src: magnifier, credit: "Magnifying glass, British Library, CC0" },
+    fern: { src: fern, credit: "Fern specimens, CC0" },
+    padlock: { src: padlock, credit: "Russian padlock and key, wood engraving, CC0" },
+    bridge: { src: bridge, credit: "Suspension bridge, engraving c. 1861, CC0" },
 };
 
 /**

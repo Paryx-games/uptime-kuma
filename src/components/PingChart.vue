@@ -76,6 +76,7 @@ export default {
             },
 
             chartRawData: null,
+            rangeEnd: Date.now(),
             chartDataFetchInterval: null,
         };
     },
@@ -91,9 +92,9 @@ export default {
             const style = getComputedStyle(el);
             const token = (name, fallback) => style.getPropertyValue(name).trim() || fallback;
             return {
-                line: token("--c-data", "#5ec8d8"),
+                line: token("--c-data", "#8b8cf8"),
                 grid: token("--c-line", "rgba(127,127,127,0.15)"),
-                tick: token("--c-muted", "#8f8f95"),
+                tick: token("--c-tick", "#7c7c82"),
                 fg: token("--c-fg", "#ededed"),
                 surface: token("--c-field", "#0d0d0f"),
                 border: token("--c-line-strong", "#1f1f23"),
@@ -110,9 +111,13 @@ export default {
         chartOptions() {
             const c = this.colors;
             const font = { family: "'Geist Variable', system-ui, sans-serif", size: 11 };
+            const hours = parseInt(this.chartPeriodHrs) || 24;
+            const end = this.rangeEnd;
             return {
                 responsive: true,
                 maintainAspectRatio: false,
+                animation: false,
+                transitions: { active: { animation: { duration: 0 } }, resize: { animation: { duration: 0 } } },
                 interaction: { mode: "index", intersect: false },
                 layout: { padding: { top: 8, right: 4 } },
                 elements: {
@@ -121,7 +126,11 @@ export default {
                 scales: {
                     x: {
                         type: "time",
+                        // The whole period, from its start to now, whatever data there is
+                        min: end - hours * 3600 * 1000,
+                        max: end,
                         time: {
+                            unit: hours > 24 ? "day" : undefined,
                             minUnit: "minute",
                             round: "second",
                             tooltipFormat: "D.M. HH:mm",
@@ -181,6 +190,7 @@ export default {
                     this.$root.toastError(res.msg);
                 } else {
                     this.chartRawData = res.data;
+                    this.rangeEnd = Date.now();
                     this.$root.storage()["chart-period"] = newPeriod;
                 }
                 this.loading = false;
@@ -192,6 +202,7 @@ export default {
                 this.$root.getMonitorChartData(this.monitorId, period, (res) => {
                     if (res.ok) {
                         this.chartRawData = res.data;
+                        this.rangeEnd = Date.now();
                     }
                 });
             }, refresh);
@@ -372,11 +383,11 @@ export default {
                     {
                         data: avgPingData,
                         fill: "origin",
-                        tension: 0.3,
+                        tension: 0,
                         borderWidth: 1.5,
                         borderColor: this.colors.line,
-                        // Hex colour plus 12% alpha
-                        backgroundColor: `${this.colors.line}1f`,
+                        // Hex colour plus 15% alpha
+                        backgroundColor: `${this.colors.line}26`,
                         yAxisID: "y",
                         label: this.$t("avgPing"),
                     },
