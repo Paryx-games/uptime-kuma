@@ -48,7 +48,7 @@ test.describe("Maintenance", () => {
         // The beat is recorded as maintenance instead of up
         await page.request.get(pushUrl);
 
-        await page.goto("./dashboard");
+        await page.goto("./list");
         await page.waitForSelector('[data-testid="monitor-list"] .draggable-item');
         await page.getByTestId("filter-status").click();
 

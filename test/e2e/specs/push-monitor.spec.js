@@ -30,7 +30,7 @@ async function createPushMonitor(page, name) {
  * @returns {Promise<import("@playwright/test").Locator>} Monitor row
  */
 async function openMonitorRow(page, name) {
-    await page.goto("./dashboard");
+    await page.goto("./list");
     await page.waitForSelector('[data-testid="monitor-list"] .draggable-item');
     return page.locator('[data-testid="monitor-list"] .draggable-item', { hasText: name });
 }

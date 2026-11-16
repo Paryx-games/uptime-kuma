@@ -34,7 +34,7 @@ async function addTaggedMonitor(page, name, tagName) {
  * @returns {Promise<import("@playwright/test").Locator>} Monitor list locator
  */
 async function openDashboard(page) {
-    await page.goto("./dashboard");
+    await page.goto("./list");
     await page.waitForSelector('[data-testid="monitor-list"] .draggable-item');
     return page.getByTestId("monitor-list");
 }

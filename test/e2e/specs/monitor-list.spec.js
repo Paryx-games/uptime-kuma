@@ -33,7 +33,7 @@ async function addMonitor(page, options, loginFirst = false) {
  * @returns {Promise<import("@playwright/test").Locator>} Monitor list locator
  */
 async function openDashboard(page) {
-    await page.goto("./dashboard");
+    await page.goto("./list");
     await page.waitForSelector('[data-testid="monitor-list"] .draggable-item');
     return page.getByTestId("monitor-list");
 }
@@ -124,10 +124,10 @@ test.describe("Monitor list", () => {
 
         const list = await openDashboard(page);
 
-        // Entering select mode selects everything; keep only Alpha selected
+        // Select only Alpha
         await page.getByTestId("select-mode-toggle").click();
         await expect(page.getByTestId("select-all-toggle")).toBeVisible();
-        await page.locator('[data-testid^="monitor-select-"]').nth(1).uncheck();
+        await page.locator('[data-testid^="monitor-select-"]').first().check();
         await page.getByTestId("bulk-pause").click();
         await page.locator(".modal.show").waitFor();
         await confirmDialog(page);
@@ -173,7 +173,7 @@ test.describe("Monitor list", () => {
         await addMonitor(page, { name: "Untagged Monitor" });
 
         // Add a tag to the first monitor through its edit form
-        await page.goto("./dashboard");
+        await page.goto("./list");
         await page.waitForSelector('[data-testid="monitor-list"] .draggable-item');
         const href = await page.locator("a.item", { hasText: "Tagged Monitor" }).first().getAttribute("href");
         const monitorID = href.split("/").pop();

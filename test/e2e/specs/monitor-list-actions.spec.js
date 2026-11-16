@@ -36,7 +36,7 @@ async function addMonitor(page, options, loginFirst = false) {
  * @returns {Promise<import("@playwright/test").Locator>} Monitor list locator
  */
 async function openDashboard(page) {
-    await page.goto("./dashboard");
+    await page.goto("./list");
     await page.waitForSelector('[data-testid="monitor-list"] .draggable-item');
     return page.getByTestId("monitor-list");
 }
@@ -57,7 +57,7 @@ async function confirmDialog(page) {
  * @returns {Promise<void>}
  */
 async function openDetails(page, name) {
-    await page.goto("./dashboard");
+    await page.goto("./list");
     await page.waitForSelector('[data-testid="monitor-list"] .draggable-item');
     await page.locator("a.item", { hasText: name }).first().click();
     await page.waitForURL(/\/dashboard\/\d+/);
@@ -137,7 +137,7 @@ test.describe("Monitor list actions", () => {
 
         // Nothing is left, so the list shows the empty state instead of rows
         await expect(page.locator(".draggable-item")).toHaveCount(0);
-        await expect(page.getByTestId("monitor-list")).toContainText("No Monitors");
+        await expect(page.getByTestId("monitor-list")).toContainText("No monitors yet");
     });
 
     test("creates a group from the monitor form", async ({ page }) => {

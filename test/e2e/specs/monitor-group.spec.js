@@ -29,7 +29,7 @@ test.describe("Monitor Group", () => {
         await page.waitForURL("/dashboard/*");
 
         // Saving navigates to the new monitor's details page; go back to the list
-        await page.goto("./dashboard");
+        await page.goto("./list");
         await page.waitForSelector('[data-testid="monitor-list"] .draggable-item');
 
         const monitorList = page.getByTestId("monitor-list");
@@ -76,7 +76,7 @@ test.describe("Monitor Group", () => {
         await page.getByTestId("save-button").click();
         await page.waitForURL("/dashboard/*");
 
-        await page.goto("./dashboard");
+        await page.goto("./list");
         await page.waitForSelector('[data-testid="monitor-list"] .draggable-item');
 
         // Expand group A so the child row is visible, then drag it onto group B
