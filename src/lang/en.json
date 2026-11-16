@@ -1653,5 +1653,9 @@
     "opsimateApiTokenDescription": "The value of the API_TOKEN setting of your OpsiMate server (default: opsimate).",
     "trigvDefaultChannel": "general",
     "trigvChannelHelp": "Enter your channel slug (up to 120 characters). Leave empty to use general.",
-    "trigvApiKeyDocs": "Trigv API key documentation"
+    "trigvApiKeyDocs": "Trigv API key documentation",
+    "Main": "Main",
+    "Overview": "Overview",
+    "navMonitors": "Monitors",
+    "navStatusPages": "Status pages"
 }
