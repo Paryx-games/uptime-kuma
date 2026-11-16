@@ -1627,5 +1627,9 @@
     "Profile Picture": "Profile Picture",
     "Upload Picture": "Upload Picture",
     "Remove Picture": "Remove Picture",
-    "Only PNG, JPEG, GIF or WebP images can be used": "Only PNG, JPEG, GIF or WebP images can be used"
+    "Only PNG, JPEG, GIF or WebP images can be used": "Only PNG, JPEG, GIF or WebP images can be used",
+    "Main": "Main",
+    "Overview": "Overview",
+    "navMonitors": "Monitors",
+    "navStatusPages": "Status pages"
 }
