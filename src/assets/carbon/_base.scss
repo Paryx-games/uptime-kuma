@@ -1,0 +1,192 @@
+// Carbon base: type, ground and the Bootstrap pieces every page uses
+
+body.dark:has(.carbon) {
+    background-color: #000;
+}
+
+.carbon {
+    min-height: 100vh;
+    background-color: var(--c-bg);
+    color: var(--c-fg);
+    font-family: "Geist Variable", "Twemoji Country Flags", system-ui, sans-serif;
+    font-size: 13px;
+    line-height: 20px;
+    font-variant-numeric: tabular-nums;
+
+    h1 {
+        font-size: 20px;
+        line-height: 28px;
+        font-weight: 600;
+        letter-spacing: -0.01em;
+    }
+
+    h2 {
+        font-size: 16px;
+        line-height: 24px;
+        font-weight: 600;
+    }
+
+    h3,
+    h4,
+    h5,
+    h6 {
+        font-size: 14px;
+        line-height: 20px;
+        font-weight: 600;
+    }
+
+    .form-control,
+    .form-select,
+    .input-group-text,
+    .btn,
+    .dropdown-item,
+    .dropdown-item-text {
+        font-size: 13px;
+    }
+
+    .btn {
+        border-radius: var(--c-radius);
+        font-weight: 500;
+    }
+
+    .btn-primary,
+    .btn-primary:hover,
+    .btn-primary:focus,
+    .btn-primary:active,
+    .btn-primary.active,
+    .btn-primary:disabled {
+        color: var(--c-button-fg);
+        background-color: var(--c-button);
+        border-color: var(--c-button);
+    }
+
+    .btn-primary:hover {
+        opacity: 0.88;
+    }
+
+    .btn-outline-primary {
+        color: var(--c-fg);
+        border-color: var(--c-line-strong);
+
+        &:hover,
+        &:active {
+            color: var(--c-fg);
+            background-color: var(--c-fill);
+            border-color: var(--c-line-strong);
+        }
+    }
+
+    .shadow-box {
+        border-radius: 12px;
+    }
+
+    .form-check-input:checked {
+        background-color: var(--c-up);
+        border-color: var(--c-up);
+    }
+
+    .nav-pills .nav-link.active,
+    .nav-pills .show > .nav-link,
+    .page-item.active .page-link {
+        color: var(--c-fg);
+        background-color: var(--c-fill);
+        border-color: var(--c-line-strong);
+    }
+
+    .dropdown-menu {
+        border-radius: 12px;
+        border-color: var(--c-line-strong);
+        padding: 4px;
+    }
+
+    .dropdown-item {
+        border-radius: 8px;
+    }
+
+    .dropdown-item.active,
+    .dropdown-item:active {
+        color: var(--c-fg);
+        background-color: var(--c-fill);
+    }
+
+    .modal-content {
+        border-radius: 12px;
+    }
+}
+
+.carbon.dark {
+    background-color: var(--c-bg);
+
+    .shadow-box {
+        box-shadow: none;
+    }
+
+    .modal-content {
+        border: 1px solid var(--c-line-strong);
+    }
+
+    .form-control,
+    .form-select {
+        border-color: var(--c-line-strong);
+
+        &:focus {
+            border-color: #3a3a40;
+            box-shadow: 0 0 0 3px rgba(237, 237, 237, 0.08);
+        }
+
+        &::placeholder {
+            color: var(--c-faint);
+        }
+    }
+
+    .form-control:disabled,
+    .form-control[readonly],
+    .input-group-text,
+    .form-switch .form-check-input:not(:checked) {
+        background-color: var(--c-fill);
+        border-color: var(--c-line-strong);
+    }
+
+    .dropdown-menu {
+        color: var(--c-fg);
+        background-color: var(--c-field);
+        box-shadow: 0 12px 32px rgba(0, 0, 0, 0.6);
+    }
+
+    .dropdown-item {
+        color: var(--c-fg);
+
+        &:hover,
+        &:focus {
+            color: var(--c-fg);
+            background-color: var(--c-fill);
+        }
+    }
+
+    .dropdown-divider {
+        border-color: var(--c-line-strong);
+    }
+
+    .table {
+        --bs-table-hover-bg: var(--c-hover);
+
+        color: var(--c-fg);
+        border-color: var(--c-line);
+    }
+
+    .btn-danger {
+        color: #000;
+        background-color: var(--c-down);
+        border-color: var(--c-down);
+    }
+
+    .btn-outline-danger {
+        color: var(--c-down);
+        border-color: var(--c-down);
+
+        &:hover {
+            color: #000;
+            background-color: var(--c-down);
+        }
+    }
+}

@@ -189,6 +189,7 @@ export default {
         classes() {
             const classes = {};
             classes[this.$root.theme] = true;
+            classes["carbon"] = true;
             classes["mobile"] = this.$root.isMobile;
             return classes;
         },

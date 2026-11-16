@@ -313,7 +313,7 @@ optgroup {
     }
 
     .form-select:disabled {
-        color: rgba($dark-font-color, 0.7);
+        color: color-mix(in srgb, #{$dark-font-color} 70%, transparent);
         background-color: $dark-bg;
     }
 
@@ -354,7 +354,7 @@ optgroup {
         border-color: $bg-color;
 
         &:hover {
-            $hover-color: darken($bg-color, 3%);
+            $hover-color: color-mix(in srgb, #{$bg-color} 75%, #000);
             background-color: $hover-color;
             border-color: $hover-color;
         }
@@ -651,7 +651,7 @@ $shadow-box-padding: 20px;
     border-radius: 0 0 10px 10px;
 
     .dark & {
-        background-color: rgba($dark-header-bg, 0.9);
+        background-color: color-mix(in srgb, #{$dark-header-bg} 90%, transparent);
     }
 }
 
@@ -674,3 +674,7 @@ $shadow-box-padding: 20px;
 // Localization
 
 @import "localization.scss";
+
+// Carbon theme
+@import "carbon/tokens";
+@import "carbon/base";
