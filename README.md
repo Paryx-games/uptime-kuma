@@ -1,203 +1,116 @@
-<div align="center" width="100%">
-    <img src="./public/icon.svg" width="128" alt="Uptime Kuma Logo" />
+<center align="center" style="text-align: center;justify-content:center;">
+<div align="center" style="text-align: center;justify-content:center;">
+<h1 align="center" style="text-align: center;justify-content:center;">
+
+Uptime Kuma, redesigned
+
+<img style="justify-content:center;text-align: center;width: 64px; height: auto;" width="64" height="64" alt="Uptime Kuma" src="public/icon.svg" />
+
+</h1>
+
+![Based on](https://img.shields.io/badge/based_on-Uptime_Kuma_2.5.11-5CDD8B.svg?style=for-the-badge) ![Vue](https://img.shields.io/badge/Vue_3-4FC08D?style=for-the-badge&logo=vue.js&logoColor=white) ![Node](https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=node.js&logoColor=white) ![SQLite](https://img.shields.io/badge/SQLite-003B57?style=for-the-badge&logo=sqlite&logoColor=white) ![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white) ![License](https://img.shields.io/badge/license-MIT-blue.svg?style=for-the-badge)
+
 </div>
+</center>
 
-# Uptime Kuma
+<hr>
 
-Uptime Kuma is an easy-to-use self-hosted monitoring tool.
+A fork of [Uptime Kuma](https://github.com/louislam/uptime-kuma) with a redesigned interface and profile pictures. Monitoring, notifications and status pages work exactly like upstream. What changes is how it looks and reads: a sidebar instead of a top bar, monitors as grouped rows, a detail page with a response time chart and an availability table, and the same dark theme on every screen.
 
-<a target="_blank" href="https://github.com/louislam/uptime-kuma"><img src="https://img.shields.io/github/stars/louislam/uptime-kuma?style=flat" /></a> <a target="_blank" href="https://hub.docker.com/r/louislam/uptime-kuma"><img src="https://img.shields.io/docker/pulls/louislam/uptime-kuma" /></a> <a target="_blank" href="https://hub.docker.com/r/louislam/uptime-kuma"><img src="https://img.shields.io/docker/v/louislam/uptime-kuma/2?label=docker%20image%20ver." /></a> <a target="_blank" href="https://github.com/louislam/uptime-kuma"><img src="https://img.shields.io/github/last-commit/louislam/uptime-kuma" /></a> <a target="_blank" href="https://opencollective.com/uptime-kuma"><img src="https://opencollective.com/uptime-kuma/total/badge.svg?label=Open%20Collective%20Backers&color=brightgreen" /></a>
-[![GitHub Sponsors](https://img.shields.io/github/sponsors/louislam?label=GitHub%20Sponsors)](https://github.com/sponsors/louislam) <a href="https://weblate.kuma.pet/projects/uptime-kuma/uptime-kuma/">
-<img src="https://weblate.kuma.pet/widgets/uptime-kuma/-/svg-badge.svg" alt="Translation status" />
-</a>
+<hr>
 
-<img src="https://user-images.githubusercontent.com/1336778/212262296-e6205815-ad62-488c-83ec-a5b0d0689f7c.jpg" width="700" alt="Uptime Kuma Dashboard Screenshot" />
+<img width="1440" height="900" alt="Overview page with one monitor down, one in maintenance and the recent events list" src=".github/screenshots/overview.webp" />
 
-## 🥔 Live Demo
+## Why this fork
 
-Try it!
+Uptime Kuma is the best self-hosted uptime monitor there is, but the interface shows its age. Every screen mixes its own cards, badges and green buttons, the important number is rarely the biggest thing on the page, and a monitor that has been down for an hour looks almost the same as one that is fine.
 
-Demo Server (Location: Frankfurt - Germany): <https://demo.kuma.pet/start-demo>
+This fork leaves the monitoring alone and redraws the interface around one question: is anything wrong right now, and since when?
 
-It is a temporary live demo, all data will be deleted after 10 minutes. Sponsored by [Uptime Kuma Sponsors](https://github.com/louislam/uptime-kuma#%EF%B8%8F-sponsors).
+* The state comes first. A down monitor is named at the top of every page, with how long it has been down and the error it returned
+* Monitors are grouped rows you can scan, filter and select in bulk, with the heartbeat bar, uptime, response time and interval on one line
+* The detail page has a response time chart over the whole period, and a table of availability, downtime and incidents for the last 24 hours, 7 days and 30 days
+* Settings, forms, maintenance, status pages and dialogs share one layout instead of each having its own
+* Empty pages show a public domain engraving and one line on what to do next, instead of "Not available, please set up"
+* No slide or fade animations, text contrast of at least 4.5:1, and a visible focus ring for keyboard use
 
-## ⭐ Features
+<img width="1440" height="900" alt="Monitors list grouped by APIs and Heartbeats, with one monitor down and one paused" src=".github/screenshots/monitors.webp" />
 
-- Monitoring uptime for HTTP(s) / TCP / HTTP(s) Keyword / HTTP(s) Json Query / Websocket / Ping / DNS Record / Push / Steam Game Server / Docker Containers
-- Fancy, Reactive, Fast UI/UX
-- Notifications via Telegram, Discord, Gotify, Slack, Pushover, Email (SMTP), and [90+ notification services, click here for the full list](https://github.com/louislam/uptime-kuma/tree/master/src/components/notifications)
-- 20-second intervals
-- [Multi Languages](https://github.com/louislam/uptime-kuma/tree/master/src/lang)
-- Multiple status pages
-- Map status pages to specific domains
-- Ping chart
-- Certificate info
-- Proxy support
-- 2FA support
+### Monitor detail
 
-## 🔧 How to Install
+<img width="1440" height="900" alt="Monitor detail page with a violet response time chart and the availability table" src=".github/screenshots/detail-http.webp" />
 
-### 🐳 Docker Compose
+<img width="1440" height="900" alt="Push monitor detail page with the push URL and its availability table" src=".github/screenshots/detail-push.webp" />
+
+### Filtering and editing
+
+<img width="1440" height="900" alt="Monitors list with the filter menu open, showing status, state and tag filters with counts" src=".github/screenshots/filter-menu.webp" />
+
+<img width="1440" height="900" alt="Monitor edit form in two columns" src=".github/screenshots/edit-monitor.webp" />
+
+### Settings, maintenance and sign-in
+
+<img width="1440" height="900" alt="Notification settings" src=".github/screenshots/settings-notifications.webp" />
+
+<img width="1440" height="900" alt="Maintenance list with one window running and one scheduled" src=".github/screenshots/maintenance.webp" />
+
+<img width="1440" height="900" alt="Docker hosts page with an engraving of a crane and a button to add a host" src=".github/screenshots/empty-state.webp" />
+
+<img width="1440" height="900" alt="Sign-in page with an engraving of a ship under sail" src=".github/screenshots/login.webp" />
+
+### On a phone
+
+<p>
+<img width="260" alt="Overview on a phone" src=".github/screenshots/phone-overview.webp" />
+<img width="260" alt="Monitors list on a phone" src=".github/screenshots/phone-monitors.webp" />
+<img width="260" alt="Monitor detail on a phone" src=".github/screenshots/phone-detail-http.webp" />
+</p>
+
+All screenshots come from a local instance filled with made-up monitors.
+
+## What differs from upstream
+
+* The whole interface is redrawn: layout, monitor list, detail page, settings, forms, maintenance, status page admin, dialogs, sign-in and the 404 page. Public status pages keep the upstream look
+* Profile pictures. Upload one under Settings, Security, and it replaces the initial in the sidebar. This is the only server change: a socket handler that stores the picture as a PNG in the upload folder, and a migration that adds an `avatar` column to the `user` table
+* Maintenance dates are shown and entered in 24-hour time
+* The About page can show the fork version, for example `2.5.11-rolle-f6c203d8`, and the update check ignores the fork suffix
+* The interface uses the [Geist](https://vercel.com/font) font, added as `@fontsource-variable/geist`. No other dependencies are added
+
+An existing 2.5.11 installation can move to this fork as it is. The profile picture migration runs on first start, so going back to upstream afterwards means removing that migration from the `knex_migrations` table first.
+
+The same interface on top of upstream `master`, without the profile pictures and the version stamp, is on the [`feat/carbon-ui`](https://github.com/rollecode/uptime-kuma/tree/feat/carbon-ui) branch.
+
+## Running it
+
+There is no prebuilt image. Build the interface, then put it on top of the official 2.5.11 image:
 
 ```bash
-mkdir uptime-kuma
+git clone -b rolle https://github.com/rollecode/uptime-kuma.git
 cd uptime-kuma
-curl -o compose.yaml https://raw.githubusercontent.com/louislam/uptime-kuma/master/compose.yaml
-docker compose up -d
+npm ci
+npm run build
+docker build -f docker/fork.dockerfile -t uptime-kuma-rolle .
+docker run -d --name uptime-kuma -p 3001:3001 -v uptime-kuma:/app/data --restart unless-stopped uptime-kuma-rolle
 ```
 
-Uptime Kuma is now running on all network interfaces (e.g. http://localhost:3001 or http://your-ip:3001).
+Then open `http://localhost:3001`. To move an existing installation over, stop the old container and start this one with the same data volume.
 
-> [!WARNING]
-> File Systems like **NFS** (Network File System) are **NOT** supported. Please map to a local directory or volume.
-
-### 🐳 Docker Command
+To stamp the fork version on the About page, build with the version set in both places, so the interface and the server agree:
 
 ```bash
-docker run -d --restart=always -p 3001:3001 -v uptime-kuma:/app/data --name uptime-kuma louislam/uptime-kuma:2
+VERSION="$(node -p 'require("./package.json").version')-rolle-$(git rev-parse --short HEAD)"
+UPTIME_KUMA_VERSION="$VERSION" npm run build
+npm pkg set version="$VERSION"
 ```
 
-Uptime Kuma is now running on all network interfaces (e.g. http://localhost:3001 or http://your-ip:3001).
+Without Docker, run `node server/server.js` after `npm ci` and `npm run build`, with Node.js 20.4 or newer.
 
-If you want to limit exposure to localhost only:
+## Credits
 
-```bash
-docker run ... -p 127.0.0.1:3001:3001 ...
-```
+Uptime Kuma is made by [Louis Lam](https://github.com/louislam) and [its contributors](https://github.com/louislam/uptime-kuma/graphs/contributors). All of the monitoring, notifications and status pages are theirs. If you use it, consider [sponsoring the project](https://github.com/sponsors/louislam).
 
-### 💪🏻 Non-Docker
+The engravings on the empty pages and the sign-in page are public domain, several of them from the British Library. Each one is credited under its picture.
 
-Requirements:
+## License
 
-- Platform
-  - ✅ Major Linux distros such as Debian, Ubuntu, Fedora and ArchLinux etc.
-  - ✅ Windows 10 (x64), Windows Server 2012 R2 (x64) or higher
-  - ❌ FreeBSD / OpenBSD / NetBSD
-  - ❌ Replit / Heroku
-- [Node.js](https://nodejs.org/en/download/) >= 20.4
-- [Git](https://git-scm.com/downloads)
-- [pm2](https://pm2.keymetrics.io/) - For running Uptime Kuma in the background
-
-```bash
-git clone https://github.com/louislam/uptime-kuma.git
-cd uptime-kuma
-npm run setup
-
-# Option 1. Try it
-node server/server.js
-
-# (Recommended) Option 2. Run in the background using PM2
-# Install PM2 if you don't have it:
-npm install pm2 -g && pm2 install pm2-logrotate
-
-# Start Server
-pm2 start server/server.js --name uptime-kuma
-```
-
-Uptime Kuma is now running on all network interfaces (e.g. http://localhost:3001 or http://your-ip:3001).
-
-More useful PM2 Commands
-
-```bash
-# If you want to see the current console output
-pm2 monit
-
-# If you want to add it to startup
-pm2 startup && pm2 save
-```
-
-### Advanced Installation
-
-If you need more options or need to browse via a reverse proxy, please read:
-
-<https://github.com/louislam/uptime-kuma/wiki/%F0%9F%94%A7-How-to-Install>
-
-## 🆙 How to Update
-
-Please read:
-
-<https://github.com/louislam/uptime-kuma/wiki/%F0%9F%86%99-How-to-Update>
-
-## 🆕 What's Next?
-
-I will assign requests/issues to the next milestone.
-
-<https://github.com/louislam/uptime-kuma/milestones>
-
-## ❤️ Sponsors
-
-Thank you so much! (GitHub Sponsors will be updated manually. OpenCollective sponsors will be updated automatically, the list will be cached by GitHub though. It may need some time to be updated)
-
-<img src="https://uptime.kuma.pet/sponsors?v=6" alt="Uptime Kuma Sponsors" />
-
-## 🖼 More Screenshots
-
-Light Mode:
-
-<img src="https://uptime.kuma.pet/img/light.jpg" width="512" alt="Uptime Kuma Light Mode Screenshot of how the Dashboard looks" />
-
-Status Page:
-
-<img src="https://user-images.githubusercontent.com/1336778/134628766-a3fe0981-0926-4285-ab46-891a21c3e4cb.png" width="512" alt="Uptime Kuma Status Page Screenshot" />
-
-Settings Page:
-
-<img src="https://louislam.net/uptimekuma/2.jpg" width="400" alt="Uptime Kuma Settings Page Screenshot" />
-
-Telegram Notification Sample:
-
-<img src="https://louislam.net/uptimekuma/3.jpg" width="400" alt="Uptime Kuma Telegram Notification Sample Screenshot" />
-
-## Motivation
-
-- I was looking for a self-hosted monitoring tool like "Uptime Robot", but it is hard to find a suitable one. One of the closest ones is statping. Unfortunately, it is not stable and no longer maintained.
-- Wanted to build a fancy UI.
-- Learn Vue 3 and vite.js.
-- Show the power of Bootstrap 5.
-- Try to use WebSocket with SPA instead of a REST API.
-- Deploy my first Docker image to Docker Hub.
-
-If you love this project, please consider giving it a ⭐.
-
-## 🗣️ Discussion / Ask for Help
-
-⚠️ For any general or technical questions, please don't send me an email, as I am unable to provide support in that manner. I will not respond if you ask questions there.
-
-I recommend using Google, GitHub Issues, or Uptime Kuma's subreddit for finding answers to your question. If you cannot find the information you need, feel free to ask:
-
-- [GitHub Issues](https://github.com/louislam/uptime-kuma/issues)
-- [Subreddit (r/UptimeKuma)](https://www.reddit.com/r/UptimeKuma/)
-
-My Reddit account: [u/louislamlam](https://reddit.com/u/louislamlam)
-You can mention me if you ask a question on the subreddit.
-
-## Contributions
-
-### Create Pull Requests
-
-Pull requests are awesome.
-To keep reviews fast and effective, please make sure you’ve [read our pull request guidelines](https://github.com/louislam/uptime-kuma/blob/master/CONTRIBUTING.md#can-i-create-a-pull-request-for-uptime-kuma).
-
-### Test Pull Requests
-
-There are a lot of pull requests right now, but I don't have time to test them all.
-
-If you want to help, you can check this:
-<https://github.com/louislam/uptime-kuma/wiki/Test-Pull-Requests>
-
-### Test Beta Version
-
-Check out the latest beta release here: <https://github.com/louislam/uptime-kuma/releases>
-
-### Bug Reports / Feature Requests
-
-If you want to report a bug or request a new feature, feel free to open a [new issue](https://github.com/louislam/uptime-kuma/issues).
-
-### Translations
-
-If you want to translate Uptime Kuma into your language, please visit [Weblate Readme](https://github.com/louislam/uptime-kuma/blob/master/src/lang/README.md).
-
-### Spelling & Grammar
-
-Feel free to correct the grammar in the documentation or code.
-My mother language is not English and my grammar is not that great.
+MIT, same as [upstream](https://github.com/louislam/uptime-kuma/blob/master/LICENSE). See [LICENSE](LICENSE).
