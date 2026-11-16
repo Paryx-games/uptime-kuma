@@ -1717,5 +1717,11 @@
     "No tags yet": "No tags yet",
     "tagsEmptyHelp": "Tags group monitors by what they belong to, and filter the list.",
     "No API keys yet": "No API keys yet",
-    "apiKeysEmptyHelp": "An API key lets tools such as Prometheus read your monitor metrics."
+    "apiKeysEmptyHelp": "An API key lets tools such as Prometheus read your monitor metrics.",
+    "Sign in": "Sign in",
+    "Two-factor code": "Two-factor code",
+    "twoFactorCodeHelp": "Code from your authenticator app",
+    "Show password": "Show password",
+    "Hide password": "Hide password",
+    "loginArtCredit": "Ship under sail, British Library, CC0"
 }
