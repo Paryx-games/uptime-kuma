@@ -87,7 +87,8 @@
         <div class="carbon-facts">
             <div class="fact">
                 <div class="k">{{ stateFact.label }}</div>
-                <div class="v" :class="stateFact.tone" data-testid="monitor-status">{{ stateFact.value }}</div>
+                <div class="v" :class="stateFact.tone">{{ stateFact.value }}</div>
+                <span class="visually-hidden" data-testid="monitor-status">{{ state.label }}</span>
             </div>
             <div class="fact">
                 <div class="k">{{ monitor.type === "push" ? $t("Last ping") : $t("Last check") }}</div>
