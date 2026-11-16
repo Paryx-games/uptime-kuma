@@ -19,10 +19,12 @@
         </EmptyState>
 
         <div v-else class="mt-3">
-            <div v-for="(item, index) in sortedMaintenanceList" :key="index" class="carbon-event item">
+            <div v-for="(item, index) in sortedMaintenanceList" :key="index" class="carbon-event carbon-linkrow item">
                 <span class="carbon-dot" :class="maintenanceDot(item.status)" aria-hidden="true"><i /></span>
                 <span class="text">
-                    <router-link :to="'/maintenance/edit/' + item.id">{{ item.title }}</router-link>
+                    <router-link :to="'/maintenance/edit/' + item.id" class="carbon-linkrow-target">
+                        {{ item.title }}
+                    </router-link>
                     <span class="sub">
                         {{ $t("maintenanceStatus-" + item.status) }}
                         <MaintenanceTime :maintenance="item" />

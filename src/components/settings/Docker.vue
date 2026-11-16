@@ -14,10 +14,18 @@
                 </template>
             </EmptyState>
             <template v-else>
-                <div v-for="dockerHost in $root.dockerHostList" :key="dockerHost.id" class="carbon-channel">
+                <div
+                    v-for="dockerHost in $root.dockerHostList"
+                    :key="dockerHost.id"
+                    class="carbon-channel carbon-linkrow"
+                >
                     <span class="name">{{ dockerHost.name }}</span>
                     <span class="type carbon-mono">{{ dockerHost.dockerDaemon }}</span>
-                    <button type="button" class="carbon-quiet" @click="$refs.dockerHostDialog.show(dockerHost.id)">
+                    <button
+                        type="button"
+                        class="carbon-quiet carbon-linkrow-target"
+                        @click="$refs.dockerHostDialog.show(dockerHost.id)"
+                    >
                         {{ $t("Edit") }}
                     </button>
                 </div>
