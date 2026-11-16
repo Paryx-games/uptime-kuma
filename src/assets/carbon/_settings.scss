@@ -1,7 +1,7 @@
 // Carbon settings: label column with a grey description beside its controls
 
 .carbon-setting,
-.carbon-settings .settings-content :is(.my-4, .mb-4, .mb-3):has(> .form-label) {
+.carbon-settings .settings-content :is(.my-4, .mb-4, .mb-3):has(> .form-label):not(.modal *) {
     display: grid;
     grid-template-columns: minmax(180px, 260px) minmax(0, 1fr);
     column-gap: 40px;
@@ -10,7 +10,7 @@
     border-bottom: 1px solid var(--c-line);
 }
 
-.carbon-settings .settings-content :is(.my-4, .mb-4, .mb-3):has(> .form-label) {
+.carbon-settings .settings-content :is(.my-4, .mb-4, .mb-3):has(> .form-label):not(.modal *) {
     > * {
         grid-column: 2;
     }
@@ -139,7 +139,7 @@
 
 @media (max-width: 991.98px) {
     .carbon-setting,
-    .carbon-settings .settings-content :is(.my-4, .mb-4, .mb-3):has(> .form-label) {
+    .carbon-settings .settings-content :is(.my-4, .mb-4, .mb-3):has(> .form-label):not(.modal *) {
         grid-template-columns: minmax(0, 1fr);
 
         > * {

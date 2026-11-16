@@ -20,7 +20,11 @@
         color: var(--c-fg);
     }
 
-    code {
+    code,
+    mark {
+        padding: 0 4px;
+        border-radius: 4px;
+        background-color: var(--c-fill);
         color: inherit;
     }
 
