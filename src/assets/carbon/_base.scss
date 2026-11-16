@@ -5,7 +5,8 @@ body.dark:has(.carbon) {
 }
 
 .carbon {
-    min-height: 100vh;
+    // 100vh on iOS Safari counts the hidden toolbar and overflows
+    min-height: 100dvh;
     background-color: var(--c-bg);
     color: var(--c-fg);
     font-family: "Geist Variable", "Twemoji Country Flags", system-ui, sans-serif;
