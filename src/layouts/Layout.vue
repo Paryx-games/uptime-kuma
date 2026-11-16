@@ -93,7 +93,7 @@
         </aside>
 
         <!-- Mobile header -->
-        <header v-if="$root.isMobile" class="carbon-mobile-header">
+        <header v-if="$root.isMobile && $root.loggedIn" class="carbon-mobile-header">
             <router-link to="/dashboard" class="carbon-brand">
                 <svg
                     aria-hidden="true"
