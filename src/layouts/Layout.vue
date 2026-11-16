@@ -394,6 +394,11 @@ main {
         font-size: 10px;
         object-fit: cover;
     }
+
+    // The coloured circle is only for the initial, it shows around a picture's edges
+    img.profile-pic {
+        background-color: transparent;
+    }
 }
 
 .dark {
