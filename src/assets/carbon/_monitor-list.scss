@@ -135,6 +135,7 @@
 
     &:hover,
     &.is-on,
+    &[data-filtered="true"],
     &[aria-expanded="true"] {
         color: var(--c-fg);
         background-color: var(--c-fill);
