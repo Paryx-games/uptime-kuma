@@ -146,7 +146,6 @@
                 <button type="button" class="btn btn-normal" @click="copy(pushURL, 'url')">
                     {{ copied === "url" ? $t("Copied") : $t("Copy") }}
                 </button>
-                <a :href="pushURL" target="_blank" rel="noopener noreferrer" class="btn btn-normal">{{ $t("Open") }}</a>
             </div>
 
             <details class="carbon-disclosure" :open="pushMonitor.showPushExamples">
