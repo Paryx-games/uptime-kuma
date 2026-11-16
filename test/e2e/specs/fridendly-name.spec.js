@@ -77,7 +77,7 @@ test.describe("Friendly Name Tests", () => {
         await page.getByTestId("save-button").click();
         await page.waitForURL("/dashboard/*");
 
-        expect(page.getByRole("heading", { level: 1 })).toContainText("New Monitor");
+        expect(page.getByRole("heading", { level: 1 })).toContainText("New monitor");
         await screenshot(testInfo, page);
     });
 });

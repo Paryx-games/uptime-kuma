@@ -64,7 +64,7 @@ test.describe("Monitor tags", () => {
             1
         );
 
-        const href = await list.locator("a.item", { hasText: "Tagged Item" }).first().getAttribute("href");
+        const href = await list.locator("a.nm", { hasText: "Tagged Item" }).first().getAttribute("href");
         await page.goto("./edit/" + href.split("/").pop());
         await page.locator(".tag-wrapper .btn-remove").first().click();
         await page.getByTestId("save-button").click();

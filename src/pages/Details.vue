@@ -10,7 +10,7 @@
                     {{ monitor.name }}
                     <span class="monitor-id">#{{ monitor.id }}</span>
                 </h1>
-                <div class="carbon-detail-sub">
+                <div class="carbon-detail-sub url">
                     <template v-if="isUrlType">
                         <a :href="monitor.url" target="_blank" rel="noopener noreferrer">
                             {{ filterPassword(monitor.url) }}
