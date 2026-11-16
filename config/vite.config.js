@@ -14,7 +14,8 @@ export default defineConfig({
         port: 3000,
     },
     define: {
-        FRONTEND_VERSION: JSON.stringify(process.env.npm_package_version),
+        // A fork build can stamp its own version, e.g. 2.5.11-rolle-<commit>
+        FRONTEND_VERSION: JSON.stringify(process.env.UPTIME_KUMA_VERSION || process.env.npm_package_version),
         "process.env": {},
     },
     plugins: [

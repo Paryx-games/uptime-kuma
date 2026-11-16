@@ -213,7 +213,9 @@ export default {
 
         hasNewVersion() {
             if (this.$root.info.latestVersion && this.$root.info.version) {
-                return compareVersions(this.$root.info.latestVersion, this.$root.info.version) >= 1;
+                // Compare the release part only, so a fork stamp like -rolle-<commit> is not an older version
+                const current = this.$root.info.version.split("-rolle-")[0];
+                return compareVersions(this.$root.info.latestVersion, current) >= 1;
             } else {
                 return false;
             }
