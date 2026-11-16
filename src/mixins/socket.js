@@ -38,6 +38,7 @@ export default {
                 initedSocketIO: false,
             },
             username: null,
+            userImage: null,
             remember: localStorage.remember !== "0",
             allowLoginDialog: false, // Allowed to show login dialog, but "loggedIn" have to be true too. This exists because prevent the login dialog show 0.1s in first before the socket server auth-ed.
             loggedIn: false,
@@ -132,6 +133,10 @@ export default {
                 this.storage().token = "autoLogin";
                 this.socket.token = "autoLogin";
                 this.allowLoginDialog = false;
+            });
+
+            socket.on("avatar", (image) => {
+                this.userImage = image;
             });
 
             socket.on("loginRequired", () => {
@@ -465,6 +470,7 @@ export default {
             this.socket.token = null;
             this.loggedIn = false;
             this.username = null;
+            this.userImage = null;
             this.clearData();
         },
 

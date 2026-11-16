@@ -1623,5 +1623,9 @@
     "Pattern Code ID": "Pattern Code ID",
     "Amoot SMS pattern help": "Enter the Pattern Code ID from your Amoot SMS panel. {0}",
     "Create an Amoot SMS pattern": "Create an Amoot SMS pattern",
-    "Use Own Line for Pattern": "Use Own Line for Pattern"
+    "Use Own Line for Pattern": "Use Own Line for Pattern",
+    "Profile Picture": "Profile Picture",
+    "Upload Picture": "Upload Picture",
+    "Remove Picture": "Remove Picture",
+    "Only PNG, JPEG, GIF or WebP images can be used": "Only PNG, JPEG, GIF or WebP images can be used"
 }

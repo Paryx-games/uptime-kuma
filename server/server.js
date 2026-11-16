@@ -203,6 +203,7 @@ const { dockerSocketHandler } = require("./socket-handlers/docker-socket-handler
 const { maintenanceSocketHandler } = require("./socket-handlers/maintenance-socket-handler");
 const { apiKeySocketHandler } = require("./socket-handlers/api-key-socket-handler");
 const { generalSocketHandler } = require("./socket-handlers/general-socket-handler");
+const { avatarSocketHandler } = require("./socket-handlers/avatar-socket-handler");
 const { Settings } = require("./settings");
 const apicache = require("./utils/response-cache");
 const { resetChrome } = require("./monitor-types/real-browser-monitor-type");
@@ -1744,6 +1745,7 @@ let needSetup = false;
         apiKeySocketHandler(socket);
         remoteBrowserSocketHandler(socket);
         generalSocketHandler(socket, server);
+        avatarSocketHandler(socket);
         chartSocketHandler(socket);
 
         log.debug("server", "added all socket handlers");
@@ -1833,6 +1835,7 @@ async function checkOwner(userID, monitorID) {
 async function afterLogin(socket, user) {
     socket.userID = user.id;
     socket.join(user.id);
+    socket.emit("avatar", user.avatar ?? null);
 
     let monitorList = await server.sendMonitorList(socket);
     await Promise.allSettled([
