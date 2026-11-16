@@ -1642,5 +1642,22 @@
     "downForDuration": "for {0}",
     "monitorsAreDown": "{0} monitors are down",
     "allMonitorsUp": "All {0} monitors are up.",
-    "someMonitorsUp": "{0} of {1} monitors are up, none are down."
+    "someMonitorsUp": "{0} of {1} monitors are up, none are down.",
+    "lastIncident": "The last incident was {0} on {1}.",
+    "upOfTotal": "{0} of {1} up",
+    "countDown": "{0} down",
+    "countMaintenance": "{0} in maintenance",
+    "countPaused": "{0} paused",
+    "avgResponse": "avg response {0}",
+    "Needs attention": "Needs attention",
+    "Recently": "Recently",
+    "Nothing needs you right now": "Nothing needs you right now",
+    "No monitor is down right now.": "No monitor is down right now.",
+    "nothingDownNotified": "No monitor is down right now. {0} tells you the moment one goes down.",
+    "lighthouseCredit": "Farne Islands lighthouse, British Library, CC0",
+    "eventUp": "{0} is up",
+    "eventDown": "{0} is down",
+    "eventPending": "{0} is pending",
+    "eventMaintenance": "{0} is in maintenance",
+    "downForLong": "Down for {0}"
 }
