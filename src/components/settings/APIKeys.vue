@@ -71,7 +71,7 @@ export default {
     },
     computed: {
         settings() {
-            return this.$parent.$parent.$parent.settings;
+            return this.$parent.$parent.settings;
         },
     },
 
