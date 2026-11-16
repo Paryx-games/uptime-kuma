@@ -37,11 +37,7 @@
                         {{ subMenus[currentPage].title }}
                     </div>
                     <div>
-                        <router-view v-slot="{ Component }">
-                            <transition name="slide-fade" appear>
-                                <component :is="Component" />
-                            </transition>
-                        </router-view>
+                        <router-view />
                     </div>
                 </div>
             </div>
