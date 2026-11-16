@@ -1,98 +1,96 @@
 <template>
-    <transition name="slide-fade" appear>
-        <div v-if="$route.name === 'DashboardHome'" class="carbon-home">
-            <h1>{{ $t("Overview") }}</h1>
-            <StatusFinding>
-                <template v-if="lastIncident">
-                    {{ $t("lastIncident", [lastIncident.name, shortDate(lastIncident.time)]) }}
-                </template>
-            </StatusFinding>
+    <div v-if="$route.name === 'DashboardHome'" class="carbon-home">
+        <h1>{{ $t("Overview") }}</h1>
+        <StatusFinding>
+            <template v-if="lastIncident">
+                {{ $t("lastIncident", [lastIncident.name, shortDate(lastIncident.time)]) }}
+            </template>
+        </StatusFinding>
 
-            <div class="carbon-strip">
-                <span class="big" :class="summary.down > 0 ? 'down' : 'up'">
-                    <span class="carbon-dot" aria-hidden="true"><i /></span>
-                    {{ $t("upOfTotal", [summary.up, running]) }}
-                </span>
-                <i18n-t keypath="countDown" tag="span">
-                    <b>{{ summary.down }}</b>
-                </i18n-t>
-                <i18n-t keypath="countMaintenance" tag="span">
-                    <b>{{ summary.maintenance }}</b>
-                </i18n-t>
-                <i18n-t keypath="countPaused" tag="span">
-                    <b>{{ summary.paused }}</b>
-                </i18n-t>
-                <i18n-t v-if="avgPing != null" keypath="avgResponse" tag="span">
-                    <b>{{ avgPing }} ms</b>
-                </i18n-t>
-            </div>
-
-            <div class="carbon-home-grid">
-                <section>
-                    <div class="carbon-section-head">
-                        <h2>{{ $t("Needs attention") }}</h2>
-                    </div>
-
-                    <EmptyState
-                        v-if="summary.downList.length === 0"
-                        illustration="lighthouse"
-                        large
-                        :title="$t('Nothing needs you right now')"
-                    >
-                        {{ calmText }}
-                    </EmptyState>
-
-                    <div v-for="monitor in summary.downList" :key="monitor.id" class="carbon-event">
-                        <span class="carbon-dot down" aria-hidden="true"><i /></span>
-                        <span class="text">
-                            <router-link :to="`/dashboard/${monitor.id}`">{{ monitor.name }}</router-link>
-                            <span class="sub">{{ downDetail(monitor) }}</span>
-                        </span>
-                        <span class="when">{{ shortDate($root.statusSince[monitor.id]) }}</span>
-                    </div>
-                </section>
-
-                <section>
-                    <div class="carbon-section-head">
-                        <h2>{{ $t("Recently") }}</h2>
-                        <button
-                            v-if="importantHeartBeatListLength > 0"
-                            type="button"
-                            class="carbon-quiet"
-                            :disabled="clearingAllEvents"
-                            @click="clearAllEventsDialog"
-                        >
-                            {{ $t("Clear") }}
-                        </button>
-                    </div>
-
-                    <div v-for="(beat, index) in displayedRecords" :key="index" class="carbon-event">
-                        <span class="carbon-dot" :class="statusKey(beat.status)" aria-hidden="true"><i /></span>
-                        <span class="text">
-                            <router-link :to="`/dashboard/${beat.monitorID}`">
-                                {{ eventTitle(beat) }}
-                            </router-link>
-                            <span v-if="beat.msg" class="sub">{{ beat.msg }}</span>
-                        </span>
-                        <span class="when" :title="$root.datetime(beat.time)">{{ shortDate(beat.time) }}</span>
-                    </div>
-
-                    <div v-if="importantHeartBeatListLength === 0" class="carbon-empty-line">
-                        {{ $t("No important events") }}
-                    </div>
-
-                    <div v-if="importantHeartBeatListLength > perPage" class="kuma_pagination">
-                        <pagination
-                            v-model="page"
-                            :records="importantHeartBeatListLength"
-                            :per-page="perPage"
-                            :options="paginationConfig"
-                        />
-                    </div>
-                </section>
-            </div>
+        <div class="carbon-strip">
+            <span class="big" :class="summary.down > 0 ? 'down' : 'up'">
+                <span class="carbon-dot" aria-hidden="true"><i /></span>
+                {{ $t("upOfTotal", [summary.up, running]) }}
+            </span>
+            <i18n-t keypath="countDown" tag="span">
+                <b>{{ summary.down }}</b>
+            </i18n-t>
+            <i18n-t keypath="countMaintenance" tag="span">
+                <b>{{ summary.maintenance }}</b>
+            </i18n-t>
+            <i18n-t keypath="countPaused" tag="span">
+                <b>{{ summary.paused }}</b>
+            </i18n-t>
+            <i18n-t v-if="avgPing != null" keypath="avgResponse" tag="span">
+                <b>{{ avgPing }} ms</b>
+            </i18n-t>
         </div>
-    </transition>
+
+        <div class="carbon-home-grid">
+            <section>
+                <div class="carbon-section-head">
+                    <h2>{{ $t("Needs attention") }}</h2>
+                </div>
+
+                <EmptyState
+                    v-if="summary.downList.length === 0"
+                    illustration="lighthouse"
+                    large
+                    :title="$t('Nothing needs you right now')"
+                >
+                    {{ calmText }}
+                </EmptyState>
+
+                <div v-for="monitor in summary.downList" :key="monitor.id" class="carbon-event">
+                    <span class="carbon-dot down" aria-hidden="true"><i /></span>
+                    <span class="text">
+                        <router-link :to="`/dashboard/${monitor.id}`">{{ monitor.name }}</router-link>
+                        <span class="sub">{{ downDetail(monitor) }}</span>
+                    </span>
+                    <span class="when">{{ shortDate($root.statusSince[monitor.id]) }}</span>
+                </div>
+            </section>
+
+            <section>
+                <div class="carbon-section-head">
+                    <h2>{{ $t("Recently") }}</h2>
+                    <button
+                        v-if="importantHeartBeatListLength > 0"
+                        type="button"
+                        class="carbon-quiet"
+                        :disabled="clearingAllEvents"
+                        @click="clearAllEventsDialog"
+                    >
+                        {{ $t("Clear") }}
+                    </button>
+                </div>
+
+                <div v-for="(beat, index) in displayedRecords" :key="index" class="carbon-event">
+                    <span class="carbon-dot" :class="statusKey(beat.status)" aria-hidden="true"><i /></span>
+                    <span class="text">
+                        <router-link :to="`/dashboard/${beat.monitorID}`">
+                            {{ eventTitle(beat) }}
+                        </router-link>
+                        <span v-if="beat.msg" class="sub">{{ beat.msg }}</span>
+                    </span>
+                    <span class="when" :title="$root.datetime(beat.time)">{{ shortDate(beat.time) }}</span>
+                </div>
+
+                <div v-if="importantHeartBeatListLength === 0" class="carbon-empty-line">
+                    {{ $t("No important events") }}
+                </div>
+
+                <div v-if="importantHeartBeatListLength > perPage" class="kuma_pagination">
+                    <pagination
+                        v-model="page"
+                        :records="importantHeartBeatListLength"
+                        :per-page="perPage"
+                        :options="paginationConfig"
+                    />
+                </div>
+            </section>
+        </div>
+    </div>
     <Confirm
         ref="confirmClearEvents"
         btn-style="btn-danger"

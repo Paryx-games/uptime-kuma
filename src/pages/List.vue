@@ -1,7 +1,5 @@
 <template>
-    <transition name="slide-fade" appear>
-        <MonitorList />
-    </transition>
+    <MonitorList />
 </template>
 
 <script>

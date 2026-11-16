@@ -115,23 +115,21 @@
             </div>
         </div>
 
-        <transition name="slide-fade-up">
-            <div v-if="!isCollapsed" class="childs">
-                <MonitorListItem
-                    v-for="(item, index) in sortedChildMonitorList"
-                    :key="index"
-                    :monitor="item"
-                    :isSelectMode="isSelectMode"
-                    :isSelected="isSelected"
-                    :select="select"
-                    :deselect="deselect"
-                    :pause="pause"
-                    :depth="depth + 1"
-                    :filter-func="filterFunc"
-                    :sort-func="sortFunc"
-                />
-            </div>
-        </transition>
+        <div v-if="!isCollapsed" class="childs">
+            <MonitorListItem
+                v-for="(item, index) in sortedChildMonitorList"
+                :key="index"
+                :monitor="item"
+                :isSelectMode="isSelectMode"
+                :isSelected="isSelected"
+                :select="select"
+                :deselect="deselect"
+                :pause="pause"
+                :depth="depth + 1"
+                :filter-func="filterFunc"
+                :sort-func="sortFunc"
+            />
+        </div>
     </div>
 </template>
 
@@ -427,10 +425,6 @@ export default {
 
 .collapsed {
     transform: rotate(-90deg);
-}
-
-.animated {
-    transition: all 0.2s $easing-in;
 }
 
 .draggable-item {
