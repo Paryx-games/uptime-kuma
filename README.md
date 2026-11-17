@@ -1,4 +1,4 @@
-# Uptime Kuma, redesigned
+# Uptime, redesigned
 
 ![Based on](https://img.shields.io/badge/based_on-Uptime_Kuma_2.5.11-5CDD8B.svg?style=for-the-badge) ![Vue](https://img.shields.io/badge/Vue_3-4FC08D?style=for-the-badge&logo=vue.js&logoColor=white) ![Node](https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=node.js&logoColor=white) ![SQLite](https://img.shields.io/badge/SQLite-003B57?style=for-the-badge&logo=sqlite&logoColor=white) ![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white) ![License](https://img.shields.io/badge/license-MIT-blue.svg?style=for-the-badge)
 
