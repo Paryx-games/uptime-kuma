@@ -58,7 +58,7 @@ All screenshots come from a local instance filled with made-up data: 320 monitor
 * The whole interface is redrawn: layout, monitor list, detail page, settings, forms, maintenance, status page admin, dialogs, sign-in and the 404 page. Public status pages keep the upstream look
 * Profile pictures. Upload one under Settings, Security, and it replaces the initial in the sidebar. This is the only server change: a socket handler that stores the picture as a PNG in the upload folder, and a migration that adds an `avatar` column to the `user` table
 * Maintenance dates are shown and entered in 24-hour time
-* The About page can show the fork version, for example `2.5.11-rolle-f6c203d8`, and the update check ignores the fork suffix
+* The About page can show the fork version, for example `2.5.11-uptime-f6c203d8`, and the update check ignores the fork suffix
 * The interface uses the [Geist](https://vercel.com/font) font, added as `@fontsource-variable/geist`. No other dependencies are added
 
 An existing 2.5.11 installation can move to this fork as it is. The profile picture migration runs on first start, so going back to upstream afterwards means removing that migration from the `knex_migrations` table first.
@@ -70,12 +70,12 @@ The same interface on top of upstream `master`, without the profile pictures and
 There is no prebuilt image. Build the interface, then put it on top of the official 2.5.11 image:
 
 ```bash
-git clone -b rolle https://github.com/rollecode/uptime-kuma.git
+git clone -b uptime https://github.com/rollecode/uptime-kuma.git
 cd uptime-kuma
 npm ci
 npm run build
-docker build -f docker/fork.dockerfile -t uptime-kuma-rolle .
-docker run -d --name uptime-kuma -p 3001:3001 -v uptime-kuma:/app/data --restart unless-stopped uptime-kuma-rolle
+docker build -f docker/fork.dockerfile -t uptime .
+docker run -d --name uptime-kuma -p 3001:3001 -v uptime-kuma:/app/data --restart unless-stopped uptime
 ```
 
 Then open `http://localhost:3001`. To move an existing installation over, stop the old container and start this one with the same data volume.
@@ -83,7 +83,7 @@ Then open `http://localhost:3001`. To move an existing installation over, stop t
 To stamp the fork version on the About page, build with the version set in both places, so the interface and the server agree:
 
 ```bash
-VERSION="$(node -p 'require("./package.json").version')-rolle-$(git rev-parse --short HEAD)"
+VERSION="$(node -p 'require("./package.json").version')-uptime-$(git rev-parse --short HEAD)"
 UPTIME_KUMA_VERSION="$VERSION" npm run build
 npm pkg set version="$VERSION"
 ```
