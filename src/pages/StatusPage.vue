@@ -1,5 +1,5 @@
 <template>
-    <div v-if="loadedTheme" class="container mt-3">
+    <div v-if="loadedTheme" :class="pageClass">
         <!-- Sidebar for edit mode -->
         <div v-if="enableEditMode" class="sidebar" data-testid="edit-sidebar">
             <div class="sidebar-body">
@@ -53,6 +53,19 @@
                     <div class="form-text">
                         {{ $t("Refresh Interval Description", [config.autoRefreshInterval]) }}
                     </div>
+                </div>
+
+                <div class="my-3">
+                    <label for="status-page-design" class="form-label">{{ $t("Status Page Design") }}</label>
+                    <select
+                        id="status-page-design"
+                        v-model="config.design"
+                        class="form-select"
+                        data-testid="design-select"
+                    >
+                        <option value="modern">{{ $t("Modern") }}</option>
+                        <option value="classic">{{ $t("Classic") }}</option>
+                    </select>
                 </div>
 
                 <div class="my-3">
@@ -237,7 +250,7 @@
         </div>
 
         <!-- Main Status Page -->
-        <div :class="{ edit: enableEditMode }" class="main">
+        <div :class="{ edit: enableEditMode, 'carbon-status-page-main': isModernDesign }" class="main">
             <!-- Logo & Title -->
             <h1 class="mb-4 title-flex">
                 <!-- Logo -->
@@ -426,25 +439,25 @@
             </template>
 
             <!-- Description -->
-            <strong v-if="editMode">{{ $t("Description") }}:</strong>
+            <strong v-if="editMode" class="carbon-status-page-description-label">{{ $t("Description") }}:</strong>
             <Editable
                 v-if="enableEditMode"
                 v-model="config.description"
                 :contenteditable="editMode"
                 tag="div"
-                class="mb-4 description"
+                class="mb-4 description carbon-status-page-description"
                 data-testid="description-editable"
             />
             <!-- eslint-disable vue/no-v-html-->
             <div
                 v-if="!enableEditMode"
-                class="alert-heading p-2"
+                class="alert-heading p-2 carbon-status-page-description"
                 data-testid="description"
                 v-html="descriptionHTML"
             ></div>
             <!-- eslint-enable vue/no-v-html-->
 
-            <div v-if="editMode" class="mb-4">
+            <div v-if="editMode" class="mb-4 carbon-status-page-monitor-picker">
                 <div>
                     <button class="btn btn-primary btn-add-group me-2" data-testid="add-group-button" @click="addGroup">
                         <font-awesome-icon icon="plus" />
@@ -483,7 +496,7 @@
                 </div>
             </div>
 
-            <div class="mb-4">
+            <div class="mb-4 carbon-status-page-groups">
                 <div v-if="$root.publicGroupList.length === 0 && loadedData" class="text-center">
                     <!-- 👀 Nothing here, please add a group or a monitor. -->
                     👀 {{ $t("statusPageNothing") }}
@@ -713,6 +726,22 @@ export default {
         };
     },
     computed: {
+        isModernDesign() {
+            return this.config.design !== "classic";
+        },
+
+        pageClass() {
+            if (!this.isModernDesign) {
+                return "container mt-3";
+            }
+
+            return {
+                carbon: true,
+                "carbon-status-page": true,
+                dark: this.$root.theme === "dark",
+            };
+        },
+
         logoURL() {
             if (this.imgDataUrl.startsWith("data:")) {
                 return this.imgDataUrl;

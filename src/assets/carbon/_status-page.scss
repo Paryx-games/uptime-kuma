@@ -1,0 +1,262 @@
+.carbon-status-page {
+    box-sizing: border-box;
+    min-height: 100dvh;
+    padding: 48px clamp(20px, 5vw, 72px) 32px;
+
+    .carbon-status-page-main {
+        display: flex;
+        flex-direction: column;
+        max-width: 920px;
+        margin: 0 auto;
+        color: var(--c-fg);
+        transition: none;
+    }
+
+    .carbon-status-page-main.edit {
+        margin-left: 300px;
+        margin-right: 0;
+    }
+
+    .title-flex {
+        gap: 14px;
+        margin-bottom: 28px !important;
+        font-size: 24px;
+        line-height: 32px;
+        letter-spacing: -0.02em;
+
+        .logo {
+            width: 48px;
+            height: 48px;
+            object-fit: contain;
+        }
+    }
+
+    .overall-status {
+        order: 2;
+        display: flex;
+        align-items: center;
+        min-height: 58px;
+        padding: 16px 18px !important;
+        border: 1px solid var(--c-line-strong);
+        border-radius: 12px;
+        background: var(--c-surface);
+        color: var(--c-fg);
+        font-size: 14px;
+        font-weight: 600;
+        box-shadow: none;
+
+        .ok {
+            color: var(--c-up);
+        }
+
+        .warning {
+            color: var(--c-pending);
+        }
+
+        .danger {
+            color: var(--c-down);
+        }
+
+        .status-maintenance {
+            color: var(--c-maintenance);
+        }
+    }
+
+    .incident {
+        order: 3;
+        border: 1px solid var(--c-line-strong);
+        border-inline-start: 3px solid var(--c-down);
+        border-radius: 10px;
+        background: var(--c-surface) !important;
+        color: var(--c-fg);
+
+        &.bg-warning {
+            border-inline-start-color: var(--c-pending);
+        }
+
+        &.bg-primary,
+        &.bg-info {
+            border-inline-start-color: var(--c-maintenance);
+        }
+
+        .date {
+            color: var(--c-muted);
+        }
+    }
+
+    .bg-maintenance {
+        order: 4;
+        border: 1px solid var(--c-line-strong);
+        border-inline-start: 3px solid var(--c-maintenance);
+        border-radius: 10px;
+        background: var(--c-surface) !important;
+        color: var(--c-fg);
+    }
+
+    .carbon-status-page-description-label {
+        order: 5;
+        margin-bottom: 4px;
+        color: var(--c-muted);
+        font-size: 12px;
+        font-weight: 500;
+    }
+
+    .carbon-status-page-description {
+        order: 5;
+        margin-bottom: 24px !important;
+        color: var(--c-fg-2);
+
+        a {
+            color: var(--c-fg);
+            text-decoration: underline;
+            text-underline-offset: 3px;
+        }
+    }
+
+    .carbon-status-page-monitor-picker,
+    .carbon-status-page-groups {
+        order: 6;
+    }
+
+    .group-title {
+        display: flex;
+        align-items: center;
+        min-height: 44px;
+        margin: 20px 0 0;
+        border-bottom: 1px solid var(--c-line);
+        color: var(--c-fg);
+        font-size: 15px;
+        font-weight: 600;
+
+        .chevron {
+            color: var(--c-muted);
+        }
+    }
+
+    .monitor-list.shadow-box {
+        overflow: hidden;
+        margin-top: 0 !important;
+        border: 1px solid var(--c-line);
+        border-radius: 0 0 10px 10px;
+        background: var(--c-bg);
+        box-shadow: none;
+    }
+
+    .item {
+        padding: 0 16px;
+        border-bottom: 1px solid var(--c-line);
+
+        &:last-child {
+            border-bottom: 0;
+        }
+
+        &:hover {
+            background: var(--c-hover);
+        }
+    }
+
+    .item > .row {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(220px, 0.75fr);
+        align-items: center;
+        margin: 0;
+        padding: 13px 0;
+
+        > [class*="col-"] {
+            width: auto;
+            max-width: none;
+            padding: 0;
+        }
+    }
+
+    .info {
+        color: var(--c-fg);
+    }
+
+    .item-name {
+        color: var(--c-fg);
+        font-weight: 500;
+    }
+
+    .extra-info {
+        margin: 3px 0 0 34px;
+    }
+
+    .carbon-bars {
+        min-width: 0;
+    }
+
+    .past-incidents-section {
+        order: 7;
+        margin-top: 32px;
+    }
+
+    .past-incidents-title {
+        color: var(--c-fg);
+        font-size: 15px;
+        font-weight: 600;
+    }
+
+    .incident-date-header {
+        color: var(--c-muted);
+        font-size: 12px;
+        font-weight: 500;
+    }
+
+    .incident-list-box {
+        border: 1px solid var(--c-line);
+        background: var(--c-bg);
+        box-shadow: none;
+    }
+
+    footer {
+        order: 8;
+        margin-top: 36px !important;
+        padding-top: 18px;
+        border-top: 1px solid var(--c-line);
+        color: var(--c-muted);
+
+        a {
+            color: var(--c-fg);
+        }
+    }
+}
+
+@media (max-width: 700px) {
+    .carbon-status-page {
+        padding: 24px 16px;
+
+        .carbon-status-page-main.edit {
+            margin-left: 0;
+        }
+
+        .title-flex {
+            gap: 10px;
+            margin-bottom: 20px !important;
+            font-size: 20px;
+            line-height: 28px;
+
+            .logo {
+                width: 40px;
+                height: 40px;
+            }
+        }
+
+        .item {
+            padding: 0 12px;
+        }
+
+        .item > .row {
+            grid-template-columns: minmax(0, 1fr);
+            gap: 8px;
+        }
+
+        .carbon-bars {
+            padding-left: 34px;
+        }
+
+        .past-incidents-section {
+            margin-top: 24px;
+        }
+    }
+}

@@ -302,6 +302,11 @@ module.exports.statusPageSocketHandler = (socket) => {
 
             checkSlug(config.slug);
 
+            const design = config.design ?? "modern";
+            if (!["modern", "classic"].includes(design)) {
+                throw new Error("Invalid status page design");
+            }
+
             const header = "data:image/png;base64,";
 
             // Check logo format
@@ -325,6 +330,7 @@ module.exports.statusPageSocketHandler = (socket) => {
             statusPage.title = config.title;
             statusPage.description = config.description;
             statusPage.icon = config.logo;
+            statusPage.design = design;
             ((statusPage.autoRefreshInterval = config.autoRefreshInterval), (statusPage.theme = config.theme));
             //statusPage.published = ;
             //statusPage.search_engine_index = ;
@@ -459,6 +465,7 @@ module.exports.statusPageSocketHandler = (socket) => {
             statusPage.slug = slug;
             statusPage.title = title;
             statusPage.theme = "auto";
+            statusPage.design = "modern";
             statusPage.icon = "";
             statusPage.autoRefreshInterval = 300;
             await R.store(statusPage);

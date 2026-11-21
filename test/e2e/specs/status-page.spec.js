@@ -74,6 +74,9 @@ test.describe("Status Page", () => {
         await page.getByTestId("submit-button").click();
         await page.waitForURL("/status/example?edit"); // wait for the page to be created
 
+        await expect(page.getByTestId("design-select")).toHaveValue("modern");
+        await expect(page.locator(".carbon-status-page")).toBeVisible();
+
         // Fill in some details
         await page.getByTestId("description-input").fill(descriptionText);
         await page.getByTestId("footer-text-input").fill(footerText);
@@ -113,8 +116,29 @@ test.describe("Status Page", () => {
 
         // Save the changes
         await screenshot(testInfo, page);
+        const modernSaveNavigation = page.waitForNavigation();
         await page.getByTestId("save-button").click();
+        await modernSaveNavigation;
         await expect(page.getByTestId("edit-sidebar")).toHaveCount(0);
+        await expect(page.locator(".carbon-status-page")).toBeVisible();
+
+        await page.getByTestId("edit-button").click();
+        await page.getByTestId("design-select").selectOption("classic");
+        await expect(page.getByTestId("design-select")).toHaveValue("classic");
+        await expect(page.locator(".carbon-status-page")).toHaveCount(0);
+        const classicSaveNavigation = page.waitForNavigation();
+        await page.getByTestId("save-button").click();
+        await classicSaveNavigation;
+        await expect(page.locator(".carbon-status-page")).toHaveCount(0);
+
+        await page.getByTestId("edit-button").click();
+        await expect(page.getByTestId("design-select")).toHaveValue("classic");
+        await page.getByTestId("design-select").selectOption("modern");
+        await expect(page.locator(".carbon-status-page")).toBeVisible();
+        const modernRestoreNavigation = page.waitForNavigation();
+        await page.getByTestId("save-button").click();
+        await modernRestoreNavigation;
+        await expect(page.locator(".carbon-status-page")).toBeVisible();
 
         // Ensure changes are visible
         await expect(page.getByTestId("incident")).toHaveCount(1);
@@ -161,7 +185,9 @@ test.describe("Status Page", () => {
         await page.getByTestId("analytics-type-select").selectOption("umami");
         await page.getByTestId("analytics-script-url-input").fill(umamiAnalyticsScriptUrl);
         await page.getByTestId("analytics-id-input").fill(umamiAnalyticsWebsiteId);
+        const umamiSaveNavigation = page.waitForNavigation();
         await page.getByTestId("save-button").click();
+        await umamiSaveNavigation;
 
         await expect(page.getByTestId("edit-sidebar")).toHaveCount(0);
         await expect(page.getByTestId("powered-by")).toContainText("Powered by");
@@ -180,7 +206,9 @@ test.describe("Status Page", () => {
         await page.getByTestId("analytics-type-select").selectOption("plausible");
         await page.getByTestId("analytics-script-url-input").fill(plausibleAnalyticsScriptUrl);
         await page.getByTestId("analytics-id-input").fill(plausibleAnalyticsDomainsUrls);
+        const plausibleSaveNavigation = page.waitForNavigation();
         await page.getByTestId("save-button").click();
+        await plausibleSaveNavigation;
         await screenshot(testInfo, page);
         await page.waitForFunction(
             (scriptUrl) => {
@@ -197,7 +225,9 @@ test.describe("Status Page", () => {
         await page.getByTestId("analytics-type-select").selectOption("matomo");
         await page.getByTestId("analytics-script-url-input").fill(matomoUrl);
         await page.getByTestId("analytics-id-input").fill(matomoSiteId);
+        const matomoSaveNavigation = page.waitForNavigation();
         await page.getByTestId("save-button").click();
+        await matomoSaveNavigation;
         await screenshot(testInfo, page);
         await page.waitForFunction(
             (url) => {
@@ -208,6 +238,7 @@ test.describe("Status Page", () => {
         );
         expect(await page.locator("head").innerHTML()).toContain(matomoUrl);
         expect(await page.locator("head").innerHTML()).toContain(matomoSiteId);
+
     });
 
     // @todo Test certificate expiry
