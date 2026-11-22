@@ -1,5 +1,5 @@
 <template>
-    <span class="carbon-incident-status" :class="`is-${status}`" data-testid="incident-status">
+    <span class="carbon-incident-status" :class="`is-${colorStatus || status}`" data-testid="incident-status">
         <font-awesome-icon :icon="icon" aria-hidden="true" />
         <span>{{ $t(label) }}</span>
     </span>
@@ -31,6 +31,10 @@ export default {
         incident: {
             type: Object,
             required: true,
+        },
+        colorStatus: {
+            type: String,
+            default: null,
         },
     },
     computed: {

@@ -177,9 +177,10 @@ test.describe("Status Page", () => {
         // Ensure changes are visible
         await expect(page.locator(".carbon-status-page")).toHaveClass(/dark/);
         await expect(page.getByTestId("incident")).toHaveCount(1);
-        await expect(page.getByTestId("incident-status")).toContainText("Monitoring");
+        await expect(page.locator(".carbon-incident-meta > .carbon-incident-status")).toContainText("Monitoring");
         await expect(page.getByTestId("incident")).toContainText("We're currently experiencing issues");
         await expect(page.getByTestId("incident-products")).toContainText(monitorName);
+        await expect(page.getByTestId("incident-preview-updates").locator("li")).toHaveCount(1);
         await expect(page.getByTestId("overall-status")).toContainText("Degraded Service");
         await expect(page.getByTestId("overall-status").locator(".overall-status-heading strong")).toHaveCSS(
             "font-weight",
@@ -192,14 +193,22 @@ test.describe("Status Page", () => {
         await expect(page.getByTestId("incident-title")).toContainText(incidentTitle);
         await expect(page.getByTestId("incident-title")).toHaveCSS("font-size", "16px");
         await expect(page.getByTestId("incident-title")).toHaveCSS("font-weight", "400");
-        await expect(page.getByTestId("incident-content")).toContainText(incidentContent);
-        await expect(page.getByTestId("incident-content")).toHaveCSS("font-size", "15px");
+        await expect(page.getByTestId("incident-preview-updates").locator(".incident-content")).toContainText(
+            incidentContent
+        );
+        await expect(page.getByTestId("incident-preview-updates").locator(".incident-content")).toHaveCSS(
+            "font-size",
+            "14px"
+        );
         const incidentStatusColor = await page
-            .getByTestId("incident-status")
+            .locator(".carbon-incident-meta > .carbon-incident-status")
             .evaluate((element) => getComputedStyle(element).color);
         expect(incidentStatusColor).toBe("rgb(251, 191, 36)");
         await page.locator(".carbon-status-page").evaluate((element) => element.classList.remove("dark"));
-        await expect(page.getByTestId("incident-status")).toHaveCSS("color", "rgb(251, 191, 36)");
+        await expect(page.locator(".carbon-incident-meta > .carbon-incident-status")).toHaveCSS(
+            "color",
+            "rgb(251, 191, 36)"
+        );
         await page.locator(".carbon-status-page").evaluate((element) => element.classList.add("dark"));
         expect(
             await page.getByTestId("incident-title").evaluate((element) => {
@@ -226,12 +235,22 @@ test.describe("Status Page", () => {
         await incidentUpdateForm.getByRole("button", { name: "Post update" }).click();
         await expect(page.getByTestId("incident-updates").locator("li")).toHaveCount(2);
         await expect(incidentDetail.getByTestId("incident-status").first()).toContainText("Investigating");
-        await expect(incidentDetail.getByTestId("incident-status").first()).toHaveCSS("color", "rgb(245, 120, 92)");
+        await expect(incidentDetail.getByTestId("incident-status").first()).toHaveCSS("color", "rgb(245, 92, 92)");
         await page.getByRole("button", { name: "Back to status" }).click();
         await expect(page.getByTestId("incident")).toHaveClass(/is-investigating/);
+        const incidentPreviewUpdates = page.getByTestId("incident-preview-updates");
+        await expect(incidentPreviewUpdates.locator("li")).toHaveCount(2);
+        await expect(incidentPreviewUpdates.locator(".carbon-incident-status").nth(0)).toHaveCSS(
+            "color",
+            "rgb(245, 92, 92)"
+        );
+        await expect(incidentPreviewUpdates.locator(".carbon-incident-status").nth(1)).toHaveCSS(
+            "color",
+            "rgb(245, 92, 92)"
+        );
         await expect(page.getByTestId("incident-products").locator(".carbon-incident-product")).toHaveCSS(
             "color",
-            "rgb(245, 120, 92)"
+            "rgb(245, 92, 92)"
         );
         await page.getByTestId("incident-view-updates").click();
         await expect(incidentDetail).toBeVisible();
@@ -251,6 +270,26 @@ test.describe("Status Page", () => {
         await expect(page.getByTestId("incident-updates")).toContainText(
             "A mitigation is in place; we are monitoring recovery."
         );
+        await page.getByRole("button", { name: "Back to status" }).click();
+        await expect(incidentPreviewUpdates.locator("li")).toHaveCount(3);
+        await expect(incidentPreviewUpdates).toContainText("We are investigating the reported issue.");
+        await expect(incidentPreviewUpdates).toContainText("We have identified the cause of the issue.");
+        await expect(incidentPreviewUpdates).toContainText("A mitigation is in place; we are monitoring recovery.");
+        await expect(incidentPreviewUpdates).not.toContainText(incidentContent);
+        await expect(incidentPreviewUpdates.locator(".carbon-incident-status").nth(0)).toHaveCSS(
+            "color",
+            "rgb(251, 191, 36)"
+        );
+        await expect(incidentPreviewUpdates.locator(".carbon-incident-status").nth(1)).toHaveCSS(
+            "color",
+            "rgb(251, 191, 36)"
+        );
+        await expect(incidentPreviewUpdates.locator(".carbon-incident-status").nth(2)).toHaveCSS(
+            "color",
+            "rgb(251, 191, 36)"
+        );
+        await page.getByTestId("incident-view-updates").click();
+        await expect(incidentDetail).toBeVisible();
 
         await page.getByTestId("incident-update-status").selectOption("resolved");
         await page.getByTestId("incident-update-content").fill("All affected services are operating normally again.");

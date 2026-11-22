@@ -378,43 +378,56 @@
                     </div>
                     <div :class="{ 'carbon-incident-card-content': isModernDesign }">
                         <div v-if="isModernDesign" class="carbon-incident-update">
-                            <font-awesome-icon class="carbon-incident-update-icon" icon="exclamation-triangle" />
-                            <div>
-                                <h4 class="carbon-incident-update-title" data-testid="incident-title">
-                                    {{ activeIncident.title }}
-                                </h4>
-                                <!-- eslint-disable vue/no-v-html -->
-                                <div
-                                    class="content"
-                                    data-testid="incident-content"
-                                    v-html="
-                                        getIncidentHTML(
-                                            latestIncidentUpdate(activeIncident)?.content || activeIncident.content
-                                        )
-                                    "
-                                ></div>
-                                <!-- eslint-enable vue/no-v-html -->
-                                <div class="carbon-incident-meta">
-                                    <IncidentStatus :incident="activeIncident" />
+                            <h4 class="carbon-incident-update-title" data-testid="incident-title">
+                                {{ activeIncident.title }}
+                            </h4>
+                            <ol
+                                v-if="incidentPreviewUpdates(activeIncident).length > 0"
+                                class="carbon-incident-timeline carbon-incident-timeline-preview"
+                                data-testid="incident-preview-updates"
+                            >
+                                <li
+                                    v-for="update in incidentPreviewUpdates(activeIncident)"
+                                    :key="update.id"
+                                    :class="`is-${activeIncident.status || 'investigating'}`"
+                                >
+                                    <IncidentStatus
+                                        :incident="{ active: update.status !== 'resolved', status: update.status }"
+                                        :color-status="activeIncident.status || 'investigating'"
+                                    />
+                                    <!-- eslint-disable-next-line vue/no-v-html -->
+                                    <div class="incident-content" v-html="getIncidentHTML(update.content)"></div>
+                                    <time :datetime="update.createdDate">{{ $root.datetime(update.createdDate) }}</time>
+                                </li>
+                            </ol>
+                            <!-- eslint-disable vue/no-v-html -->
+                            <div
+                                v-else
+                                class="content"
+                                data-testid="incident-preview-content"
+                                v-html="getIncidentHTML(activeIncident.content)"
+                            ></div>
+                            <!-- eslint-enable vue/no-v-html -->
+                            <div class="carbon-incident-meta">
+                                <IncidentStatus :incident="activeIncident" />
+                                <span class="carbon-incident-meta-separator" aria-hidden="true">·</span>
+                                <span>
+                                    {{
+                                        $t("Ongoing for {duration}", {
+                                            duration: incidentDuration(activeIncident.createdDate),
+                                        })
+                                    }}
+                                </span>
+                                <template v-if="getAffectedMonitors(activeIncident).length > 0">
                                     <span class="carbon-incident-meta-separator" aria-hidden="true">·</span>
                                     <span>
                                         {{
-                                            $t("Ongoing for {duration}", {
-                                                duration: incidentDuration(activeIncident.createdDate),
+                                            $t("Affects {products}", {
+                                                products: getAffectedProductNames(activeIncident),
                                             })
                                         }}
                                     </span>
-                                    <template v-if="getAffectedMonitors(activeIncident).length > 0">
-                                        <span class="carbon-incident-meta-separator" aria-hidden="true">·</span>
-                                        <span>
-                                            {{
-                                                $t("Affects {products}", {
-                                                    products: getAffectedProductNames(activeIncident),
-                                                })
-                                            }}
-                                        </span>
-                                    </template>
-                                </div>
+                                </template>
                             </div>
                         </div>
 
@@ -1572,6 +1585,15 @@ export default {
         latestIncidentUpdate(incident) {
             const updates = incident.updates || [];
             return updates[updates.length - 1] || null;
+        },
+
+        /**
+         * Get the latest three updates for the active incident preview.
+         * @param {object} incident Incident data
+         * @returns {object[]} The most recent updates in chronological order
+         */
+        incidentPreviewUpdates(incident) {
+            return (incident.updates || []).slice(-3);
         },
 
         /**

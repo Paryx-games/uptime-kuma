@@ -3,7 +3,7 @@
     min-height: 100dvh;
     padding: 48px clamp(20px, 5vw, 72px) 32px;
     color: var(--c-fg);
-    --c-incident-red: #f5785c;
+    --c-incident-red: #f55c5c;
     --c-incident-yellow: #fbbf24;
     --c-incident-green: #24c19a;
     --c-footer-muted: #5f5f65;
@@ -202,14 +202,7 @@
         }
 
         .carbon-incident-update {
-            display: grid;
-            grid-template-columns: 20px minmax(0, 1fr);
-            gap: 12px;
-        }
-
-        .carbon-incident-update-icon {
-            margin-top: 3px;
-            color: var(--c-status-color);
+            display: block;
         }
 
         .carbon-incident-update-title {
@@ -232,6 +225,24 @@
 
         .carbon-incident-meta-separator {
             color: var(--c-status-color);
+        }
+
+        .carbon-incident-timeline-preview {
+            padding: 8px 0 0 8px;
+
+            li {
+                padding-bottom: 16px;
+
+                .incident-content {
+                    margin-top: 6px;
+                    font-size: 14px;
+                }
+
+                time {
+                    margin-top: 8px;
+                    font-size: 12px;
+                }
+            }
         }
 
         .date {
