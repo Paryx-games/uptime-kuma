@@ -214,6 +214,364 @@
         }
     }
 
+    .carbon-incident-view-updates {
+        display: inline-flex;
+        margin-top: 12px;
+        padding: 0;
+        border: 0;
+        background: transparent;
+        color: var(--c-muted);
+        font-size: 13px;
+        text-decoration: underline;
+        text-underline-offset: 3px;
+
+        &:hover,
+        &:focus-visible {
+            color: var(--c-fg);
+        }
+    }
+
+    .carbon-incident-details {
+        order: 3;
+
+        h3 {
+            margin: 0;
+            color: var(--c-fg);
+            font-size: 16px;
+            font-weight: 600;
+        }
+    }
+
+    .carbon-incident-back {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        margin: 0 0 16px;
+        padding: 0;
+        border: 0;
+        background: transparent;
+        color: var(--c-muted);
+        font-size: 13px;
+
+        &:hover,
+        &:focus-visible {
+            color: var(--c-fg);
+        }
+    }
+
+    .carbon-incident-detail-card {
+        overflow: hidden;
+        margin-bottom: 24px;
+        border: 1px solid color-mix(in srgb, var(--c-status-color) 45%, var(--c-line-strong));
+        border-radius: 12px;
+        background: var(--c-bg);
+        color: var(--c-fg);
+
+        &.is-investigating {
+            --c-status-color: var(--c-down);
+        }
+
+        &.is-identified,
+        &.is-monitoring {
+            --c-status-color: var(--c-pending);
+        }
+
+        &.is-resolved {
+            --c-status-color: var(--c-up);
+        }
+
+        .carbon-incident-detail-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px 18px;
+            border-bottom: 1px solid color-mix(in srgb, var(--c-status-color) 20%, var(--c-line));
+            background: color-mix(in srgb, var(--c-status-color) 14%, var(--c-bg));
+        }
+
+        h2 {
+            margin: 0;
+            color: var(--c-fg);
+            font-size: 17px;
+            font-weight: 500;
+        }
+
+        .carbon-incident-detail-summary {
+            padding: 16px 18px;
+        }
+
+        .carbon-incident-detail-state,
+        .carbon-incident-detail-meta {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 8px;
+            color: var(--c-muted);
+            font-size: 13px;
+        }
+
+        .incident-content {
+            margin-top: 12px;
+            color: var(--c-fg-2);
+            line-height: 1.5;
+
+            p:last-child {
+                margin-bottom: 0;
+            }
+        }
+
+        .carbon-incident-detail-meta {
+            margin-top: 14px;
+
+            a {
+                color: var(--c-fg);
+                text-decoration: underline;
+                text-underline-offset: 3px;
+            }
+        }
+    }
+
+    .carbon-incident-components,
+    .carbon-incident-updates,
+    .carbon-incident-update-panel {
+        margin-bottom: 24px;
+        border: 1px solid var(--c-line-strong);
+        border-radius: 12px;
+        background: var(--c-bg);
+        color: var(--c-fg);
+        box-shadow: none;
+
+        > header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            padding: 16px 18px;
+            border-bottom: 1px solid var(--c-line);
+        }
+
+        > header > span {
+            color: var(--c-muted);
+            font-size: 13px;
+        }
+    }
+
+    .carbon-incident-component-list {
+        padding: 4px 18px;
+    }
+
+    .carbon-incident-component {
+        padding: 12px 0;
+        border-bottom: 1px solid var(--c-line);
+
+        &:last-child {
+            border-bottom: 0;
+        }
+    }
+
+    .carbon-incident-component-heading {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 8px;
+        color: var(--c-fg);
+        font-size: 14px;
+    }
+
+    .carbon-incident-empty {
+        padding: 18px;
+        color: var(--c-muted);
+        font-size: 13px;
+    }
+
+    .carbon-incident-timeline {
+        margin: 0;
+        padding: 18px 20px 4px 28px;
+        list-style: none;
+
+        li {
+            position: relative;
+            margin: 0;
+            padding: 0 0 22px 18px;
+            border-inline-start: 1px solid var(--c-status-color);
+
+            &::before {
+                position: absolute;
+                top: 3px;
+                left: -5px;
+                width: 9px;
+                height: 9px;
+                border-radius: 50%;
+                background: var(--c-status-color);
+                content: "";
+            }
+
+            &:last-child {
+                padding-bottom: 16px;
+                border-inline-start-color: transparent;
+            }
+
+            &.is-investigating {
+                --c-status-color: var(--c-down);
+            }
+
+            &.is-identified,
+            &.is-monitoring {
+                --c-status-color: var(--c-pending);
+            }
+
+            &.is-resolved {
+                --c-status-color: var(--c-up);
+            }
+
+            .incident-content {
+                margin-top: 10px;
+                color: var(--c-fg-2);
+                line-height: 1.5;
+
+                p:last-child {
+                    margin-bottom: 0;
+                }
+            }
+
+            time {
+                display: block;
+                margin-top: 12px;
+                color: var(--c-muted);
+                font-size: 13px;
+            }
+        }
+    }
+
+    .carbon-incident-update-panel {
+        padding: 18px;
+
+        h3 {
+            margin-bottom: 18px;
+        }
+
+        .form-label {
+            color: var(--c-fg);
+        }
+
+        .form-control,
+        .form-select {
+            border-color: var(--c-line-strong);
+            background-color: var(--c-field);
+            color: var(--c-fg);
+        }
+
+        .form-text {
+            color: var(--c-muted);
+        }
+    }
+
+    .carbon-incident-history-item {
+        display: grid;
+        grid-template-columns: 44px 3px minmax(0, 1fr);
+        gap: 0 14px;
+        padding: 16px 0;
+        border-bottom: 1px solid var(--c-line);
+
+        &:last-child {
+            border-bottom: 0;
+        }
+
+        .carbon-incident-history-date {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+            color: var(--c-muted);
+            font-size: 11px;
+
+            strong {
+                color: var(--c-fg);
+                font-size: 14px;
+                font-weight: 600;
+            }
+        }
+
+        .carbon-incident-history-stripe {
+            min-height: 48px;
+            border-radius: 2px;
+            background: var(--c-status-color);
+
+            &.is-investigating {
+                --c-status-color: var(--c-down);
+            }
+
+            &.is-identified,
+            &.is-monitoring {
+                --c-status-color: var(--c-pending);
+            }
+
+            &.is-resolved {
+                --c-status-color: var(--c-up);
+            }
+        }
+
+        .carbon-incident-history-heading {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .carbon-incident-history-title {
+            padding: 0;
+            border: 0;
+            background: transparent;
+            color: var(--c-fg);
+            font-size: 14px;
+            text-align: left;
+
+            &:hover,
+            &:focus-visible {
+                text-decoration: underline;
+                text-underline-offset: 3px;
+            }
+        }
+
+        .carbon-incident-history-time {
+            flex: 0 0 auto;
+            color: var(--c-muted);
+            font-size: 12px;
+        }
+
+        .carbon-incident-status {
+            margin-top: 6px;
+            font-size: 11px;
+        }
+
+        .carbon-incident-history-summary {
+            margin-top: 4px;
+            color: var(--c-muted);
+            font-size: 13px;
+            line-height: 1.45;
+
+            p:last-child {
+                margin-bottom: 0;
+            }
+        }
+
+        .incident-actions {
+            margin-top: 8px;
+        }
+    }
+
+    .carbon-incident-list-box {
+        border: 0;
+        background: transparent;
+    }
+
+    .carbon-incident-list {
+        padding: 0;
+    }
+
+    .carbon-incident-group {
+        padding: 0;
+    }
+
     .carbon-incident-editor {
         padding: 20px 24px !important;
 

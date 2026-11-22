@@ -16,12 +16,81 @@ const { Settings } = require("../settings");
  * @throws {Error} If validation fails
  */
 function validateIncident(incident) {
-    if (!incident.title || incident.title.trim() === "") {
+    if (typeof incident.title !== "string" || incident.title.trim() === "") {
         throw new Error("Please input title");
     }
-    if (!incident.content || incident.content.trim() === "") {
+    if (typeof incident.content !== "string" || incident.content.trim() === "") {
         throw new Error("Please input content");
     }
+}
+
+/**
+ * Validate that affected monitors belong to the status page.
+ * @param {number} statusPageID Status page ID
+ * @param {number[]} monitorIDs Monitor IDs selected by the user
+ * @returns {Promise<number[]>} Validated monitor IDs
+ */
+async function validateAffectedMonitors(statusPageID, monitorIDs) {
+    if (!Array.isArray(monitorIDs)) {
+        throw new Error("Invalid affected monitors");
+    }
+
+    const requestedIDs = [...new Set(monitorIDs.map((monitorID) => Number(monitorID)))];
+    if (requestedIDs.some((monitorID) => !Number.isSafeInteger(monitorID) || monitorID <= 0)) {
+        throw new Error("Invalid affected monitors");
+    }
+
+    const publicMonitorIDs = new Set(
+        (await R.getCol(
+            `SELECT DISTINCT monitor_group.monitor_id
+             FROM monitor_group
+             INNER JOIN \`group\` ON \`group\`.id = monitor_group.group_id
+             WHERE \`group\`.public = 1 AND \`group\`.status_page_id = ?`,
+            [statusPageID]
+        )).map((monitorID) => Number(monitorID))
+    );
+    if (requestedIDs.some((monitorID) => !publicMonitorIDs.has(monitorID))) {
+        throw new Error("Invalid affected monitors");
+    }
+
+    return requestedIDs;
+}
+
+/**
+ * Replace the monitors affected by an incident.
+ * @param {number} incidentID Incident ID
+ * @param {number[]} monitorIDs Validated monitor IDs
+ * @returns {Promise<void>}
+ */
+async function saveAffectedMonitors(incidentID, monitorIDs) {
+    await R.knex.transaction(async (transaction) => {
+        await transaction("incident_monitor").where("incident_id", incidentID).delete();
+        if (monitorIDs.length > 0) {
+            await transaction("incident_monitor").insert(
+                monitorIDs.map((monitorID) => ({
+                    incident_id: incidentID,
+                    monitor_id: monitorID,
+                }))
+            );
+        }
+    });
+}
+
+/**
+ * Save a status update for an incident.
+ * @param {number} incidentID Incident ID
+ * @param {string} status Incident status
+ * @param {string} content Update content
+ * @param {string} createdDate Update time
+ * @returns {Promise<void>}
+ */
+async function saveIncidentUpdate(incidentID, status, content, createdDate) {
+    await R.knex("incident_update").insert({
+        incident_id: incidentID,
+        status,
+        content,
+        created_date: createdDate,
+    });
 }
 
 /**
@@ -34,12 +103,18 @@ module.exports.statusPageSocketHandler = (socket) => {
     socket.on("postIncident", async (slug, incident, callback) => {
         try {
             checkLogin(socket);
+            validateIncident(incident);
 
             let statusPageID = await StatusPage.slugToID(slug);
 
             if (!statusPageID) {
                 throw new Error("slug is not found");
             }
+
+            const hasAffectedMonitors = Object.prototype.hasOwnProperty.call(incident, "affectedMonitorIDs");
+            const affectedMonitorIDs = hasAffectedMonitors
+                ? await validateAffectedMonitors(statusPageID, incident.affectedMonitorIDs)
+                : null;
 
             let incidentBean;
 
@@ -56,18 +131,28 @@ module.exports.statusPageSocketHandler = (socket) => {
 
             incidentBean.title = incident.title;
             incidentBean.content = incident.content;
-            incidentBean.style = incident.style;
+            const validStyles = ["info", "warning", "danger", "primary", "light", "dark"];
+            incidentBean.style = validStyles.includes(incident.style) ? incident.style : "warning";
             incidentBean.pin = true;
             incidentBean.active = true;
             incidentBean.status_page_id = statusPageID;
 
+            const isNewIncident = !incidentBean.id;
+            const now = R.isoDateTime(dayjs.utc());
             if (incident.id) {
-                incidentBean.last_updated_date = R.isoDateTime(dayjs.utc());
+                incidentBean.last_updated_date = now;
             } else {
-                incidentBean.created_date = R.isoDateTime(dayjs.utc());
+                incidentBean.created_date = now;
             }
 
             await R.store(incidentBean);
+            if (affectedMonitorIDs !== null) {
+                await saveAffectedMonitors(incidentBean.id, affectedMonitorIDs);
+            }
+            if (isNewIncident) {
+                await saveIncidentUpdate(incidentBean.id, "investigating", incident.content, now);
+            }
+            apicache.clear();
 
             callback({
                 ok: true,
@@ -161,13 +246,22 @@ module.exports.statusPageSocketHandler = (socket) => {
                 incident.style = "warning";
             }
 
+            const hasAffectedMonitors = Object.prototype.hasOwnProperty.call(incident, "affectedMonitorIDs");
+            const affectedMonitorIDs = hasAffectedMonitors
+                ? await validateAffectedMonitors(statusPageID, incident.affectedMonitorIDs)
+                : null;
+
             bean.title = incident.title;
             bean.content = incident.content;
             bean.style = incident.style;
             bean.pin = incident.pin !== false;
-            bean.lastUpdatedDate = R.isoDateTime(dayjs.utc());
+            bean.last_updated_date = R.isoDateTime(dayjs.utc());
 
             await R.store(bean);
+            if (affectedMonitorIDs !== null) {
+                await saveAffectedMonitors(bean.id, affectedMonitorIDs);
+            }
+            apicache.clear();
 
             callback({
                 ok: true,
@@ -209,6 +303,7 @@ module.exports.statusPageSocketHandler = (socket) => {
             }
 
             await R.trash(bean);
+            apicache.clear();
 
             callback({
                 ok: true,
@@ -224,7 +319,12 @@ module.exports.statusPageSocketHandler = (socket) => {
         }
     });
 
-    socket.on("resolveIncident", async (slug, incidentID, callback) => {
+    socket.on("resolveIncident", async (slug, incidentID, contentOrCallback, maybeCallback) => {
+        const callback = typeof contentOrCallback === "function" ? contentOrCallback : maybeCallback;
+        const content =
+            typeof contentOrCallback === "string"
+                ? contentOrCallback
+                : "All affected services are operating normally again.";
         try {
             checkLogin(socket);
 
@@ -248,13 +348,60 @@ module.exports.statusPageSocketHandler = (socket) => {
                 return;
             }
 
+            const resolvedAt = R.isoDateTime(dayjs.utc());
+            await saveIncidentUpdate(incidentID, "resolved", content, resolvedAt);
             await bean.resolve();
+            apicache.clear();
 
             callback({
                 ok: true,
                 msg: "Resolved",
                 msgi18n: true,
                 incident: bean.toPublicJSON(),
+            });
+        } catch (error) {
+            callback({
+                ok: false,
+                msg: error.message,
+                msgi18n: true,
+            });
+        }
+    });
+
+    socket.on("postIncidentUpdate", async (slug, incidentID, update, callback) => {
+        try {
+            checkLogin(socket);
+
+            const statusPageID = await StatusPage.slugToID(slug);
+            if (!statusPageID) {
+                throw new Error("slug is not found");
+            }
+
+            const incident = await R.findOne("incident", " id = ? AND status_page_id = ? ", [incidentID, statusPageID]);
+            if (!incident) {
+                throw new Error("Incident not found or access denied");
+            }
+
+            const validStatuses = ["investigating", "identified", "monitoring", "resolved"];
+            if (!update || !validStatuses.includes(update.status)) {
+                throw new Error("Invalid incident status");
+            }
+            if (typeof update.content !== "string" || update.content.trim() === "") {
+                throw new Error("Please input content");
+            }
+
+            const now = R.isoDateTime(dayjs.utc());
+            await saveIncidentUpdate(incidentID, update.status, update.content, now);
+            incident.active = update.status !== "resolved";
+            incident.pin = incident.active;
+            incident.last_updated_date = now;
+            await R.store(incident);
+            apicache.clear();
+
+            callback({
+                ok: true,
+                msg: "Saved.",
+                msgi18n: true,
             });
         } catch (error) {
             callback({

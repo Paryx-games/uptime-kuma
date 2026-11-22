@@ -312,6 +312,16 @@
                 </div>
             </div>
 
+            <IncidentDetails
+                v-if="isModernDesign && selectedIncident"
+                :incident="selectedIncident"
+                :public-monitor-list="$root.publicMonitorList"
+                :edit-mode="editMode"
+                :processing="incidentUpdateProcessing"
+                @back="closeIncidentDetails"
+                @post-update="postIncidentUpdate"
+            />
+            <template v-else>
             <!-- Incident Edit Form -->
             <IncidentEditForm
                 v-if="
@@ -320,6 +330,7 @@
                     (!incident.id || !activeIncidents.some((i) => i.id === incident.id))
                 "
                 v-model="incident"
+                :available-monitors="publicMonitors"
                 @post="postIncident"
                 @cancel="cancelIncident"
             />
@@ -330,6 +341,7 @@
                 <IncidentEditForm
                     v-if="editIncidentMode && incident !== null && incident.id === activeIncident.id"
                     v-model="incident"
+                    :available-monitors="publicMonitors"
                     @post="postIncident"
                     @cancel="cancelIncident"
                 />
@@ -337,21 +349,30 @@
                 <!-- Display mode for this incident -->
                 <div
                     v-else
-                    class="shadow-box alert mb-4 incident carbon-incident-card"
+                    class="shadow-box alert mb-4 p-4 incident"
                     role="alert"
-                    :class="`is-${activeIncident.status || 'investigating'}`"
+                    :class="
+                        isModernDesign
+                            ? ['carbon-incident-card', `is-${activeIncident.status || 'investigating'}`]
+                            : `bg-${activeIncident.style}`
+                    "
                     data-testid="incident"
                 >
-                    <div class="carbon-incident-card-header">
+                    <div v-if="isModernDesign" class="carbon-incident-card-header">
                         <IncidentStatus :incident="activeIncident" />
                         <h4 class="alert-heading" data-testid="incident-title">{{ activeIncident.title }}</h4>
                     </div>
-                    <div class="carbon-incident-card-content">
+                    <h4 v-else class="alert-heading" data-testid="incident-title">{{ activeIncident.title }}</h4>
+                    <div :class="{ 'carbon-incident-card-content': isModernDesign }">
                         <!-- eslint-disable vue/no-v-html -->
                         <div
                             class="content"
                             data-testid="incident-content"
-                            v-html="getIncidentHTML(activeIncident.content)"
+                            v-html="
+                                getIncidentHTML(
+                                    latestIncidentUpdate(activeIncident)?.content || activeIncident.content
+                                )
+                            "
                         ></div>
                         <!-- eslint-enable vue/no-v-html -->
 
@@ -374,7 +395,17 @@
                             </span>
                         </div>
 
-                        <div v-if="editMode" class="carbon-incident-card-actions">
+                        <button
+                            v-if="isModernDesign"
+                            type="button"
+                            class="carbon-incident-view-updates"
+                            data-testid="incident-view-updates"
+                            @click="showIncidentDetails(activeIncident)"
+                        >
+                            {{ $t("View all updates") }}
+                        </button>
+
+                        <div v-if="editMode" :class="isModernDesign ? 'carbon-incident-card-actions' : 'mt-3'">
                             <button class="btn btn-light me-2" @click="resolveIncident(activeIncident)">
                                 <font-awesome-icon icon="check" />
                                 {{ $t("Resolve") }}
@@ -397,6 +428,7 @@
 
             <!-- Overall Status -->
             <div
+                v-if="isModernDesign"
                 class="shadow-box overall-status mb-4"
                 :class="overallStatusClass"
                 data-testid="overall-status"
@@ -406,6 +438,38 @@
                     <strong>{{ overallStatusTitle }}</strong>
                 </div>
                 <div class="overall-status-description">{{ overallStatusDescription }}</div>
+            </div>
+            <div v-else class="shadow-box list p-4 overall-status mb-4">
+                <div v-if="Object.keys($root.publicMonitorList).length === 0 && loadedData">
+                    <font-awesome-icon icon="question-circle" class="ok" />
+                    {{ $t("No Services") }}
+                </div>
+
+                <template v-else>
+                    <div v-if="allUp">
+                        <font-awesome-icon icon="check-circle" class="ok" />
+                        {{ $t("All Systems Operational") }}
+                    </div>
+
+                    <div v-else-if="partialDown">
+                        <font-awesome-icon icon="exclamation-circle" class="warning" />
+                        {{ $t("Partially Degraded Service") }}
+                    </div>
+
+                    <div v-else-if="allDown">
+                        <font-awesome-icon icon="times-circle" class="danger" />
+                        {{ $t("Degraded Service") }}
+                    </div>
+
+                    <div v-else-if="isMaintenance">
+                        <font-awesome-icon icon="wrench" class="status-maintenance" />
+                        {{ $t("maintenanceStatus-under-maintenance") }}
+                    </div>
+
+                    <div v-else>
+                        <font-awesome-icon icon="question-circle" style="color: #efefef" />
+                    </div>
+                </template>
             </div>
 
             <!-- Maintenance -->
@@ -509,14 +573,16 @@
                         class="incident-date-group mb-4"
                     >
                         <h4 class="incident-date-header">{{ dateKey }}</h4>
-                        <div class="shadow-box incident-list-box">
+                        <div class="shadow-box incident-list-box" :class="{ 'carbon-incident-list-box': isModernDesign }">
                             <IncidentHistory
                                 :incidents="dateGroup"
                                 :edit-mode="enableEditMode"
+                                :modern-design="isModernDesign"
                                 :loading="incidentHistoryLoading"
                                 @edit-incident="$refs.incidentManageModal.showEdit($event)"
                                 @delete-incident="$refs.incidentManageModal.showDelete($event)"
                                 @resolve-incident="resolveIncident"
+                                @view-incident="showIncidentDetails"
                             />
                         </div>
                     </div>
@@ -537,6 +603,7 @@
                     </div>
                 </div>
             </div>
+            </template>
 
             <!-- Incident Manage Modal -->
             <IncidentManageModal
@@ -623,6 +690,7 @@ import IncidentHistory from "../components/IncidentHistory.vue";
 import IncidentManageModal from "../components/IncidentManageModal.vue";
 import IncidentEditForm from "../components/IncidentEditForm.vue";
 import IncidentStatus from "../components/IncidentStatus.vue";
+import IncidentDetails from "../components/IncidentDetails.vue";
 import { getResBaseURL } from "../util-frontend";
 import {
     STATUS_PAGE_ALL_DOWN,
@@ -660,6 +728,7 @@ export default {
         IncidentManageModal,
         IncidentEditForm,
         IncidentStatus,
+        IncidentDetails,
     },
 
     // Leave Page for vue route change
@@ -696,6 +765,8 @@ export default {
             selectedMonitor: null,
             incident: null,
             previousIncident: null,
+            selectedIncidentId: null,
+            incidentUpdateProcessing: false,
             showImageCropUpload: false,
             imgDataUrl: "/icon.svg",
             loadedTheme: false,
@@ -947,6 +1018,16 @@ export default {
             return this.incidentHistory.filter((i) => i.active && i.pin);
         },
 
+        publicMonitors() {
+            return Object.values(this.$root.publicMonitorList).sort((monitorA, monitorB) =>
+                monitorA.name.localeCompare(monitorB.name)
+            );
+        },
+
+        selectedIncident() {
+            return this.incidentHistory.find((item) => item.id === this.selectedIncidentId) || null;
+        },
+
         /**
          * Count of past incidents (non-active or unpinned)
          * @returns {number} Number of past incidents
@@ -964,7 +1045,9 @@ export default {
             const groups = {};
             const pastIncidents = this.incidentHistory.filter((i) => !(i.active && i.pin));
             for (const incident of pastIncidents) {
-                const dateKey = this.formatDateKey(incident.createdDate);
+                const dateKey = this.isModernDesign
+                    ? this.formatMonthKey(incident.createdDate)
+                    : this.formatDateKey(incident.createdDate);
                 if (!groups[dateKey]) {
                     groups[dateKey] = [];
                 }
@@ -1354,6 +1437,7 @@ export default {
                 title: "",
                 content: "",
                 style: "primary",
+                affectedMonitorIDs: [],
             };
         },
 
@@ -1422,6 +1506,16 @@ export default {
                 return DOMPurify.sanitize(marked(content));
             }
             return "";
+        },
+
+        /**
+         * Get the latest update for an incident.
+         * @param {object} incident Incident data
+         * @returns {object|null} Latest update
+         */
+        latestIncidentUpdate(incident) {
+            const updates = incident.updates || [];
+            return updates[updates.length - 1] || null;
         },
 
         /**
@@ -1541,17 +1635,81 @@ export default {
         },
 
         /**
+         * Format a date as a month and year.
+         * @param {string} dateStr ISO date string
+         * @returns {string} Month and year label
+         */
+        formatMonthKey(dateStr) {
+            if (!dateStr) {
+                return this.$t("Unknown");
+            }
+            return new Date(dateStr).toLocaleDateString(undefined, {
+                year: "numeric",
+                month: "long",
+            });
+        },
+
+        /**
          * Resolve an incident
          * @param {object} incident - The incident to resolve
          * @returns {void}
          */
         resolveIncident(incident) {
-            this.$root.getSocket().emit("resolveIncident", this.slug, incident.id, (res) => {
-                this.$root.toastRes(res);
-                if (res.ok) {
-                    this.loadIncidentHistory();
+            this.$root.getSocket().emit(
+                "resolveIncident",
+                this.slug,
+                incident.id,
+                this.$t("statusPageResolvedUpdate"),
+                (res) => {
+                    this.$root.toastRes(res);
+                    if (res.ok) {
+                        this.loadIncidentHistory();
+                    }
                 }
-            });
+            );
+        },
+
+        /**
+         * Open the detail and update timeline for an incident.
+         * @param {object} incident Incident to show
+         * @returns {void}
+         */
+        showIncidentDetails(incident) {
+            this.selectedIncidentId = incident.id;
+        },
+
+        /**
+         * Return to the main status page view.
+         * @returns {void}
+         */
+        closeIncidentDetails() {
+            this.selectedIncidentId = null;
+        },
+
+        /**
+         * Post an incident update.
+         * @param {object} update Incident update data
+         * @returns {void}
+         */
+        postIncidentUpdate(update) {
+            if (!this.selectedIncident) {
+                return;
+            }
+
+            this.incidentUpdateProcessing = true;
+            this.$root.getSocket().emit(
+                "postIncidentUpdate",
+                this.slug,
+                this.selectedIncident.id,
+                update,
+                (res) => {
+                    this.incidentUpdateProcessing = false;
+                    this.$root.toastRes(res);
+                    if (res.ok) {
+                        this.loadIncidentHistory();
+                    }
+                }
+            );
         },
     },
 };

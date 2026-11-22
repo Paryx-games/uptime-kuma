@@ -549,8 +549,61 @@ class StatusPage extends BeanModel {
             }
         }
 
+        const incidentIDs = incidents.map((incident) => incident.id);
+        const incidentByID = new Map(incidents.map((incident) => [incident.id, incident.toPublicJSON()]));
+
+        if (incidentIDs.length > 0) {
+            const placeholders = incidentIDs.map(() => "?").join(",");
+            const updates = await R.getAll(
+                `SELECT id, incident_id, status, content, created_date
+                 FROM incident_update
+                 WHERE incident_id IN (${placeholders})
+                 ORDER BY created_date ASC, id ASC`,
+                incidentIDs
+            );
+            const affectedMonitorRows = await R.getAll(
+                `SELECT incident_id, monitor_id
+                 FROM incident_monitor
+                 WHERE incident_id IN (${placeholders})
+                   AND EXISTS (
+                       SELECT 1
+                       FROM monitor_group
+                       INNER JOIN \`group\` ON \`group\`.id = monitor_group.group_id
+                       WHERE monitor_group.monitor_id = incident_monitor.monitor_id
+                         AND \`group\`.status_page_id = ?
+                         AND \`group\`.public = 1
+                   )
+                 ORDER BY incident_monitor.id ASC`,
+                [...incidentIDs, statusPageId]
+            );
+
+            for (const incident of incidents) {
+                incidentByID.get(incident.id).updates = [];
+                incidentByID.get(incident.id).affectedMonitorIDs = [];
+            }
+
+            for (const update of updates) {
+                incidentByID.get(update.incident_id).updates.push({
+                    id: update.id,
+                    status: update.status,
+                    content: update.content,
+                    createdDate: update.created_date,
+                });
+            }
+
+            for (const affectedMonitor of affectedMonitorRows) {
+                incidentByID.get(affectedMonitor.incident_id).affectedMonitorIDs.push(affectedMonitor.monitor_id);
+            }
+
+            for (const incident of incidents) {
+                const publicIncident = incidentByID.get(incident.id);
+                const latestUpdate = publicIncident.updates[publicIncident.updates.length - 1];
+                publicIncident.status = latestUpdate?.status || (incident.active ? "investigating" : "resolved");
+            }
+        }
+
         return {
-            incidents: incidents.map((i) => i.toPublicJSON()),
+            incidents: incidents.map((incident) => incidentByID.get(incident.id)),
             total,
             nextCursor,
             hasMore,

@@ -101,13 +101,6 @@ test.describe("Status Page", () => {
         await page.getByTestId("analytics-id-input").fill(googleAnalyticsId);
         await page.getByTestId("custom-css-input").getByTestId("textarea").fill(customCss); // Prism
 
-        // Add an incident
-        await page.getByTestId("create-incident-button").click();
-        await page.getByTestId("incident-title").isEditable();
-        await page.getByTestId("incident-title").fill(incidentTitle);
-        await page.getByTestId("incident-content-editable").fill(incidentContent);
-        await page.getByTestId("post-incident-button").click();
-
         // Add a group
         await page.getByTestId("add-group-button").click();
         await page.getByTestId("group-name").isEditable();
@@ -135,6 +128,16 @@ test.describe("Status Page", () => {
         await expect(page.locator(".carbon-status-page")).toBeVisible();
 
         await page.getByTestId("edit-button").click();
+        await page.getByTestId("create-incident-button").click();
+        await page.getByTestId("incident-title").fill(incidentTitle);
+        await page.getByTestId("incident-content-editable").fill(incidentContent);
+        await page.getByTestId("incident-edit").getByLabel(monitorName, { exact: true }).check();
+        await page.getByTestId("post-incident-button").click();
+        const incidentSaveNavigation = page.waitForNavigation();
+        await page.getByTestId("save-button").click();
+        await incidentSaveNavigation;
+
+        await page.getByTestId("edit-button").click();
         await expect(page.getByTestId("monitor-settings")).toBeVisible();
         // Wait for the authenticated status-page config to arrive over Socket.IO.
         await page.waitForTimeout(500);
@@ -150,6 +153,8 @@ test.describe("Status Page", () => {
         await page.getByTestId("save-button").click();
         await classicSaveNavigation;
         await expect(page.locator(".carbon-status-page")).toHaveCount(0);
+        await expect(page.getByTestId("incident")).toHaveClass(/bg-primary/);
+        await expect(page.getByTestId("incident-title")).toContainText(incidentTitle);
 
         await page.getByTestId("edit-button").click();
         await expect(page.getByTestId("monitor-settings")).toBeVisible();
@@ -189,6 +194,50 @@ test.describe("Status Page", () => {
         ).toBe("rgb(255, 255, 255)");
         await expect(page.getByTestId("group-name")).toContainText(groupName);
         await expect(page.getByTestId("powered-by")).toHaveCount(0);
+
+        await page.getByTestId("incident-view-updates").click();
+        const incidentDetail = page.getByTestId("incident-detail");
+        await expect(incidentDetail).toBeVisible();
+        await expect(page.getByTestId("affected-components")).toContainText(monitorName);
+        await expect(page.getByTestId("affected-components")).toContainText("1 affected component");
+        await expect(page.getByTestId("incident-updates").locator("li")).toHaveCount(1);
+
+        await page.getByTestId("edit-button").click();
+        const incidentUpdateForm = page.getByTestId("incident-update-form");
+        await expect(incidentUpdateForm).toBeVisible();
+        await page.getByTestId("incident-update-status").selectOption("identified");
+        await page.getByTestId("incident-update-content").fill("We have identified the cause of the issue.");
+        await incidentUpdateForm.getByRole("button", { name: "Post update" }).click();
+        await expect(page.getByTestId("incident-updates").locator("li")).toHaveCount(2);
+        await expect(page.getByTestId("incident-updates")).toContainText("We have identified the cause of the issue.");
+        await expect(incidentDetail.getByTestId("incident-status").first()).toContainText("Identified");
+
+        await page.getByTestId("incident-update-status").selectOption("monitoring");
+        await page.getByTestId("incident-update-content").fill("A mitigation is in place; we are monitoring recovery.");
+        await page.getByTestId("incident-update-form").getByRole("button", { name: "Post update" }).click();
+        await expect(page.getByTestId("incident-updates").locator("li")).toHaveCount(3);
+        await expect(page.getByTestId("incident-updates")).toContainText(
+            "A mitigation is in place; we are monitoring recovery."
+        );
+
+        await page.getByTestId("incident-update-status").selectOption("resolved");
+        await page.getByTestId("incident-update-content").fill("All affected services are operating normally again.");
+        await page.getByTestId("incident-update-form").getByRole("button", { name: "Post update" }).click();
+        await expect(page.getByTestId("incident-updates").locator("li")).toHaveCount(4);
+        await expect(page.getByTestId("incident-updates")).toContainText(
+            "All affected services are operating normally again."
+        );
+        await expect(incidentDetail.getByTestId("incident-status").first()).toContainText("Resolved");
+
+        await page.getByRole("button", { name: "Back to status" }).click();
+        await expect(page.getByTestId("incident")).toHaveCount(0);
+        await expect(page.getByTestId("incident-history-title")).toContainText(incidentTitle);
+        await page.getByTestId("incident-history-title").click();
+        await expect(page.getByTestId("incident-updates").locator("li")).toHaveCount(4);
+        await page.getByRole("button", { name: "Back to status" }).click();
+        const updatesSaveNavigation = page.waitForNavigation();
+        await page.getByTestId("save-button").click();
+        await updatesSaveNavigation;
 
         await expect(page.getByTestId("monitor-name")).toHaveAttribute("href", monitorCustomUrl);
         await expect(page.getByTestId("monitor-name")).toHaveCSS("font-size", "16px");
