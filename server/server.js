@@ -779,6 +779,9 @@ let needSetup = false;
                 }
 
                 bean.import(monitor);
+                if (bean.type === "test" && bean.manual_status == null) {
+                    bean.manual_status = PENDING;
+                }
                 // Map camelCase frontend property to snake_case database column
                 if (monitor.retryOnlyOnStatusCodeFailure !== undefined) {
                     bean.retry_only_on_status_code_failure = monitor.retryOnlyOnStatusCodeFailure;
@@ -819,10 +822,10 @@ let needSetup = false;
             try {
                 checkLogin(socket);
 
-                const bean = await R.findOne("monitor", " id = ? AND user_id = ? AND is_test_monitor = ? ", [
+                const bean = await R.findOne("monitor", " id = ? AND user_id = ? AND type = ? ", [
                     monitorID,
                     socket.userID,
-                    1,
+                    "test",
                 ]);
                 if (!bean) {
                     throw new Error("Permission denied.");
@@ -1872,7 +1875,6 @@ async function afterLogin(socket, user) {
     socket.join(user.id);
     socket.emit("avatar", user.avatar ?? null);
 
-    await ensureTestMonitor(user.id);
     let monitorList = await server.sendMonitorList(socket);
     await Promise.allSettled([
         sendInfo(socket),
@@ -1900,51 +1902,6 @@ async function afterLogin(socket, user) {
     if (!(await Settings.get("initServerTimezone"))) {
         log.debug("server", "emit initServerTimezone");
         socket.emit("initServerTimezone");
-    }
-}
-
-const testMonitorSetupPromises = new Map();
-
-/**
- * Create the per-user development monitor on first login.
- * @param {number} userID ID of the monitor owner
- * @returns {Promise<void>}
- */
-async function ensureTestMonitor(userID) {
-    if (!testMonitorSetupPromises.has(userID)) {
-        testMonitorSetupPromises.set(
-            userID,
-            (async () => {
-                const existing = await R.findOne("monitor", " user_id = ? AND is_test_monitor = ? ", [userID, 1]);
-                if (existing) {
-                    return;
-                }
-
-                const monitor = R.dispense("monitor");
-                monitor.user_id = userID;
-                monitor.name = "Test";
-                monitor.type = "manual";
-                monitor.active = 1;
-                monitor.interval = 60;
-                monitor.retryInterval = 60;
-                monitor.timeout = 48;
-                monitor.maxretries = 0;
-                monitor.weight = -1;
-                monitor.manual_status = PENDING;
-                monitor.is_test_monitor = true;
-                monitor.accepted_statuscodes_json = JSON.stringify(["200-299"]);
-
-                await R.store(monitor);
-                await startMonitor(userID, monitor.id);
-            })()
-        );
-    }
-
-    const setup = testMonitorSetupPromises.get(userID);
-    try {
-        await setup;
-    } finally {
-        testMonitorSetupPromises.delete(userID);
     }
 }
 

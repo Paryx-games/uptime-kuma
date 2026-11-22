@@ -204,7 +204,7 @@ export default {
             // Monitors outside any group first, then the groups
             result.sort(
                 (m1, m2) =>
-                    (m1.isTestMonitor === true) - (m2.isTestMonitor === true) ||
+                    (m1.type === "test") - (m2.type === "test") ||
                     (m1.type === "group") - (m2.type === "group") ||
                     this.sortFunc(m1, m2)
             );
@@ -667,8 +667,8 @@ export default {
          * @returns {number} -1, 0 or 1
          */
         sortFunc(m1, m2) {
-             const m1IsTestMonitor = Boolean(m1.isTestMonitor);
-             const m2IsTestMonitor = Boolean(m2.isTestMonitor);
+             const m1IsTestMonitor = m1.type === "test";
+             const m2IsTestMonitor = m2.type === "test";
              if (m1IsTestMonitor !== m2IsTestMonitor) {
                  return m1IsTestMonitor ? 1 : -1;
             }

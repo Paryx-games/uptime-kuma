@@ -74,6 +74,9 @@
                                     <option value="manual">
                                         {{ $t("Manual") }}
                                     </option>
+                                    <option value="test">
+                                        {{ $t("Test") }} ({{ $t("Development only") }})
+                                    </option>
                                 </optgroup>
 
                                 <!-- Should sort from A to Z in this category -->

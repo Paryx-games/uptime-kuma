@@ -145,7 +145,6 @@ class Monitor extends BeanModel {
             forceInactive: preloadData.forceInactive.get(this.id),
             type: this.type,
             manual_status: this.manual_status == null ? null : Number(this.manual_status),
-            isTestMonitor: Boolean(this.is_test_monitor),
             subtype: this.subtype,
             timeout: this.timeout,
             interval: this.interval,

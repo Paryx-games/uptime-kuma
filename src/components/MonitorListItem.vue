@@ -70,11 +70,11 @@
                     <div class="sub">
                         <span :class="`s-${state.key}`">{{ state.label }}</span>
                         {{ details }}
-                        <span v-if="monitor.isTestMonitor" class="test-monitor-badge">
+                        <span v-if="monitor.type === 'test'" class="test-monitor-badge">
                             {{ $t("Development only") }}
                         </span>
                     </div>
-                    <div v-if="monitor.isTestMonitor" class="test-monitor-controls">
+                    <div v-if="monitor.type === 'test'" class="test-monitor-controls">
                         <label class="visually-hidden" :for="`test-monitor-status-${monitor.id}`">
                             {{ $t("Test monitor status") }}
                         </label>

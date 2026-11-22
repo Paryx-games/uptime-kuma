@@ -336,6 +336,7 @@ const MONITOR_TYPE_LABELS = {
     dns: "DNS",
     docker: "Docker",
     group: "Group",
+    test: "Test",
     "real-browser": "Browser",
 };
 
