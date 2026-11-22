@@ -271,6 +271,10 @@ test.describe("Status Page", () => {
             "color",
             "rgb(255, 255, 255)"
         );
+        await expect(incidentEditor.locator('[data-testid="incident-affected-monitors"] > strong')).toHaveCSS(
+            "color",
+            "rgb(255, 255, 255)"
+        );
         await screenshot(testInfo, page);
         await incidentEditor.getByRole("button", { name: "Cancel" }).click();
         const incidentEditorSaveNavigation = page.waitForNavigation();

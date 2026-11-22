@@ -513,6 +513,7 @@ class Database {
 
             await R.knex.migrate.latest({
                 directory: Database.knexMigrationsPath,
+                disableMigrationsListValidation: true,
             });
 
             // Enable foreign key check for SQLite

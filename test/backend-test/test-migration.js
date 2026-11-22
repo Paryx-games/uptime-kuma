@@ -1,11 +1,12 @@
 const { describe, test } = require("node:test");
+const assert = require("node:assert/strict");
 const fs = require("fs");
 const path = require("path");
 const { GenericContainer, Wait } = require("testcontainers");
 const { MySqlContainer } = require("@testcontainers/mysql");
 
 describe("Database Migration", () => {
-    test("SQLite migrations run successfully from fresh database", async () => {
+    test("SQLite migrations run successfully when historical migration files are missing", async () => {
         const testDbPath = path.join(__dirname, "../../data/test-migration.db");
         const testDbDir = path.dirname(testDbPath);
 
@@ -41,12 +42,25 @@ describe("Database Migration", () => {
             const { createTables } = require("../../db/knex_init_db.js");
             await createTables();
 
-            // Run all migrations like production code does
-            await R.knex.migrate.latest({
-                directory: path.join(__dirname, "../../db/knex_migrations"),
+            // Simulate a database with migration records from a different branch.
+            await R.knex.schema.createTable("knex_migrations", (table) => {
+                table.increments("id");
+                table.string("name").notNullable();
+                table.integer("batch").notNullable();
+                table.timestamp("migration_time");
+            });
+            await R.knex("knex_migrations").insert({
+                name: "migration-not-present-on-this-branch.js",
+                batch: 1,
             });
 
-            // Test passes if migrations complete successfully without errors
+            await R.knex.migrate.latest({
+                directory: path.join(__dirname, "../../db/knex_migrations"),
+                disableMigrationsListValidation: true,
+            });
+
+            assert.equal(await R.knex.schema.hasTable("incident_monitor"), true);
+            assert.equal(await R.knex.schema.hasTable("incident_update"), true);
         } finally {
             // Clean up
             await R.knex.destroy();
@@ -111,7 +125,8 @@ describe("Database Migration", () => {
                     directory: path.join(__dirname, "../../db/knex_migrations"),
                 });
 
-                // Test passes if migrations complete successfully without errors
+                assert.equal(await R.knex.schema.hasTable("incident_monitor"), true);
+                assert.equal(await R.knex.schema.hasTable("incident_update"), true);
             } finally {
                 // Clean up
                 try {
