@@ -291,7 +291,17 @@
 
     .item-name {
         color: var(--c-fg);
+        font-size: 16px;
         font-weight: 500;
+    }
+
+    .carbon-status-page-uptime {
+        min-width: 68px;
+        min-height: 22px;
+        padding: 4px 10px;
+        font-size: 13px;
+        line-height: 14px;
+        font-variant-numeric: tabular-nums;
     }
 
     .extra-info {

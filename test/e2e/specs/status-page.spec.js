@@ -182,6 +182,8 @@ test.describe("Status Page", () => {
         await expect(page.getByTestId("powered-by")).toHaveCount(0);
 
         await expect(page.getByTestId("monitor-name")).toHaveAttribute("href", monitorCustomUrl);
+        await expect(page.getByTestId("monitor-name")).toHaveCSS("font-size", "16px");
+        await expect(page.locator(".carbon-status-page-uptime")).toHaveCSS("font-size", "13px");
 
         await page.getByTestId("edit-button").click();
         await page.getByTestId("create-incident-button").click();
@@ -292,7 +294,7 @@ test.describe("Status Page", () => {
 
         await expect(page.locator(".carbon-status-page .carbon-bars .heartbeat-canvas").first()).toHaveCSS(
             "height",
-            "20px"
+            "22px"
         );
         await page.goto("./settings/appearance");
         await page.locator('label[for="btncheck6"]').click();

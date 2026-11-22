@@ -344,7 +344,7 @@ export default {
         if (this.size === "small") {
             // Thin square-cornered bars for the monitor list rows
             this.beatWidth = 4;
-            this.beatHeight = 20;
+            this.beatHeight = 22;
             this.beatHoverAreaPadding = 1;
             this.beatRadius = 1;
             this.hoverScale = 1;
