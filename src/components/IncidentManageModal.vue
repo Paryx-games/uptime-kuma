@@ -35,20 +35,17 @@
                         </div>
 
                         <div class="mb-3">
-                            <label for="incident-style" class="form-label">{{ $t("Style") }}</label>
-                            <select id="incident-style" v-model="form.style" class="form-select">
-                                <option value="info">{{ $t("info") }}</option>
-                                <option value="warning">
-                                    {{ $t("warning") }}
-                                </option>
-                                <option value="danger">
-                                    {{ $t("danger") }}
-                                </option>
-                                <option value="primary">
-                                    {{ $t("primary") }}
-                                </option>
-                                <option value="light">{{ $t("light") }}</option>
-                                <option value="dark">{{ $t("dark") }}</option>
+                            <label for="incident-status" class="form-label">{{ $t("Status") }}</label>
+                            <select
+                                id="incident-status"
+                                v-model="form.status"
+                                class="form-select"
+                                data-testid="incident-manage-status"
+                            >
+                                <option value="investigating">{{ $t("Investigating") }}</option>
+                                <option value="identified">{{ $t("Identified") }}</option>
+                                <option value="monitoring">{{ $t("Monitoring") }}</option>
+                                <option value="resolved">{{ $t("Resolved") }}</option>
                             </select>
                         </div>
 
@@ -113,6 +110,7 @@ export default {
                 title: "",
                 content: "",
                 style: "warning",
+                status: "investigating",
                 pin: true,
             },
         };
@@ -132,6 +130,7 @@ export default {
                 title: incident.title,
                 content: incident.content,
                 style: incident.style || "warning",
+                status: incident.status || (incident.active ? "investigating" : "resolved"),
                 pin: !!incident.pin,
             };
             this.modal.show();

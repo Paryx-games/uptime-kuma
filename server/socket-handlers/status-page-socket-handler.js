@@ -111,6 +111,11 @@ module.exports.statusPageSocketHandler = (socket) => {
                 throw new Error("slug is not found");
             }
 
+            const validStatuses = ["investigating", "identified", "monitoring", "resolved"];
+            if (incident.status !== undefined && !validStatuses.includes(incident.status)) {
+                throw new Error("Invalid incident status");
+            }
+            const status = incident.status || "investigating";
             const hasAffectedMonitors = Object.prototype.hasOwnProperty.call(incident, "affectedMonitorIDs");
             const affectedMonitorIDs = hasAffectedMonitors
                 ? await validateAffectedMonitors(statusPageID, incident.affectedMonitorIDs)
@@ -129,15 +134,24 @@ module.exports.statusPageSocketHandler = (socket) => {
                 incidentBean = R.dispense("incident");
             }
 
+            const isNewIncident = !incidentBean.id;
+            const previousUpdate = !isNewIncident
+                ? await R.getRow(
+                    "SELECT status FROM incident_update WHERE incident_id = ? ORDER BY id DESC LIMIT 1",
+                    [incidentBean.id]
+                )
+                : null;
+            const previousStatus = previousUpdate?.status || (incidentBean.active ? "investigating" : "resolved");
+            const contentChanged = incidentBean.content !== incident.content;
+
             incidentBean.title = incident.title;
             incidentBean.content = incident.content;
             const validStyles = ["info", "warning", "danger", "primary", "light", "dark"];
             incidentBean.style = validStyles.includes(incident.style) ? incident.style : "warning";
-            incidentBean.pin = true;
-            incidentBean.active = true;
+            incidentBean.pin = status !== "resolved";
+            incidentBean.active = status !== "resolved";
             incidentBean.status_page_id = statusPageID;
 
-            const isNewIncident = !incidentBean.id;
             const now = R.isoDateTime(dayjs.utc());
             if (incident.id) {
                 incidentBean.last_updated_date = now;
@@ -149,8 +163,8 @@ module.exports.statusPageSocketHandler = (socket) => {
             if (affectedMonitorIDs !== null) {
                 await saveAffectedMonitors(incidentBean.id, affectedMonitorIDs);
             }
-            if (isNewIncident) {
-                await saveIncidentUpdate(incidentBean.id, "investigating", incident.content, now);
+            if (isNewIncident || previousStatus !== status || contentChanged) {
+                await saveIncidentUpdate(incidentBean.id, status, incident.content, now);
             }
             apicache.clear();
 
@@ -245,19 +259,40 @@ module.exports.statusPageSocketHandler = (socket) => {
             if (!validStyles.includes(incident.style)) {
                 incident.style = "warning";
             }
+            const validStatuses = ["investigating", "identified", "monitoring", "resolved"];
+            if (incident.status !== undefined && !validStatuses.includes(incident.status)) {
+                callback({
+                    ok: false,
+                    msg: "Invalid incident status",
+                    msgi18n: true,
+                });
+                return;
+            }
+            const status = incident.status || (bean.active ? "investigating" : "resolved");
 
             const hasAffectedMonitors = Object.prototype.hasOwnProperty.call(incident, "affectedMonitorIDs");
             const affectedMonitorIDs = hasAffectedMonitors
                 ? await validateAffectedMonitors(statusPageID, incident.affectedMonitorIDs)
                 : null;
 
+            const previousUpdate = await R.getRow(
+                "SELECT status FROM incident_update WHERE incident_id = ? ORDER BY id DESC LIMIT 1",
+                [bean.id]
+            );
+            const previousStatus = previousUpdate?.status || (bean.active ? "investigating" : "resolved");
+            const contentChanged = bean.content !== incident.content;
+
             bean.title = incident.title;
             bean.content = incident.content;
             bean.style = incident.style;
             bean.pin = incident.pin !== false;
+            bean.active = status !== "resolved";
             bean.last_updated_date = R.isoDateTime(dayjs.utc());
 
             await R.store(bean);
+            if (previousStatus !== status || contentChanged) {
+                await saveIncidentUpdate(bean.id, status, incident.content, bean.last_updated_date);
+            }
             if (affectedMonitorIDs !== null) {
                 await saveAffectedMonitors(bean.id, affectedMonitorIDs);
             }

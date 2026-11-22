@@ -3,6 +3,9 @@
     min-height: 100dvh;
     padding: 48px clamp(20px, 5vw, 72px) 32px;
     color: var(--c-fg);
+    --c-incident-red: #f5785c;
+    --c-incident-yellow: #fbbf24;
+    --c-incident-green: #24c19a;
     --c-footer-muted: #5f5f65;
     --c-footer-link-hover: #6e6e74;
 
@@ -138,16 +141,16 @@
         color: var(--c-fg);
 
         &.is-investigating {
-            --c-status-color: var(--c-down);
+            --c-status-color: var(--c-incident-red);
         }
 
         &.is-identified,
         &.is-monitoring {
-            --c-status-color: var(--c-pending);
+            --c-status-color: var(--c-incident-yellow);
         }
 
         &.is-resolved {
-            --c-status-color: var(--c-up);
+            --c-status-color: var(--c-incident-green);
         }
 
         .carbon-incident-card-header {
@@ -211,16 +214,16 @@
         line-height: 1.2;
 
         &.is-investigating {
-            --c-status-color: var(--c-down);
+            --c-status-color: var(--c-incident-red);
         }
 
         &.is-identified,
         &.is-monitoring {
-            --c-status-color: var(--c-pending);
+            --c-status-color: var(--c-incident-yellow);
         }
 
         &.is-resolved {
-            --c-status-color: var(--c-up);
+            --c-status-color: var(--c-incident-green);
         }
     }
 
@@ -278,16 +281,16 @@
         color: var(--c-fg);
 
         &.is-investigating {
-            --c-status-color: var(--c-down);
+            --c-status-color: var(--c-incident-red);
         }
 
         &.is-identified,
         &.is-monitoring {
-            --c-status-color: var(--c-pending);
+            --c-status-color: var(--c-incident-yellow);
         }
 
         &.is-resolved {
-            --c-status-color: var(--c-up);
+            --c-status-color: var(--c-incident-green);
         }
 
         .carbon-incident-detail-header {
@@ -423,16 +426,16 @@
             }
 
             &.is-investigating {
-                --c-status-color: var(--c-down);
+                --c-status-color: var(--c-incident-red);
             }
 
             &.is-identified,
             &.is-monitoring {
-                --c-status-color: var(--c-pending);
+                --c-status-color: var(--c-incident-yellow);
             }
 
             &.is-resolved {
-                --c-status-color: var(--c-up);
+                --c-status-color: var(--c-incident-green);
             }
 
             .incident-content {
@@ -508,16 +511,16 @@
             background: var(--c-status-color);
 
             &.is-investigating {
-                --c-status-color: var(--c-down);
+                --c-status-color: var(--c-incident-red);
             }
 
             &.is-identified,
             &.is-monitoring {
-                --c-status-color: var(--c-pending);
+                --c-status-color: var(--c-incident-yellow);
             }
 
             &.is-resolved {
-                --c-status-color: var(--c-up);
+                --c-status-color: var(--c-incident-green);
             }
         }
 
@@ -630,6 +633,21 @@
 
         .incident-monitor-options .form-check-label {
             color: var(--c-fg);
+        }
+
+        .incident-status-control {
+            min-width: 180px;
+
+            .form-label {
+                margin-bottom: 4px;
+                color: var(--c-fg);
+            }
+
+            .form-select {
+                border-color: var(--c-line-strong);
+                background-color: var(--c-field);
+                color: var(--c-fg);
+            }
         }
     }
 

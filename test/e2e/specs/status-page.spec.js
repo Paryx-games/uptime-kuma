@@ -129,6 +129,7 @@ test.describe("Status Page", () => {
 
         await page.getByTestId("edit-button").click();
         await page.getByTestId("create-incident-button").click();
+        await page.getByTestId("incident-edit-status").selectOption("monitoring");
         await page.getByTestId("incident-title").fill(incidentTitle);
         await page.getByTestId("incident-content-editable").fill(incidentContent);
         await page.getByTestId("incident-edit").getByLabel(monitorName, { exact: true }).check();
@@ -176,7 +177,7 @@ test.describe("Status Page", () => {
         // Ensure changes are visible
         await expect(page.locator(".carbon-status-page")).toHaveClass(/dark/);
         await expect(page.getByTestId("incident")).toHaveCount(1);
-        await expect(page.getByTestId("incident-status")).toContainText("Investigating");
+        await expect(page.getByTestId("incident-status")).toContainText("Monitoring");
         await expect(page.getByTestId("overall-status")).toContainText("Degraded Service");
         await expect(page.getByTestId("overall-status").locator(".overall-status-heading strong")).toHaveCSS(
             "font-weight",
@@ -194,9 +195,9 @@ test.describe("Status Page", () => {
         const incidentStatusColor = await page
             .getByTestId("incident-status")
             .evaluate((element) => getComputedStyle(element).color);
-        expect(incidentStatusColor).toBe("rgb(255, 115, 105)");
+        expect(incidentStatusColor).toBe("rgb(251, 191, 36)");
         await page.locator(".carbon-status-page").evaluate((element) => element.classList.remove("dark"));
-        await expect(page.getByTestId("incident-status")).toHaveCSS("color", "rgb(229, 72, 77)");
+        await expect(page.getByTestId("incident-status")).toHaveCSS("color", "rgb(251, 191, 36)");
         await page.locator(".carbon-status-page").evaluate((element) => element.classList.add("dark"));
         expect(
             await page.getByTestId("incident-title").evaluate((element) => {
@@ -218,17 +219,25 @@ test.describe("Status Page", () => {
         await page.getByTestId("edit-button").click();
         const incidentUpdateForm = page.getByTestId("incident-update-form");
         await expect(incidentUpdateForm).toBeVisible();
+        await page.getByTestId("incident-update-status").selectOption("investigating");
+        await page.getByTestId("incident-update-content").fill("We are investigating the reported issue.");
+        await incidentUpdateForm.getByRole("button", { name: "Post update" }).click();
+        await expect(page.getByTestId("incident-updates").locator("li")).toHaveCount(2);
+        await expect(incidentDetail.getByTestId("incident-status").first()).toContainText("Investigating");
+        await expect(incidentDetail.getByTestId("incident-status").first()).toHaveCSS("color", "rgb(245, 120, 92)");
+
         await page.getByTestId("incident-update-status").selectOption("identified");
         await page.getByTestId("incident-update-content").fill("We have identified the cause of the issue.");
         await incidentUpdateForm.getByRole("button", { name: "Post update" }).click();
-        await expect(page.getByTestId("incident-updates").locator("li")).toHaveCount(2);
+        await expect(page.getByTestId("incident-updates").locator("li")).toHaveCount(3);
         await expect(page.getByTestId("incident-updates")).toContainText("We have identified the cause of the issue.");
         await expect(incidentDetail.getByTestId("incident-status").first()).toContainText("Identified");
+        await expect(incidentDetail.getByTestId("incident-status").first()).toHaveCSS("color", "rgb(251, 191, 36)");
 
         await page.getByTestId("incident-update-status").selectOption("monitoring");
         await page.getByTestId("incident-update-content").fill("A mitigation is in place; we are monitoring recovery.");
         await page.getByTestId("incident-update-form").getByRole("button", { name: "Post update" }).click();
-        await expect(page.getByTestId("incident-updates").locator("li")).toHaveCount(3);
+        await expect(page.getByTestId("incident-updates").locator("li")).toHaveCount(4);
         await expect(page.getByTestId("incident-updates")).toContainText(
             "A mitigation is in place; we are monitoring recovery."
         );
@@ -236,17 +245,24 @@ test.describe("Status Page", () => {
         await page.getByTestId("incident-update-status").selectOption("resolved");
         await page.getByTestId("incident-update-content").fill("All affected services are operating normally again.");
         await page.getByTestId("incident-update-form").getByRole("button", { name: "Post update" }).click();
-        await expect(page.getByTestId("incident-updates").locator("li")).toHaveCount(4);
+        await expect(page.getByTestId("incident-updates").locator("li")).toHaveCount(5);
         await expect(page.getByTestId("incident-updates")).toContainText(
             "All affected services are operating normally again."
         );
         await expect(incidentDetail.getByTestId("incident-status").first()).toContainText("Resolved");
+        await expect(incidentDetail.getByTestId("incident-status").first()).toHaveCSS("color", "rgb(36, 193, 154)");
 
         await page.getByRole("button", { name: "Back to status" }).click();
         await expect(page.getByTestId("incident")).toHaveCount(0);
         await expect(page.getByTestId("incident-history-title")).toContainText(incidentTitle);
+        await page.locator(".carbon-incident-history-item .incident-actions button[title='Edit']").click();
+        const incidentManageModal = page.locator(".modal.show");
+        await expect(incidentManageModal.getByTestId("incident-manage-status")).toHaveValue("resolved");
+        await expect(incidentManageModal.locator("#incident-style")).toHaveCount(0);
+        await incidentManageModal.getByRole("button", { name: "Save" }).click();
+        await expect(incidentManageModal).toBeHidden();
         await page.getByTestId("incident-history-title").click();
-        await expect(page.getByTestId("incident-updates").locator("li")).toHaveCount(4);
+        await expect(page.getByTestId("incident-updates").locator("li")).toHaveCount(5);
         await page.getByRole("button", { name: "Back to status" }).click();
         const updatesSaveNavigation = page.waitForNavigation();
         await page.getByTestId("save-button").click();
@@ -260,6 +276,7 @@ test.describe("Status Page", () => {
         await page.getByTestId("create-incident-button").click();
         const incidentEditor = page.getByTestId("incident-edit");
         await expect(incidentEditor).toBeVisible();
+        await expect(incidentEditor.getByTestId("incident-edit-status")).toHaveValue("investigating");
         for (const selector of [".alert-heading", ".form-text", ".carbon-incident-post"]) {
             expect(
                 await incidentEditor.locator(selector).evaluate((element) => {

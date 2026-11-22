@@ -1437,6 +1437,7 @@ export default {
                 title: "",
                 content: "",
                 style: "primary",
+                status: "investigating",
                 affectedMonitorIDs: [],
             };
         },

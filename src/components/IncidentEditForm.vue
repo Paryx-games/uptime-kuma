@@ -63,48 +63,20 @@
                 {{ $t("Cancel") }}
             </button>
 
-            <div class="dropdown d-inline-block me-2">
-                <button
-                    id="dropdownMenuButton1"
-                    class="btn btn-secondary dropdown-toggle"
-                    type="button"
-                    data-bs-toggle="dropdown"
-                    aria-expanded="false"
+            <div class="incident-status-control">
+                <label for="incident-edit-status" class="form-label">{{ $t("Status") }}</label>
+                <select
+                    id="incident-edit-status"
+                    class="form-select"
+                    data-testid="incident-edit-status"
+                    :value="modelValue.status || 'investigating'"
+                    @change="updateField('status', $event.target.value)"
                 >
-                    {{ $t("Style") }}: {{ $t(modelValue.style) }}
-                </button>
-                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                    <li>
-                        <a class="dropdown-item" href="#" @click.prevent="updateField('style', 'info')">
-                            {{ $t("info") }}
-                        </a>
-                    </li>
-                    <li>
-                        <a class="dropdown-item" href="#" @click.prevent="updateField('style', 'warning')">
-                            {{ $t("warning") }}
-                        </a>
-                    </li>
-                    <li>
-                        <a class="dropdown-item" href="#" @click.prevent="updateField('style', 'danger')">
-                            {{ $t("danger") }}
-                        </a>
-                    </li>
-                    <li>
-                        <a class="dropdown-item" href="#" @click.prevent="updateField('style', 'primary')">
-                            {{ $t("primary") }}
-                        </a>
-                    </li>
-                    <li>
-                        <a class="dropdown-item" href="#" @click.prevent="updateField('style', 'light')">
-                            {{ $t("light") }}
-                        </a>
-                    </li>
-                    <li>
-                        <a class="dropdown-item" href="#" @click.prevent="updateField('style', 'dark')">
-                            {{ $t("dark") }}
-                        </a>
-                    </li>
-                </ul>
+                    <option value="investigating">{{ $t("Investigating") }}</option>
+                    <option value="identified">{{ $t("Identified") }}</option>
+                    <option value="monitoring">{{ $t("Monitoring") }}</option>
+                    <option value="resolved">{{ $t("Resolved") }}</option>
+                </select>
             </div>
         </div>
     </div>
