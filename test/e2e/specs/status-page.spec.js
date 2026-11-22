@@ -178,6 +178,14 @@ test.describe("Status Page", () => {
         await expect(page.getByTestId("incident")).toHaveCount(1);
         await expect(page.getByTestId("incident-status")).toContainText("Investigating");
         await expect(page.getByTestId("overall-status")).toContainText("Degraded Service");
+        await expect(page.getByTestId("overall-status").locator(".overall-status-heading strong")).toHaveCSS(
+            "font-weight",
+            "400"
+        );
+        await expect(page.getByTestId("overall-status").locator(".overall-status-description")).toHaveCSS(
+            "font-weight",
+            "400"
+        );
         await expect(page.getByTestId("incident-title")).toContainText(incidentTitle);
         await expect(page.getByTestId("incident-title")).toHaveCSS("font-size", "16px");
         await expect(page.getByTestId("incident-title")).toHaveCSS("font-weight", "400");
