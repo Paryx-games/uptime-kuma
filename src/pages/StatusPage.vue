@@ -359,41 +359,96 @@
                     data-testid="incident"
                 >
                     <div v-if="isModernDesign" class="carbon-incident-card-header">
-                        <IncidentStatus :incident="activeIncident" />
-                        <h4 class="alert-heading" data-testid="incident-title">{{ activeIncident.title }}</h4>
+                        <font-awesome-icon class="carbon-incident-header-icon" icon="exclamation-triangle" />
+                        <h4 class="alert-heading">{{ $t("statusPageIncidentBannerTitle") }}</h4>
                     </div>
                     <h4 v-else class="alert-heading" data-testid="incident-title">{{ activeIncident.title }}</h4>
+                    <div
+                        v-if="isModernDesign && getAffectedMonitors(activeIncident).length > 0"
+                        class="carbon-incident-products"
+                        data-testid="incident-products"
+                    >
+                        <span
+                            v-for="monitor in getAffectedMonitors(activeIncident)"
+                            :key="monitor.id"
+                            class="carbon-incident-product"
+                        >
+                            {{ monitor.name }}
+                        </span>
+                    </div>
                     <div :class="{ 'carbon-incident-card-content': isModernDesign }">
-                        <!-- eslint-disable vue/no-v-html -->
-                        <div
-                            class="content"
-                            data-testid="incident-content"
-                            v-html="
-                                getIncidentHTML(
-                                    latestIncidentUpdate(activeIncident)?.content || activeIncident.content
-                                )
-                            "
-                        ></div>
-                        <!-- eslint-enable vue/no-v-html -->
+                        <div v-if="isModernDesign" class="carbon-incident-update">
+                            <font-awesome-icon class="carbon-incident-update-icon" icon="exclamation-triangle" />
+                            <div>
+                                <h4 class="carbon-incident-update-title" data-testid="incident-title">
+                                    {{ activeIncident.title }}
+                                </h4>
+                                <!-- eslint-disable vue/no-v-html -->
+                                <div
+                                    class="content"
+                                    data-testid="incident-content"
+                                    v-html="
+                                        getIncidentHTML(
+                                            latestIncidentUpdate(activeIncident)?.content || activeIncident.content
+                                        )
+                                    "
+                                ></div>
+                                <!-- eslint-enable vue/no-v-html -->
+                                <div class="carbon-incident-meta">
+                                    <IncidentStatus :incident="activeIncident" />
+                                    <span class="carbon-incident-meta-separator" aria-hidden="true">·</span>
+                                    <span>
+                                        {{
+                                            $t("Ongoing for {duration}", {
+                                                duration: incidentDuration(activeIncident.createdDate),
+                                            })
+                                        }}
+                                    </span>
+                                    <template v-if="getAffectedMonitors(activeIncident).length > 0">
+                                        <span class="carbon-incident-meta-separator" aria-hidden="true">·</span>
+                                        <span>
+                                            {{
+                                                $t("Affects {products}", {
+                                                    products: getAffectedProductNames(activeIncident),
+                                                })
+                                            }}
+                                        </span>
+                                    </template>
+                                </div>
+                            </div>
+                        </div>
 
-                        <!-- Incident Date -->
-                        <div class="date mt-3">
-                            {{
-                                $t("dateCreatedAtFromNow", {
-                                    date: $root.datetime(activeIncident.createdDate),
-                                    fromNow: dateFromNow(activeIncident.createdDate),
-                                })
-                            }}
-                            <br />
-                            <span v-if="activeIncident.lastUpdatedDate">
+                        <template v-else>
+                            <!-- eslint-disable vue/no-v-html -->
+                            <div
+                                class="content"
+                                data-testid="incident-content"
+                                v-html="
+                                    getIncidentHTML(
+                                        latestIncidentUpdate(activeIncident)?.content || activeIncident.content
+                                    )
+                                "
+                            ></div>
+                            <!-- eslint-enable vue/no-v-html -->
+
+                            <div class="date mt-3">
                                 {{
-                                    $t("lastUpdatedAtFromNow", {
-                                        date: $root.datetime(activeIncident.lastUpdatedDate),
-                                        fromNow: dateFromNow(activeIncident.lastUpdatedDate),
+                                    $t("dateCreatedAtFromNow", {
+                                        date: $root.datetime(activeIncident.createdDate),
+                                        fromNow: dateFromNow(activeIncident.createdDate),
                                     })
                                 }}
-                            </span>
-                        </div>
+                                <br />
+                                <span v-if="activeIncident.lastUpdatedDate">
+                                    {{
+                                        $t("lastUpdatedAtFromNow", {
+                                            date: $root.datetime(activeIncident.lastUpdatedDate),
+                                            fromNow: dateFromNow(activeIncident.lastUpdatedDate),
+                                        })
+                                    }}
+                                </span>
+                            </div>
+                        </template>
 
                         <button
                             v-if="isModernDesign"
@@ -1517,6 +1572,38 @@ export default {
         latestIncidentUpdate(incident) {
             const updates = incident.updates || [];
             return updates[updates.length - 1] || null;
+        },
+
+        /**
+         * Get the public monitors affected by an incident.
+         * @param {object} incident Incident data
+         * @returns {object[]} Affected public monitors
+         */
+        getAffectedMonitors(incident) {
+            return (incident.affectedMonitorIDs || [])
+                .map((monitorID) => this.$root.publicMonitorList[monitorID])
+                .filter(Boolean);
+        },
+
+        /**
+         * Get the affected product names for an incident.
+         * @param {object} incident Incident data
+         * @returns {string} Affected product names
+         */
+        getAffectedProductNames(incident) {
+            return this.getAffectedMonitors(incident)
+                .map((monitor) => monitor.name)
+                .join(", ");
+        },
+
+        /**
+         * Get the elapsed duration of an incident.
+         * @param {string|number|Date} date Incident start date
+         * @returns {string} Human-readable elapsed duration
+         */
+        incidentDuration(date) {
+            const elapsed = Math.max(0, dayjs.utc().diff(dayjs.utc(date)));
+            return dayjs.duration(elapsed).humanize();
         },
 
         /**

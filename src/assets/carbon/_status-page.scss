@@ -157,17 +157,40 @@
             display: flex;
             flex-wrap: wrap;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
             padding: 14px 18px;
             border-bottom: 1px solid color-mix(in srgb, var(--c-status-color) 20%, var(--c-line));
             background: color-mix(in srgb, var(--c-status-color) 13%, var(--c-bg));
+        }
+
+        .carbon-incident-header-icon {
+            color: var(--c-status-color);
         }
 
         .alert-heading {
             margin: 0;
             color: var(--c-fg);
             font-size: 16px;
-            font-weight: 400;
+            font-weight: 500;
+        }
+
+        .carbon-incident-products {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            padding: 12px 18px;
+            border-bottom: 1px solid var(--c-line);
+        }
+
+        .carbon-incident-product {
+            padding: 4px 9px;
+            border: 1px solid color-mix(in srgb, var(--c-status-color) 35%, var(--c-line));
+            border-radius: 999px;
+            background: color-mix(in srgb, var(--c-status-color) 10%, var(--c-bg));
+            color: var(--c-status-color);
+            font-size: 12px;
+            font-weight: 600;
+            line-height: 1.3;
         }
 
         .carbon-incident-card-content {
@@ -176,6 +199,39 @@
             .content {
                 font-size: 15px;
             }
+        }
+
+        .carbon-incident-update {
+            display: grid;
+            grid-template-columns: 20px minmax(0, 1fr);
+            gap: 12px;
+        }
+
+        .carbon-incident-update-icon {
+            margin-top: 3px;
+            color: var(--c-status-color);
+        }
+
+        .carbon-incident-update-title {
+            margin: 0 0 8px;
+            color: var(--c-fg);
+            font-size: 16px;
+            font-weight: 400;
+        }
+
+        .carbon-incident-meta {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 7px;
+            margin-top: 12px;
+            color: var(--c-muted);
+            font-size: 12px;
+            line-height: 1.4;
+        }
+
+        .carbon-incident-meta-separator {
+            color: var(--c-status-color);
         }
 
         .date {

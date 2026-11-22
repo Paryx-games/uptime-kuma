@@ -178,6 +178,8 @@ test.describe("Status Page", () => {
         await expect(page.locator(".carbon-status-page")).toHaveClass(/dark/);
         await expect(page.getByTestId("incident")).toHaveCount(1);
         await expect(page.getByTestId("incident-status")).toContainText("Monitoring");
+        await expect(page.getByTestId("incident")).toContainText("We're currently experiencing issues");
+        await expect(page.getByTestId("incident-products")).toContainText(monitorName);
         await expect(page.getByTestId("overall-status")).toContainText("Degraded Service");
         await expect(page.getByTestId("overall-status").locator(".overall-status-heading strong")).toHaveCSS(
             "font-weight",
@@ -225,6 +227,14 @@ test.describe("Status Page", () => {
         await expect(page.getByTestId("incident-updates").locator("li")).toHaveCount(2);
         await expect(incidentDetail.getByTestId("incident-status").first()).toContainText("Investigating");
         await expect(incidentDetail.getByTestId("incident-status").first()).toHaveCSS("color", "rgb(245, 120, 92)");
+        await page.getByRole("button", { name: "Back to status" }).click();
+        await expect(page.getByTestId("incident")).toHaveClass(/is-investigating/);
+        await expect(page.getByTestId("incident-products").locator(".carbon-incident-product")).toHaveCSS(
+            "color",
+            "rgb(245, 120, 92)"
+        );
+        await page.getByTestId("incident-view-updates").click();
+        await expect(incidentDetail).toBeVisible();
 
         await page.getByTestId("incident-update-status").selectOption("identified");
         await page.getByTestId("incident-update-content").fill("We have identified the cause of the issue.");
