@@ -2,6 +2,36 @@
     box-sizing: border-box;
     min-height: 100dvh;
     padding: 48px clamp(20px, 5vw, 72px) 32px;
+    color: var(--c-fg);
+
+    &.dark {
+        --c-fg: #fff;
+        --c-fg-2: #fff;
+        --c-muted: #fff;
+        --c-faint: #fff;
+        --c-tick: #fff;
+        --c-button: #242428;
+        --c-button-fg: #fff;
+
+        a:not(.btn) {
+            color: var(--c-fg);
+        }
+
+        .text-muted,
+        .text-secondary,
+        .text-dark {
+            color: var(--c-fg) !important;
+        }
+
+        .incident-list-box .incident-item.resolved,
+        .refresh-info {
+            opacity: 1;
+        }
+
+        .word {
+            color: var(--c-fg) !important;
+        }
+    }
 
     .carbon-status-page-main {
         display: flex;
@@ -74,13 +104,98 @@
             border-inline-start-color: var(--c-pending);
         }
 
+        &.bg-danger {
+            border-inline-start-color: var(--c-down);
+        }
+
         &.bg-primary,
         &.bg-info {
             border-inline-start-color: var(--c-maintenance);
         }
 
+        &.bg-light {
+            border-inline-start-color: var(--c-line-strong);
+        }
+
+        &.bg-dark {
+            border-inline-start-color: var(--c-fg-2);
+        }
+
         .date {
             color: var(--c-muted);
+        }
+    }
+
+    .carbon-incident-editor {
+        padding: 20px 24px !important;
+
+        > strong {
+            display: block;
+            margin-bottom: 6px;
+            color: var(--c-muted);
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .alert-heading,
+        .content[contenteditable="true"] {
+            border: 1px solid var(--c-line-strong);
+            border-radius: 8px;
+            background: var(--c-field);
+            color: var(--c-fg);
+        }
+
+        .alert-heading {
+            min-height: 40px;
+            margin: 0 0 16px;
+            padding: 8px 10px !important;
+            font-size: 15px;
+            line-height: 22px;
+        }
+
+        .content[contenteditable="true"] {
+            min-height: 120px;
+            padding: 10px 12px;
+            line-height: 1.5;
+            white-space: pre-wrap;
+        }
+
+        [contenteditable="true"]:focus-visible {
+            border-color: var(--c-accent);
+            outline: 2px solid color-mix(in srgb, var(--c-accent) 25%, transparent);
+            outline-offset: 1px;
+        }
+
+        .form-text {
+            margin-top: 8px;
+            color: var(--c-muted);
+        }
+    }
+
+    .carbon-incident-actions {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 8px;
+
+        > .btn,
+        > .dropdown {
+            margin: 0 !important;
+        }
+    }
+
+    .carbon-incident-post {
+        color: var(--c-button-fg);
+        background: var(--c-button);
+        border-color: var(--c-button);
+
+        &:hover,
+        &:focus,
+        &:active {
+            color: var(--c-button-fg);
+            background: var(--c-button);
+            border-color: var(--c-button);
+            filter: brightness(1.15);
         }
     }
 
@@ -157,7 +272,8 @@
 
     .item > .row {
         display: grid;
-        grid-template-columns: minmax(0, 1fr) minmax(220px, 0.75fr);
+        grid-template-columns: minmax(0, 1fr) 300px;
+        gap: 16px;
         align-items: center;
         margin: 0;
         padding: 13px 0;
@@ -222,7 +338,15 @@
     }
 }
 
-@media (max-width: 700px) {
+@media (max-width: 1279.98px) {
+    .carbon-status-page {
+        .item > .row {
+            grid-template-columns: minmax(0, 1fr) 180px;
+        }
+    }
+}
+
+@media (max-width: 767.98px) {
     .carbon-status-page {
         padding: 24px 16px;
 

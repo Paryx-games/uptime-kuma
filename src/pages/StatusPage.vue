@@ -77,7 +77,7 @@
                     </select>
                 </div>
 
-                <div class="my-3 form-check form-switch">
+                <div class="my-3 form-check" :class="{ 'form-switch': !isModernDesign }">
                     <input
                         id="showTags"
                         v-model="config.showTags"
@@ -89,7 +89,7 @@
                 </div>
 
                 <!-- Show Powered By -->
-                <div class="my-3 form-check form-switch">
+                <div class="my-3 form-check" :class="{ 'form-switch': !isModernDesign }">
                     <input
                         id="show-powered-by"
                         v-model="config.showPoweredBy"
@@ -101,7 +101,7 @@
                 </div>
 
                 <!-- Show certificate expiry -->
-                <div class="my-3 form-check form-switch">
+                <div class="my-3 form-check" :class="{ 'form-switch': !isModernDesign }">
                     <input
                         id="show-certificate-expiry"
                         v-model="config.showCertificateExpiry"
@@ -115,12 +115,13 @@
                 </div>
 
                 <!-- Show only last heartbeat -->
-                <div class="my-3 form-check form-switch">
+                <div class="my-3 form-check" :class="{ 'form-switch': !isModernDesign }">
                     <input
                         id="show-only-last-heartbeat"
                         v-model="config.showOnlyLastHeartbeat"
                         class="form-check-input"
                         type="checkbox"
+                        data-testid="show-only-last-heartbeat-checkbox"
                     />
                     <label class="form-check-label" for="show-only-last-heartbeat">
                         {{ $t("showOnlyLastHeartbeat") }}
@@ -504,6 +505,7 @@
 
                 <PublicGroupList
                     :edit-mode="enableEditMode"
+                    :modern-design="isModernDesign"
                     :show-tags="config.showTags"
                     :show-certificate-expiry="config.showCertificateExpiry"
                     :show-only-last-heartbeat="config.showOnlyLastHeartbeat"

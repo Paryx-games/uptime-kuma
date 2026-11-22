@@ -1,6 +1,6 @@
 <template>
     <div
-        class="shadow-box alert mb-4 p-4 incident"
+        class="shadow-box alert mb-4 p-4 incident carbon-incident-editor"
         role="alert"
         :class="'bg-' + modelValue.style"
         data-testid="incident-edit"
@@ -29,8 +29,12 @@
             {{ $t("markdownSupported") }}
         </div>
 
-        <div class="mt-3">
-            <button class="btn btn-light me-2" data-testid="post-incident-button" @click="$emit('post')">
+        <div class="mt-3 carbon-incident-actions">
+            <button
+                class="btn btn-light me-2 carbon-incident-post"
+                data-testid="post-incident-button"
+                @click="$emit('post')"
+            >
                 <font-awesome-icon icon="bullhorn" />
                 {{ $t("Post") }}
             </button>

@@ -76,6 +76,18 @@ test.describe("Status Page", () => {
 
         await expect(page.getByTestId("design-select")).toHaveValue("modern");
         await expect(page.locator(".carbon-status-page")).toBeVisible();
+        for (const testId of [
+            "show-tags-checkbox",
+            "show-powered-by-checkbox",
+            "show-certificate-expiry-checkbox",
+            "show-only-last-heartbeat-checkbox",
+        ]) {
+            expect(
+                await page.getByTestId(testId).evaluate((element) => {
+                    return element.closest(".form-check").classList.contains("form-switch");
+                })
+            ).toBe(false);
+        }
 
         // Fill in some details
         await page.getByTestId("description-input").fill(descriptionText);
@@ -123,31 +135,70 @@ test.describe("Status Page", () => {
         await expect(page.locator(".carbon-status-page")).toBeVisible();
 
         await page.getByTestId("edit-button").click();
+        await expect(page.getByTestId("monitor-settings")).toBeVisible();
+        // Wait for the authenticated status-page config to arrive over Socket.IO.
+        await page.waitForTimeout(500);
         await page.getByTestId("design-select").selectOption("classic");
         await expect(page.getByTestId("design-select")).toHaveValue("classic");
         await expect(page.locator(".carbon-status-page")).toHaveCount(0);
+        expect(
+            await page.getByTestId("show-tags-checkbox").evaluate((element) => {
+                return element.closest(".form-check").classList.contains("form-switch");
+            })
+        ).toBe(true);
         const classicSaveNavigation = page.waitForNavigation();
         await page.getByTestId("save-button").click();
         await classicSaveNavigation;
         await expect(page.locator(".carbon-status-page")).toHaveCount(0);
 
         await page.getByTestId("edit-button").click();
+        await expect(page.getByTestId("monitor-settings")).toBeVisible();
+        // Wait for the authenticated status-page config to arrive over Socket.IO.
+        await page.waitForTimeout(500);
         await expect(page.getByTestId("design-select")).toHaveValue("classic");
         await page.getByTestId("design-select").selectOption("modern");
         await expect(page.locator(".carbon-status-page")).toBeVisible();
+        expect(
+            await page.getByTestId("show-tags-checkbox").evaluate((element) => {
+                return element.closest(".form-check").classList.contains("form-switch");
+            })
+        ).toBe(false);
         const modernRestoreNavigation = page.waitForNavigation();
         await page.getByTestId("save-button").click();
         await modernRestoreNavigation;
         await expect(page.locator(".carbon-status-page")).toBeVisible();
 
         // Ensure changes are visible
+        await expect(page.locator(".carbon-status-page")).toHaveClass(/dark/);
         await expect(page.getByTestId("incident")).toHaveCount(1);
         await expect(page.getByTestId("incident-title")).toContainText(incidentTitle);
         await expect(page.getByTestId("incident-content")).toContainText(incidentContent);
+        expect(
+            await page.getByTestId("incident-title").evaluate((element) => {
+                return getComputedStyle(element).color;
+            })
+        ).toBe("rgb(255, 255, 255)");
         await expect(page.getByTestId("group-name")).toContainText(groupName);
         await expect(page.getByTestId("powered-by")).toHaveCount(0);
 
         await expect(page.getByTestId("monitor-name")).toHaveAttribute("href", monitorCustomUrl);
+
+        await page.getByTestId("edit-button").click();
+        await page.getByTestId("create-incident-button").click();
+        const incidentEditor = page.getByTestId("incident-edit");
+        await expect(incidentEditor).toBeVisible();
+        for (const selector of [".alert-heading", ".form-text", ".carbon-incident-post"]) {
+            expect(
+                await incidentEditor.locator(selector).evaluate((element) => {
+                    return getComputedStyle(element).color;
+                })
+            ).toBe("rgb(255, 255, 255)");
+        }
+        await screenshot(testInfo, page);
+        await incidentEditor.getByRole("button", { name: "Cancel" }).click();
+        const incidentEditorSaveNavigation = page.waitForNavigation();
+        await page.getByTestId("save-button").click();
+        await incidentEditorSaveNavigation;
 
         await expect(page.getByTestId("update-countdown-text")).toContainText("00:");
         const updateCountdown = Number(
@@ -173,7 +224,7 @@ test.describe("Status Page", () => {
         await screenshot(testInfo, page);
         expect(await page.locator("head").innerHTML()).toContain(googleAnalyticsId);
 
-        // Flip the "Show Tags" and "Show Powered By" switches:
+        // Flip the "Show Tags" and "Show Powered By" checkboxes:
         await page.getByTestId("edit-button").click();
         await expect(page.getByTestId("edit-sidebar")).toHaveCount(1);
         await page.getByTestId("show-tags-checkbox").setChecked(true);
@@ -239,6 +290,16 @@ test.describe("Status Page", () => {
         expect(await page.locator("head").innerHTML()).toContain(matomoUrl);
         expect(await page.locator("head").innerHTML()).toContain(matomoSiteId);
 
+        await expect(page.locator(".carbon-status-page .carbon-bars .heartbeat-canvas").first()).toHaveCSS(
+            "height",
+            "20px"
+        );
+        await page.goto("./settings/appearance");
+        await page.locator('label[for="btncheck6"]').click();
+        await page.goto("./status/example");
+        await expect(page.locator(".carbon-status-page")).toBeVisible();
+        await expect(page.getByTestId("monitor")).toHaveCount(1);
+        await expect(page.locator(".carbon-status-page .carbon-bars")).toHaveCount(0);
     });
 
     // @todo Test certificate expiry

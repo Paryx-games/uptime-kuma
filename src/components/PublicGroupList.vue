@@ -115,8 +115,16 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div :key="$root.userHeartbeatBar" class="col-3 col-xl-6 carbon-bars">
-                                            <HeartbeatBar size="mid" :monitor-id="monitor.element.id" />
+                                        <div
+                                            v-if="!modernDesign || $root.userHeartbeatBar !== 'none'"
+                                            :key="$root.userHeartbeatBar"
+                                            class="carbon-bars"
+                                            :class="{ 'col-3 col-xl-6': !modernDesign }"
+                                        >
+                                            <HeartbeatBar
+                                                :size="modernDesign ? 'small' : 'mid'"
+                                                :monitor-id="monitor.element.id"
+                                            />
                                         </div>
                                     </div>
                                 </div>
@@ -152,6 +160,11 @@ export default {
         editMode: {
             type: Boolean,
             required: true,
+        },
+        /** Whether the status page uses the Modern design. */
+        modernDesign: {
+            type: Boolean,
+            default: false,
         },
         /** Should tags be shown? */
         showTags: {
