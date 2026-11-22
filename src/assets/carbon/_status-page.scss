@@ -3,6 +3,8 @@
     min-height: 100dvh;
     padding: 48px clamp(20px, 5vw, 72px) 32px;
     color: var(--c-fg);
+    --c-footer-muted: #5f5f65;
+    --c-footer-link-hover: #6e6e74;
 
     &.dark {
         --c-fg: #fff;
@@ -12,6 +14,8 @@
         --c-tick: #fff;
         --c-button: #242428;
         --c-button-fg: #fff;
+        --c-footer-muted: #8f8f95;
+        --c-footer-link-hover: #a1a1a6;
 
         a:not(.btn) {
             color: var(--c-fg);
@@ -340,11 +344,24 @@
         margin-top: 36px !important;
         padding-top: 18px;
         border-top: 1px solid var(--c-line);
-        color: var(--c-muted);
+        color: var(--c-footer-muted);
 
         a {
             color: var(--c-fg);
+            text-decoration: underline;
+            text-underline-offset: 3px;
+            transition: color 120ms ease-out;
+
+            &:hover,
+            &:focus-visible {
+                color: var(--c-footer-link-hover);
+            }
         }
+    }
+
+    &.dark footer a:hover,
+    &.dark footer a:focus-visible {
+        color: var(--c-footer-link-hover);
     }
 }
 

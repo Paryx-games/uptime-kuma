@@ -243,7 +243,13 @@ test.describe("Status Page", () => {
         await umamiSaveNavigation;
 
         await expect(page.getByTestId("edit-sidebar")).toHaveCount(0);
-        await expect(page.getByTestId("powered-by")).toContainText("Powered by");
+        const poweredBy = page.getByTestId("powered-by");
+        const poweredByLink = poweredBy.getByRole("link", { name: "Uptime Kuma" });
+        await expect(poweredBy).toContainText("Powered by");
+        expect(await poweredBy.evaluate((element) => getComputedStyle(element).color)).toBe("rgb(143, 143, 149)");
+        expect(await poweredByLink.evaluate((element) => getComputedStyle(element).color)).toBe("rgb(255, 255, 255)");
+        await poweredByLink.hover();
+        await expect(poweredByLink).toHaveCSS("color", "rgb(161, 161, 166)");
 
         // Modified tag verification to check both tags
         await expect(page.getByTestId("monitor-tag").filter({ hasText: tagValue })).toBeVisible();

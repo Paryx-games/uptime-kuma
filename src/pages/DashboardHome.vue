@@ -319,10 +319,9 @@ export default {
         clearAllEventsDialog() {
             this.$refs.confirmClearEvents.show();
         },
-        clearAllEvents() {
+        async clearAllEvents() {
             this.clearingAllEvents = true;
             const monitorIDs = Object.keys(this.$root.monitorList);
-            let failed = 0;
             const total = monitorIDs.length;
 
             if (total === 0) {
@@ -331,25 +330,31 @@ export default {
                 return;
             }
 
-            monitorIDs.forEach((monitorID) => {
-                this.$root.getSocket().emit("clearEvents", monitorID, (res) => {
-                    if (!res || !res.ok) {
-                        failed++;
-                    }
-                });
-            });
-            this.clearingAllEvents = false;
-            this.page = 1;
-            this.getImportantHeartbeatListLength();
-            if (failed === 0) {
-                this.$root.toastSuccess(this.$t("Events cleared successfully"));
-            } else {
-                this.$root.toastError(
-                    this.$t("Could not clear events", {
-                        failed,
-                        total,
-                    })
+            try {
+                const results = await Promise.all(
+                    monitorIDs.map(
+                        (monitorID) =>
+                            new Promise((resolve) => {
+                                this.$root.getSocket().emit("clearEvents", monitorID, resolve);
+                            })
+                    )
                 );
+                const failed = results.filter((res) => !res || !res.ok).length;
+
+                this.page = 1;
+                this.getImportantHeartbeatListLength();
+                if (failed === 0) {
+                    this.$root.toastSuccess(this.$t("Events cleared successfully"));
+                } else {
+                    this.$root.toastError(
+                        this.$t("Could not clear events", {
+                            failed,
+                            total,
+                        })
+                    );
+                }
+            } finally {
+                this.clearingAllEvents = false;
             }
         },
     },

@@ -63,5 +63,14 @@ test.describe("Monitor list filter menu", () => {
 
         await status.selectOption("1");
         await expect(testMonitor.locator(".sub")).toContainText("Up");
+
+        await status.selectOption("0");
+        await expect(testMonitor.locator(".sub")).toContainText("Down");
+        await page.locator('a[href="/dashboard"]:visible').first().click();
+        await expect(page.locator(".carbon-event").filter({ hasText: "Test monitor" }).first()).toBeVisible();
+
+        await page.getByRole("button", { name: "Clear", exact: true }).click();
+        await page.getByRole("button", { name: "Yes", exact: true }).click();
+        await expect(page.getByText("No important events")).toBeVisible();
     });
 });
