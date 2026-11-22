@@ -67,66 +67,150 @@
 
     .overall-status {
         order: 2;
-        display: flex;
-        align-items: center;
-        min-height: 58px;
-        padding: 16px 18px !important;
-        border: 1px solid var(--c-line-strong);
+        overflow: hidden;
+        padding: 0 !important;
+        border: 1px solid var(--c-status-color);
         border-radius: 12px;
         background: var(--c-surface);
         color: var(--c-fg);
-        font-size: 14px;
-        font-weight: 600;
         box-shadow: none;
 
-        .ok {
-            color: var(--c-up);
+        &.is-operational {
+            --c-status-color: var(--c-up);
         }
 
-        .warning {
-            color: var(--c-pending);
+        &.is-degraded {
+            --c-status-color: var(--c-pending);
         }
 
-        .danger {
-            color: var(--c-down);
+        &.is-maintenance {
+            --c-status-color: var(--c-maintenance);
         }
 
-        .status-maintenance {
-            color: var(--c-maintenance);
+        &.is-outage {
+            --c-status-color: var(--c-down);
+        }
+
+        &.is-unknown {
+            --c-status-color: var(--c-muted);
+        }
+
+        .overall-status-heading {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 16px;
+            background: color-mix(in srgb, var(--c-status-color) 15%, var(--c-bg));
+            color: var(--c-fg);
+            font-size: 15px;
+        }
+
+        .overall-status-heading svg {
+            flex: 0 0 auto;
+            color: var(--c-status-color);
+        }
+
+        .overall-status-description {
+            padding: 14px 16px;
+            border-top: 1px solid color-mix(in srgb, var(--c-status-color) 25%, var(--c-line));
+            color: var(--c-fg-2);
+            font-size: 14px;
+            line-height: 1.5;
         }
     }
 
     .incident {
         order: 3;
-        border: 1px solid var(--c-line-strong);
-        border-inline-start: 3px solid var(--c-down);
-        border-radius: 10px;
-        background: var(--c-surface) !important;
+    }
+
+    .carbon-incident-card {
+        overflow: hidden;
+        padding: 0 !important;
+        border: 1px solid color-mix(in srgb, var(--c-status-color) 45%, var(--c-line-strong));
+        border-radius: 12px;
+        background: var(--c-bg) !important;
         color: var(--c-fg);
 
-        &.bg-warning {
-            border-inline-start-color: var(--c-pending);
+        &.is-investigating {
+            --c-status-color: var(--c-down);
         }
 
-        &.bg-danger {
-            border-inline-start-color: var(--c-down);
+        &.is-identified,
+        &.is-monitoring {
+            --c-status-color: var(--c-pending);
         }
 
-        &.bg-primary,
-        &.bg-info {
-            border-inline-start-color: var(--c-maintenance);
+        &.is-resolved {
+            --c-status-color: var(--c-up);
         }
 
-        &.bg-light {
-            border-inline-start-color: var(--c-line-strong);
+        .carbon-incident-card-header {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 18px;
+            border-bottom: 1px solid color-mix(in srgb, var(--c-status-color) 20%, var(--c-line));
+            background: color-mix(in srgb, var(--c-status-color) 13%, var(--c-bg));
         }
 
-        &.bg-dark {
-            border-inline-start-color: var(--c-fg-2);
+        .alert-heading {
+            margin: 0;
+            color: var(--c-fg);
+            font-size: 15px;
+            font-weight: 500;
+        }
+
+        .carbon-incident-card-content {
+            padding: 16px 18px;
         }
 
         .date {
             color: var(--c-muted);
+        }
+
+        .carbon-incident-card-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 16px;
+        }
+
+        .carbon-incident-card-actions .btn {
+            margin: 0 !important;
+            border-color: var(--c-line-strong);
+            background: var(--c-surface);
+            color: var(--c-fg);
+
+            &:hover,
+            &:focus-visible {
+                background: var(--c-hover);
+                color: var(--c-fg);
+            }
+        }
+    }
+
+    .carbon-incident-status {
+        display: inline-flex;
+        flex: 0 0 auto;
+        align-items: center;
+        gap: 7px;
+        color: var(--c-status-color);
+        font-size: 13px;
+        font-weight: 600;
+        line-height: 1.2;
+
+        &.is-investigating {
+            --c-status-color: var(--c-down);
+        }
+
+        &.is-identified,
+        &.is-monitoring {
+            --c-status-color: var(--c-pending);
+        }
+
+        &.is-resolved {
+            --c-status-color: var(--c-up);
         }
     }
 

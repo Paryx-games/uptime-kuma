@@ -171,8 +171,17 @@ test.describe("Status Page", () => {
         // Ensure changes are visible
         await expect(page.locator(".carbon-status-page")).toHaveClass(/dark/);
         await expect(page.getByTestId("incident")).toHaveCount(1);
+        await expect(page.getByTestId("incident-status")).toContainText("Investigating");
+        await expect(page.getByTestId("overall-status")).toContainText("Degraded Service");
         await expect(page.getByTestId("incident-title")).toContainText(incidentTitle);
         await expect(page.getByTestId("incident-content")).toContainText(incidentContent);
+        const incidentStatusColor = await page
+            .getByTestId("incident-status")
+            .evaluate((element) => getComputedStyle(element).color);
+        expect(incidentStatusColor).toBe("rgb(255, 115, 105)");
+        await page.locator(".carbon-status-page").evaluate((element) => element.classList.remove("dark"));
+        await expect(page.getByTestId("incident-status")).toHaveCSS("color", "rgb(229, 72, 77)");
+        await page.locator(".carbon-status-page").evaluate((element) => element.classList.add("dark"));
         expect(
             await page.getByTestId("incident-title").evaluate((element) => {
                 return getComputedStyle(element).color;

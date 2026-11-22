@@ -337,91 +337,75 @@
                 <!-- Display mode for this incident -->
                 <div
                     v-else
-                    class="shadow-box alert mb-4 p-4 incident"
+                    class="shadow-box alert mb-4 incident carbon-incident-card"
                     role="alert"
-                    :class="'bg-' + activeIncident.style"
+                    :class="`is-${activeIncident.status || 'investigating'}`"
                     data-testid="incident"
                 >
-                    <h4 class="alert-heading" data-testid="incident-title">{{ activeIncident.title }}</h4>
-                    <!-- eslint-disable vue/no-v-html -->
-                    <div
-                        class="content"
-                        data-testid="incident-content"
-                        v-html="getIncidentHTML(activeIncident.content)"
-                    ></div>
-                    <!-- eslint-enable vue/no-v-html -->
+                    <div class="carbon-incident-card-header">
+                        <IncidentStatus :incident="activeIncident" />
+                        <h4 class="alert-heading" data-testid="incident-title">{{ activeIncident.title }}</h4>
+                    </div>
+                    <div class="carbon-incident-card-content">
+                        <!-- eslint-disable vue/no-v-html -->
+                        <div
+                            class="content"
+                            data-testid="incident-content"
+                            v-html="getIncidentHTML(activeIncident.content)"
+                        ></div>
+                        <!-- eslint-enable vue/no-v-html -->
 
-                    <!-- Incident Date -->
-                    <div class="date mt-3">
-                        {{
-                            $t("dateCreatedAtFromNow", {
-                                date: $root.datetime(activeIncident.createdDate),
-                                fromNow: dateFromNow(activeIncident.createdDate),
-                            })
-                        }}
-                        <br />
-                        <span v-if="activeIncident.lastUpdatedDate">
+                        <!-- Incident Date -->
+                        <div class="date mt-3">
                             {{
-                                $t("lastUpdatedAtFromNow", {
-                                    date: $root.datetime(activeIncident.lastUpdatedDate),
-                                    fromNow: dateFromNow(activeIncident.lastUpdatedDate),
+                                $t("dateCreatedAtFromNow", {
+                                    date: $root.datetime(activeIncident.createdDate),
+                                    fromNow: dateFromNow(activeIncident.createdDate),
                                 })
                             }}
-                        </span>
-                    </div>
+                            <br />
+                            <span v-if="activeIncident.lastUpdatedDate">
+                                {{
+                                    $t("lastUpdatedAtFromNow", {
+                                        date: $root.datetime(activeIncident.lastUpdatedDate),
+                                        fromNow: dateFromNow(activeIncident.lastUpdatedDate),
+                                    })
+                                }}
+                            </span>
+                        </div>
 
-                    <div v-if="editMode" class="mt-3">
-                        <button class="btn btn-light me-2" @click="resolveIncident(activeIncident)">
-                            <font-awesome-icon icon="check" />
-                            {{ $t("Resolve") }}
-                        </button>
-                        <button class="btn btn-light me-2" @click="editIncident(activeIncident)">
-                            <font-awesome-icon icon="edit" />
-                            {{ $t("Edit") }}
-                        </button>
-                        <button
-                            class="btn btn-light me-2"
-                            @click="$refs.incidentManageModal.showDelete(activeIncident)"
-                        >
-                            <font-awesome-icon icon="unlink" />
-                            {{ $t("Delete") }}
-                        </button>
+                        <div v-if="editMode" class="carbon-incident-card-actions">
+                            <button class="btn btn-light me-2" @click="resolveIncident(activeIncident)">
+                                <font-awesome-icon icon="check" />
+                                {{ $t("Resolve") }}
+                            </button>
+                            <button class="btn btn-light me-2" @click="editIncident(activeIncident)">
+                                <font-awesome-icon icon="edit" />
+                                {{ $t("Edit") }}
+                            </button>
+                            <button
+                                class="btn btn-light me-2"
+                                @click="$refs.incidentManageModal.showDelete(activeIncident)"
+                            >
+                                <font-awesome-icon icon="unlink" />
+                                {{ $t("Delete") }}
+                            </button>
+                        </div>
                     </div>
                 </div>
             </template>
 
             <!-- Overall Status -->
-            <div class="shadow-box list p-4 overall-status mb-4">
-                <div v-if="Object.keys($root.publicMonitorList).length === 0 && loadedData">
-                    <font-awesome-icon icon="question-circle" class="ok" />
-                    {{ $t("No Services") }}
+            <div
+                class="shadow-box overall-status mb-4"
+                :class="overallStatusClass"
+                data-testid="overall-status"
+            >
+                <div class="overall-status-heading">
+                    <font-awesome-icon :icon="overallStatusIcon" aria-hidden="true" />
+                    <strong>{{ overallStatusTitle }}</strong>
                 </div>
-
-                <template v-else>
-                    <div v-if="allUp">
-                        <font-awesome-icon icon="check-circle" class="ok" />
-                        {{ $t("All Systems Operational") }}
-                    </div>
-
-                    <div v-else-if="partialDown">
-                        <font-awesome-icon icon="exclamation-circle" class="warning" />
-                        {{ $t("Partially Degraded Service") }}
-                    </div>
-
-                    <div v-else-if="allDown">
-                        <font-awesome-icon icon="times-circle" class="danger" />
-                        {{ $t("Degraded Service") }}
-                    </div>
-
-                    <div v-else-if="isMaintenance">
-                        <font-awesome-icon icon="wrench" class="status-maintenance" />
-                        {{ $t("maintenanceStatus-under-maintenance") }}
-                    </div>
-
-                    <div v-else>
-                        <font-awesome-icon icon="question-circle" style="color: #efefef" />
-                    </div>
-                </template>
+                <div class="overall-status-description">{{ overallStatusDescription }}</div>
             </div>
 
             <!-- Maintenance -->
@@ -638,6 +622,7 @@ import MaintenanceTime from "../components/MaintenanceTime.vue";
 import IncidentHistory from "../components/IncidentHistory.vue";
 import IncidentManageModal from "../components/IncidentManageModal.vue";
 import IncidentEditForm from "../components/IncidentEditForm.vue";
+import IncidentStatus from "../components/IncidentStatus.vue";
 import { getResBaseURL } from "../util-frontend";
 import {
     STATUS_PAGE_ALL_DOWN,
@@ -674,6 +659,7 @@ export default {
         IncidentHistory,
         IncidentManageModal,
         IncidentEditForm,
+        IncidentStatus,
     },
 
     // Leave Page for vue route change
@@ -859,6 +845,70 @@ export default {
 
         isMaintenance() {
             return this.overallStatus === STATUS_PAGE_MAINTENANCE;
+        },
+
+        overallStatusClass() {
+            if (Object.keys(this.$root.publicMonitorList).length === 0 && this.loadedData) {
+                return "is-unknown";
+            }
+            if (this.allUp) {
+                return "is-operational";
+            }
+            if (this.partialDown) {
+                return "is-degraded";
+            }
+            if (this.allDown) {
+                return "is-outage";
+            }
+            if (this.isMaintenance) {
+                return "is-maintenance";
+            }
+            return "is-unknown";
+        },
+
+        overallStatusIcon() {
+            if (this.overallStatusClass === "is-operational") {
+                return "check-circle";
+            }
+            if (this.overallStatusClass === "is-degraded" || this.overallStatusClass === "is-outage") {
+                return "exclamation-circle";
+            }
+            if (this.overallStatusClass === "is-maintenance") {
+                return "wrench";
+            }
+            return "question-circle";
+        },
+
+        overallStatusTitle() {
+            if (this.overallStatusClass === "is-operational") {
+                return this.$t("All Systems Operational");
+            }
+            if (this.overallStatusClass === "is-degraded") {
+                return this.$t("Partially Degraded Service");
+            }
+            if (this.overallStatusClass === "is-outage") {
+                return this.$t("Degraded Service");
+            }
+            if (this.overallStatusClass === "is-maintenance") {
+                return this.$t("maintenanceStatus-under-maintenance");
+            }
+            return this.$t("No Services");
+        },
+
+        overallStatusDescription() {
+            if (this.overallStatusClass === "is-operational") {
+                return this.$t("statusPageOperationalDescription");
+            }
+            if (this.overallStatusClass === "is-degraded") {
+                return this.$t("statusPageDegradedDescription");
+            }
+            if (this.overallStatusClass === "is-outage") {
+                return this.$t("statusPageOutageDescription");
+            }
+            if (this.overallStatusClass === "is-maintenance") {
+                return this.$t("statusPageMaintenanceDescription");
+            }
+            return this.$t("statusPageNoServicesDescription");
         },
 
         incidentHTML() {
