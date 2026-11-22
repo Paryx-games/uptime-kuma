@@ -70,6 +70,27 @@
                     <div class="sub">
                         <span :class="`s-${state.key}`">{{ state.label }}</span>
                         {{ details }}
+                        <span v-if="monitor.isTestMonitor" class="test-monitor-badge">
+                            {{ $t("Development only") }}
+                        </span>
+                    </div>
+                    <div v-if="monitor.isTestMonitor" class="test-monitor-controls">
+                        <label class="visually-hidden" :for="`test-monitor-status-${monitor.id}`">
+                            {{ $t("Test monitor status") }}
+                        </label>
+                        <select
+                            :id="`test-monitor-status-${monitor.id}`"
+                            class="form-select form-select-sm"
+                            data-testid="test-monitor-status"
+                            :value="monitor.manual_status"
+                            :disabled="testMonitorStatusChanging"
+                            @change="setTestMonitorStatus"
+                        >
+                            <option value="1">{{ $t("Up") }}</option>
+                            <option value="0">{{ $t("Downtime") }}</option>
+                            <option value="2">{{ $t("Pending") }}</option>
+                            <option value="3">{{ $t("statusMaintenance") }}</option>
+                        </select>
                     </div>
                     <div v-if="monitor.tags.length > 0" class="tags">
                         <Tag v-for="tag in monitor.tags" :key="tag" :item="tag" :size="'sm'" :title="tag.name" />
@@ -197,6 +218,7 @@ export default {
         return {
             isCollapsed: false,
             dragOverCount: 0,
+            testMonitorStatusChanging: false,
         };
     },
     computed: {
@@ -287,6 +309,24 @@ export default {
         this.isCollapsed = storageObject[`monitor_${this.monitor.id}`];
     },
     methods: {
+        /**
+         * Update the simulated status of the built-in test monitor.
+         * @param {Event} event Change event from the status selector
+         * @returns {void}
+         */
+        setTestMonitorStatus(event) {
+            const select = event.target;
+            const previousStatus = String(this.monitor.manual_status);
+            this.testMonitorStatusChanging = true;
+            this.$root.getSocket().emit("setTestMonitorStatus", this.monitor.id, Number(select.value), (res) => {
+                this.testMonitorStatusChanging = false;
+                if (!res || !res.ok) {
+                    select.value = previousStatus;
+                    this.$root.toastRes(res);
+                }
+            });
+        },
+
         /**
          * Changes the collapsed value of the current monitor and saves
          * it to local storage
@@ -422,6 +462,23 @@ export default {
 
 <style lang="scss" scoped>
 @import "../assets/vars.scss";
+
+.test-monitor-badge {
+    margin-left: 6px;
+    padding: 1px 5px;
+    border: 1px solid var(--c-line);
+    border-radius: 4px;
+    color: var(--c-muted);
+    font-size: 11px;
+    white-space: nowrap;
+}
+
+.test-monitor-controls {
+    position: relative;
+    z-index: 1;
+    max-width: 190px;
+    margin-top: 6px;
+}
 
 .collapsed {
     transform: rotate(-90deg);

@@ -30,4 +30,28 @@ test.describe("Monitor list filter menu", () => {
 
         await expect(menu).toBeHidden();
     });
+
+    test("test monitor controls simulate status changes", async ({ page }) => {
+        const testMonitor = page.locator(".carbon-row").filter({
+            has: page.getByRole("link", { name: "Test", exact: true }),
+        });
+        const status = testMonitor.getByLabel("Test monitor status");
+
+        await expect(testMonitor).toBeVisible();
+        await expect(page.locator(".carbon-row").last()).toContainText("Test");
+        await expect(testMonitor.getByText("Development only")).toBeVisible();
+        await expect(status).toHaveValue("2");
+
+        await status.selectOption("0");
+        await expect(testMonitor.locator(".sub")).toContainText("Down");
+
+        await status.selectOption("3");
+        await expect(testMonitor.locator(".sub")).toContainText("Maintenance");
+
+        await status.selectOption("2");
+        await expect(testMonitor.locator(".sub")).toContainText("Pending");
+
+        await status.selectOption("1");
+        await expect(testMonitor.locator(".sub")).toContainText("Up");
+    });
 });

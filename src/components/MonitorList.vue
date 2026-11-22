@@ -202,7 +202,12 @@ export default {
             result = result.filter(this.filterFunc);
 
             // Monitors outside any group first, then the groups
-            result.sort((m1, m2) => (m1.type === "group") - (m2.type === "group") || this.sortFunc(m1, m2));
+            result.sort(
+                (m1, m2) =>
+                    (m1.isTestMonitor === true) - (m2.isTestMonitor === true) ||
+                    (m1.type === "group") - (m2.type === "group") ||
+                    this.sortFunc(m1, m2)
+            );
 
             return result;
         },
@@ -662,6 +667,12 @@ export default {
          * @returns {number} -1, 0 or 1
          */
         sortFunc(m1, m2) {
+             const m1IsTestMonitor = Boolean(m1.isTestMonitor);
+             const m2IsTestMonitor = Boolean(m2.isTestMonitor);
+             if (m1IsTestMonitor !== m2IsTestMonitor) {
+                 return m1IsTestMonitor ? 1 : -1;
+            }
+
             if (m1.active !== m2.active) {
                 if (m1.active === false) {
                     return 1;
