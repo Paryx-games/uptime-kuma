@@ -157,12 +157,16 @@
         .alert-heading {
             margin: 0;
             color: var(--c-fg);
-            font-size: 15px;
-            font-weight: 500;
+            font-size: 16px;
+            font-weight: 400;
         }
 
         .carbon-incident-card-content {
             padding: 16px 18px;
+
+            .content {
+                font-size: 15px;
+            }
         }
 
         .date {
@@ -292,8 +296,8 @@
         h2 {
             margin: 0;
             color: var(--c-fg);
-            font-size: 17px;
-            font-weight: 500;
+            font-size: 19px;
+            font-weight: 400;
         }
 
         .carbon-incident-detail-summary {
@@ -313,6 +317,7 @@
         .incident-content {
             margin-top: 12px;
             color: var(--c-fg-2);
+            font-size: 15px;
             line-height: 1.5;
 
             p:last-child {
@@ -615,6 +620,10 @@
         .form-text {
             margin-top: 8px;
             color: var(--c-muted);
+        }
+
+        .incident-monitor-options .form-check-label {
+            color: var(--c-fg);
         }
     }
 

@@ -179,7 +179,10 @@ test.describe("Status Page", () => {
         await expect(page.getByTestId("incident-status")).toContainText("Investigating");
         await expect(page.getByTestId("overall-status")).toContainText("Degraded Service");
         await expect(page.getByTestId("incident-title")).toContainText(incidentTitle);
+        await expect(page.getByTestId("incident-title")).toHaveCSS("font-size", "16px");
+        await expect(page.getByTestId("incident-title")).toHaveCSS("font-weight", "400");
         await expect(page.getByTestId("incident-content")).toContainText(incidentContent);
+        await expect(page.getByTestId("incident-content")).toHaveCSS("font-size", "15px");
         const incidentStatusColor = await page
             .getByTestId("incident-status")
             .evaluate((element) => getComputedStyle(element).color);
@@ -198,6 +201,8 @@ test.describe("Status Page", () => {
         await page.getByTestId("incident-view-updates").click();
         const incidentDetail = page.getByTestId("incident-detail");
         await expect(incidentDetail).toBeVisible();
+        await expect(incidentDetail.locator("h2")).toHaveCSS("font-size", "19px");
+        await expect(incidentDetail.locator("h2")).toHaveCSS("font-weight", "400");
         await expect(page.getByTestId("affected-components")).toContainText(monitorName);
         await expect(page.getByTestId("affected-components")).toContainText("1 affected component");
         await expect(page.getByTestId("incident-updates").locator("li")).toHaveCount(1);
@@ -254,6 +259,10 @@ test.describe("Status Page", () => {
                 })
             ).toBe("rgb(255, 255, 255)");
         }
+        await expect(incidentEditor.locator(".incident-monitor-options .form-check-label")).toHaveCSS(
+            "color",
+            "rgb(255, 255, 255)"
+        );
         await screenshot(testInfo, page);
         await incidentEditor.getByRole("button", { name: "Cancel" }).click();
         const incidentEditorSaveNavigation = page.waitForNavigation();
